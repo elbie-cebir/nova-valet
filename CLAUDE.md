@@ -10,7 +10,7 @@ Nova Valet — a **single-tenant** mobile car-valeting booking site. One busines
 
 - **Framework**: Next.js (App Router) + TypeScript, deployed on **Vercel**.
 - **Data + Auth**: **Supabase** (Postgres + Auth). Server and client access via `@supabase/ssr`.
-- **Payments**: **Stripe Checkout**. Sandbox/test now; **production by env-var swap, no redeploy**. Never hardcode keys or mode.
+- **Payments**: **multi-provider** — Bancontact → **Mollie**, card/Visa → **Stripe**, routed by the payment method the customer picks. One `PaymentGateway` interface with two adapters (Mollie, Stripe). Both run on **test keys now**; live is a **per-provider key swap, no redeploy**. Never hardcode keys or mode. (ADR-013)
 - **Email**: **Resend**.
 - **i18n**: **next-intl** with locales `nl` (default), `en`, `fr`. Locale-prefixed routing.
 - **WhatsApp**: Owner-tap via `wa.me` links now. A **modular WhatsApp service** exposes ONE interface with two adapters:
