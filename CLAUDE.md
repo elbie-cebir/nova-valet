@@ -70,7 +70,7 @@ The full per-area **playbooks** (coding conventions, how code is written) are au
 ## Environment / conventions
 
 - Secrets live in env vars only; `.env.example` documents every required key. Never commit real secrets.
-- Stripe mode (test vs production) is controlled purely by which keys are in the environment — no code change, no redeploy.
+- Payment mode (test vs live) is controlled purely by which keys are in the environment, per provider (Stripe and Mollie) — no code change, no redeploy.
 - Locale routing: `/` → `nl`; `/en`, `/fr` for the others.
 
 ## Current state

@@ -2,7 +2,7 @@
 
 Canonical source for the security bar, the performance bar, and the Definition of Done. It does not restate coding conventions — those are the Playbooks (docs/playbooks/, authored after ship). Where a playbook and this doc disagree, the playbook wins on how code is written; this doc governs the quality bar a change is measured against.
 
-Stack: Next.js (App Router) + TypeScript on Vercel; Supabase (Postgres + Auth); Stripe; Resend; next-intl. Single-tenant, guest-only customers, owner admin.
+Stack: Next.js (App Router) + TypeScript on Vercel; Supabase (Postgres + Auth); payments via Mollie (Bancontact) and Stripe (card); Resend; next-intl. Single-tenant, guest-only customers, owner admin.
 
 ## The non-negotiables (the spine)
 - Parse, don't trust. Every boundary — route handler, server action, payment-provider callback (Stripe webhook / Mollie notify), env var — validates input against a Zod schema before use. A cast is not a parse.
@@ -15,9 +15,9 @@ Stack: Next.js (App Router) + TypeScript on Vercel; Supabase (Postgres + Auth); 
 ## Security bar
 - [ ] Authorization on every state-changing route. Owner-only admin actions check the authenticated owner (Supabase Auth); guest actions are scoped to a single booking by an unguessable token. No mutation without the check.
 - [ ] Guest access is token-scoped and fails closed. A booking is reachable only via its magic-link/QR token or reference+contact; a missing or mismatched token returns not-found, never an existence leak or another booking.
-- [ ] Every boundary parses before use. Route handlers, server actions, the Stripe webhook, and env/config go through schema.parse(); failures map to a stable error envelope, never a raw ZodError.
+- [ ] Every boundary parses before use. Route handlers, server actions, the payment-provider callback (Stripe webhook / Mollie notify), and env/config go through schema.parse(); failures map to a stable error envelope, never a raw ZodError.
 - [ ] Payment truth comes from the provider, never the client: Mollie via a status fetch on notify, Stripe via a signature-verified webhook. Neither the client nor a raw webhook body is trusted. The client never confirms a booking; only a provider-verified payment moves a slot to booked or marks the balance paid.
-- [ ] Secrets server-side only. Stripe secret key, Supabase service-role key, and Resend key never reach the client bundle, logs, or git. .env* is git-ignored; .env.example documents what is needed. Sandbox to prod is an env swap.
+- [ ] Secrets server-side only. Stripe secret key, Mollie API key, Supabase service-role key, and Resend key never reach the client bundle, logs, or git. .env* is git-ignored; .env.example documents what is needed. Sandbox to prod is an env swap.
 - [ ] Customer PII is minimized and never logged. Logs and errors carry a booking id or reference, never customer name, email, or phone. Responses leak no PII beyond the guest's own booking.
 - [ ] Errors leak no internals. No stack traces or SQL to the client; a stable error code plus a safe message plus a correlation id. A swallowing catch(e){} is banned.
 - [ ] Sensitive actions are recorded. Cancellations (deposit forfeited), reschedules, and admin changes are attributed and timestamped.
