@@ -5,10 +5,10 @@ Canonical source for the security bar, the performance bar, and the Definition o
 Stack: Next.js (App Router) + TypeScript on Vercel; Supabase (Postgres + Auth); Stripe; Resend; next-intl. Single-tenant, guest-only customers, owner admin.
 
 ## The non-negotiables (the spine)
-- Parse, don't trust. Every boundary — route handler, server action, Stripe webhook, env var — validates input against a Zod schema before use. A cast is not a parse.
-- One source of truth per fact. A shape is defined once (Zod) and derived everywhere. Money truth is Stripe; the payment table mirrors webhooks only. Config constants live in one module.
+- Parse, don't trust. Every boundary — route handler, server action, payment-provider callback (Stripe webhook / Mollie notify), env var — validates input against a Zod schema before use. A cast is not a parse.
+- One source of truth per fact. A shape is defined once (Zod) and derived everywhere. Money truth is the payment provider (Mollie or Stripe); the payment table mirrors provider events only. Config constants live in one module.
 - The test fails first. No implementation before a test that fails without it.
-- No silent state change. Every booking and slot transition is explicit, attributed where an actor exists, and recorded. No slot moves to booked without a Stripe-verified deposit.
+- No silent state change. Every booking and slot transition is explicit, attributed where an actor exists, and recorded. No slot moves to booked without a provider-verified deposit.
 - Layers don't leak. A route handler holds no business logic; a component holds no data-fetching or SQL; Supabase is reached through a data-access layer, never from a component.
 - The machine enforces what it can. Lint, tsconfig, and DB constraints are law; the prose is the reasoning.
 
@@ -46,6 +46,6 @@ A change is done only when every box is checked. Run this list as the gate on ev
 ## The two tone-setting tests
 The first two tests in the repo, the domain's load-bearing guarantees:
 - "two customers cannot book the same slot" (uniqueness constraint + reserve-then-confirm).
-- "a booking is not confirmed without a Stripe-verified deposit" (webhook-truth).
+- "a booking is not confirmed without a provider-verified deposit" (provider-truth: Mollie status fetch / Stripe webhook).
 
 _Amend this doc with a conventional commit when a bar changes. Do not fork these definitions elsewhere — this is their one source of truth._

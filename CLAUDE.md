@@ -33,23 +33,23 @@ Nova Valet — a **single-tenant** mobile car-valeting booking site. One busines
 
 ## Core invariants (never violate)
 
-1. **Slot reserve-then-confirm on deposit**: reserving a slot creates a **hold with a TTL**. The booking **confirms only on Stripe success**; the hold is **released on abandon or expiry**.
+1. **Slot reserve-then-confirm on deposit**: reserving a slot creates a **hold with a TTL**. The booking **confirms only on a provider-verified deposit**; the hold is **released on abandon or expiry**.
 2. **No double-booking**: enforced by a DB **uniqueness constraint** plus an **atomic** state transition. Never rely on app-level checks alone.
-3. **No confirmation without a Stripe-verified deposit.** A booking is never `confirmed` unless Stripe has verified the deposit payment.
+3. **No confirmation without a provider-verified deposit.** A booking is never `confirmed` unless the payment provider (Mollie or Stripe) has verified the deposit payment.
 4. **Flat, non-refundable deposit.**
 5. **Free reschedule only before the cutoff.** After the cutoff, no free reschedule.
 6. **Guest-only identity**: token identity via **magic link**, plus **reference + contact** as fallback lookup. No passworded customer accounts.
-7. **Money truth is Stripe.** The local payment table only **mirrors webhooks** — it is never the source of truth and is never written ahead of Stripe.
+7. **Money truth is the payment provider (Mollie or Stripe).** The local payment table only **mirrors provider events** — it is never the source of truth and is never written ahead of the provider.
 
 ## Engineering Standards (merge gate)
 
 `docs/engineering-standards.md` is the **canonical quality bar every change is measured against** — the security bar, the performance bar, and the Definition of Done. Point at that file; do not duplicate its bars here.
 
 The **six non-negotiables (the spine)**, verbatim:
-- Parse, don't trust. Every boundary — route handler, server action, Stripe webhook, env var — validates input against a Zod schema before use. A cast is not a parse.
-- One source of truth per fact. A shape is defined once (Zod) and derived everywhere. Money truth is Stripe; the payment table mirrors webhooks only. Config constants live in one module.
+- Parse, don't trust. Every boundary — route handler, server action, payment-provider callback (Stripe webhook / Mollie notify), env var — validates input against a Zod schema before use. A cast is not a parse.
+- One source of truth per fact. A shape is defined once (Zod) and derived everywhere. Money truth is the payment provider (Mollie or Stripe); the payment table mirrors provider events only. Config constants live in one module.
 - The test fails first. No implementation before a test that fails without it.
-- No silent state change. Every booking and slot transition is explicit, attributed where an actor exists, and recorded. No slot moves to booked without a Stripe-verified deposit.
+- No silent state change. Every booking and slot transition is explicit, attributed where an actor exists, and recorded. No slot moves to booked without a provider-verified deposit.
 - Layers don't leak. A route handler holds no business logic; a component holds no data-fetching or SQL; Supabase is reached through a data-access layer, never from a component.
 - The machine enforces what it can. Lint, tsconfig, and DB constraints are law; the prose is the reasoning.
 
