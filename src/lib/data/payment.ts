@@ -16,12 +16,13 @@ export async function recordInitiatedPayment(
     providerPaymentId: string;
     amountCents: number;
     status?: string;
+    checkoutUrl?: string;
   },
 ): Promise<void> {
   await db.query(
     `insert into payment (
-       booking_id, kind, provider, provider_payment_id, method, amount_cents, status
-     ) values ($1, $2::payment_kind, $3::payment_provider, $4, $5::payment_method, $6, $7)`,
+       booking_id, kind, provider, provider_payment_id, method, amount_cents, status, checkout_url
+     ) values ($1, $2::payment_kind, $3::payment_provider, $4, $5::payment_method, $6, $7, $8)`,
     [
       p.bookingId,
       p.kind,
@@ -30,8 +31,35 @@ export async function recordInitiatedPayment(
       p.method,
       p.amountCents,
       p.status ?? 'open',
+      p.checkoutUrl ?? null,
     ],
   );
+}
+
+/**
+ * An already-open checkout for this booking + kind, if any. Used to REUSE an
+ * in-flight checkout instead of creating a second one (double-payment guard).
+ */
+export async function findOpenPayment(
+  db: Queryable,
+  bookingId: string,
+  kind: PaymentKind,
+): Promise<{ providerPaymentId: string; checkoutUrl: string } | null> {
+  const { rows } = await db.query<{
+    provider_payment_id: string;
+    checkout_url: string | null;
+  }>(
+    `select provider_payment_id, checkout_url from payment
+     where booking_id = $1 and kind = $2::payment_kind and status = 'open'
+       and checkout_url is not null
+     order by created_at desc
+     limit 1`,
+    [bookingId, kind],
+  );
+  const r = rows[0];
+  return r && r.checkout_url
+    ? { providerPaymentId: r.provider_payment_id, checkoutUrl: r.checkout_url }
+    : null;
 }
 
 export type ConfirmResult = {
@@ -83,24 +111,43 @@ export async function confirmPayment(
 
     const { booking_id: bookingId, kind } = claim.rows[0];
 
+    let bookingUpdated = false;
     if (kind === 'deposit') {
       // Confirm only if still awaiting deposit; book the slot only if still held.
-      await db.query(
+      const upd = await db.query<{ id: string }>(
         `update booking set status = 'confirmed', deposit_paid_at = now()
-         where id = $1 and status = 'pending_deposit'`,
+         where id = $1 and status = 'pending_deposit' returning id`,
         [bookingId],
       );
-      await db.query(
-        `update slot set status = 'booked'
-         where booking_id = $1 and status = 'held'`,
-        [bookingId],
-      );
+      bookingUpdated = upd.rows.length > 0;
+      if (bookingUpdated) {
+        await db.query(
+          `update slot set status = 'booked'
+           where booking_id = $1 and status = 'held'`,
+          [bookingId],
+        );
+      }
     } else {
-      await db.query(
+      const upd = await db.query<{ id: string }>(
         `update booking set balance_paid_at = now()
-         where id = $1 and balance_paid_at is null`,
+         where id = $1 and balance_paid_at is null returning id`,
         [bookingId],
       );
+      bookingUpdated = upd.rows.length > 0;
+    }
+
+    if (!bookingUpdated) {
+      // Paid, but the booking can't accept it: a duplicate (already paid by
+      // another payment) or a late payment after the hold expired. Do NOT
+      // confirm/double-apply — flag the captured money for refund so it's
+      // surfaced, never silently kept. (No refund hell.)
+      await db.query(
+        `update payment set status = 'refund_due'
+         where provider = $1::payment_provider and provider_payment_id = $2`,
+        [id.provider, id.providerPaymentId],
+      );
+      await db.query('commit');
+      return { applied: false, kind, bookingId, reason: 'refund_due' };
     }
 
     await db.query('commit');

@@ -241,24 +241,18 @@ export default async function BookingPendingPage({
         </>
       )}
 
-      {/* ===== CONFIRMED: balance due ===== */}
+      {/* ===== CONFIRMED: balance due (info only — paying it lives in the B5
+           booking view; no picker here) ===== */}
       {balanceDue && (
-        <>
-          <div style={card}>
-            <div style={{ ...row, fontWeight: 600 }}>
-              <span>{tp('balanceTitle')}</span>
-              <span className="nv-mono">{money(booking.balanceCents)}</span>
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
-              {tp('balanceSub')}
-            </div>
+        <div style={card}>
+          <div style={{ ...row, fontWeight: 600 }}>
+            <span>{tp('balanceTitle')}</span>
+            <span className="nv-mono">{money(booking.balanceCents)}</span>
           </div>
-          <PaymentPicker
-            reference={booking.reference}
-            locale={locale}
-            kind="balance"
-          />
-        </>
+          <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+            {tp('balanceSub')}
+          </div>
+        </div>
       )}
 
       {/* ===== CONFIRMED: fully paid ===== */}

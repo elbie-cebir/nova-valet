@@ -137,6 +137,8 @@
   "Checkout": {
     "chooseMethod": "Kies hoe u betaalt",
     "card": "Kaart",
+    "bancontactSub": "Belgische bankkaart",
+    "cardSub": "Visa, Mastercard en meer",
     "redirecting": "Doorsturen naar beveiligde betaling…",
     "methodsNote": "Kaart via Stripe · Bancontact via Mollie",
     "error": "Betaling kon niet starten. Probeer opnieuw.",

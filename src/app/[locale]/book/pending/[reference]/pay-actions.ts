@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { getDb } from '@/lib/data/db.server';
 import { getBookingByReference } from '@/lib/data/booking';
-import { recordInitiatedPayment } from '@/lib/data/payment';
+import { recordInitiatedPayment, findOpenPayment } from '@/lib/data/payment';
 import { gatewayFor, providerFor } from '@/lib/payments/gateway';
 
 const inputSchema = z.object({
@@ -60,6 +60,13 @@ export async function startPaymentAction(
     return { ok: false, reason: 'bad_state' };
   }
 
+  // Double-payment guard: if a checkout is already open for this booking + kind,
+  // reuse it instead of creating a second one (double-click, refresh, 2nd tab).
+  const existing = await findOpenPayment(db, booking.id, kind);
+  if (existing) {
+    return { ok: true, checkoutUrl: existing.checkoutUrl };
+  }
+
   const provider = providerFor(method);
   const gateway = gatewayFor(method);
   const amountCents =
@@ -85,6 +92,7 @@ export async function startPaymentAction(
       providerPaymentId: checkout.providerPaymentId,
       amountCents,
       status: 'open',
+      checkoutUrl: checkout.checkoutUrl,
     });
     return { ok: true, checkoutUrl: checkout.checkoutUrl };
   } catch {
