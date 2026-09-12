@@ -285,7 +285,7 @@
     "tConfirm": "Dag {name}, dit is Nova Valet over uw boeking {ref} op {slot} te {addr}. Het openstaande saldo van {bal} kan u online betalen via uw link. Tot dan!",
     "tReminder": "Dag {name}, een herinnering van Nova Valet: {slot} komen we langs op {addr} voor uw {service}. Zorg dat de wagen bereikbaar is. Tot binnenkort!",
     "tBalance": "Dag {name}, het saldo van {bal} voor boeking {ref} staat nog open. U kan het online betalen via uw link. Bedankt!",
-    "tOnWay": "Dag {name}, Nova Valet is onderweg naar {addr}. Tot zo!",
+    "tOnWay": "Dag {name}, Nova Valet is onderweg naar {addr}. Zorg dat de wagen bereikbaar is en de sleutels klaarliggen. Tot zo!",
     "tConfirmPaid": "Dag {name}, dit is Nova Valet over uw boeking {ref} op {slot} te {addr}. Alles is betaald — tot dan!"
   },
   "Manage": {

@@ -17,9 +17,18 @@ export const HELLO_WORLD: WhatsAppTemplateMessage = {
   params: [],
 };
 
-/** Booking locale (nl/en/fr) → WhatsApp template language code. */
-export function localeToWaLang(locale: string): string {
-  const map: Record<string, string> = { nl: 'nl', en: 'en', fr: 'fr' };
+/**
+ * Booking locale → WhatsApp template language code. Emits EXACTLY `en` / `nl` /
+ * `fr` — the language codes the templates were submitted under in Meta (never a
+ * regional variant like `en_US`, which would be "template not found"). Unknown
+ * locales fall back to `en`.
+ */
+export function localeToWaLang(locale: string): 'en' | 'nl' | 'fr' {
+  const map: Record<string, 'en' | 'nl' | 'fr'> = {
+    nl: 'nl',
+    en: 'en',
+    fr: 'fr',
+  };
   return map[locale] ?? 'en';
 }
 
