@@ -166,8 +166,9 @@ export default async function AdminBookingDetailPage({
           display: 'flex',
           flexDirection: 'column',
           gap: 14,
-          maxWidth: 1120,
+          maxWidth: 1040,
           width: '100%',
+          margin: '0 auto',
         }}
       >
         <div style={{ ...rowSB, alignItems: 'center' }}>
