@@ -1,0 +1,53 @@
+import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+/**
+ * Locale grep: the B2 screens must not carry hardcoded display copy — every
+ * user-visible string comes from next-intl `t()`. This scans each file for raw
+ * JSX text nodes (alphabetic runs sitting directly between `>` and `<`, i.e.
+ * not inside a `{...}` expression) and fails if any survive.
+ *
+ * Allowlist: the product wordmark, a proper noun deliberately not localized.
+ */
+const ROOT = process.cwd();
+const FILES = [
+  'src/app/[locale]/page.tsx',
+  'src/app/[locale]/services/page.tsx',
+  'src/app/[locale]/prices/page.tsx',
+  'src/components/site-header.tsx',
+  'src/components/locale-switcher.tsx',
+];
+
+const ALLOWLIST = new Set(['Nova&nbsp;Valet']);
+
+function stripComments(src: string): string {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, '') // block comments
+    .replace(/(^|[^:])\/\/.*$/gm, '$1'); // line comments (leave URLs' `://`)
+}
+
+function rawTextNodes(src: string): string[] {
+  const clean = stripComments(src);
+  // Text between a tag close `>` and the next tag open `<`, containing letters.
+  // The excluded char class drops `{}` (so `{t(...)}` expressions don't count)
+  // and code punctuation `:;=()` (so TS generics like `Promise<{x: string}>`
+  // and arrow fns `() =>` between angle brackets aren't mistaken for copy).
+  const re = />([^<>{}:;=()]*[A-Za-z]{2,}[^<>{}:;=()]*)</g;
+  const hits: string[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(clean))) {
+    const text = m[1].trim();
+    if (text && !ALLOWLIST.has(text)) hits.push(text);
+  }
+  return hits;
+}
+
+describe('B2 screens have no hardcoded display copy', () => {
+  for (const rel of FILES) {
+    it(`${rel} routes all copy through i18n`, () => {
+      const src = readFileSync(join(ROOT, rel), 'utf8');
+      expect(rawTextNodes(src)).toEqual([]);
+    });
+  }
+});

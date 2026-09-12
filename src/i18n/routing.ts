@@ -5,6 +5,13 @@ export const defaultLocale = 'nl' as const;
 
 export type Locale = (typeof locales)[number];
 
+/** BCP-47 regional tags per locale, used for number/currency/date formatting. */
+export const LOCALES: Record<Locale, string> = {
+  nl: 'nl-BE',
+  en: 'en-GB',
+  fr: 'fr-BE',
+};
+
 export const routing = defineRouting({
   locales,
   defaultLocale,

@@ -1,0 +1,57 @@
+/* Nova Valet design tokens — sourced from the Novavale POC visual reference. */
+:root {
+  --nv-bg: #0b0c0a;
+  --nv-bg-page: #07080a;
+  --nv-ink: #f2f1ec;
+  --nv-muted: #a6a39a;
+  --nv-faint: #6f6d66;
+  --nv-lime: #d6f04d;
+  --nv-wa: #25d366;
+  --nv-warn: #f5c08a;
+  --nv-err: #ff8a7e;
+  --nv-surface: rgba(255, 255, 255, 0.05);
+  --nv-surface-2: rgba(255, 255, 255, 0.07);
+  --nv-border: rgba(255, 255, 255, 0.1);
+  --nv-border-strong: rgba(255, 255, 255, 0.16);
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--nv-bg);
+  color: var(--nv-ink);
+  font-family: var(--font-body);
+}
+
+a {
+  color: var(--nv-ink);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--nv-lime);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.nv-mono {
+  font-family: var(--font-mono);
+}

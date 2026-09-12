@@ -1,5 +1,68 @@
 {
   "Home": {
-    "tagline": "Professionele mobiele autopoets, bij u aan huis geboekt."
+    "tagline": "Professionele mobiele autopoets, bij u aan huis geboekt.",
+    "heroKicker": "Mobiele car valeting · Wij komen naar u",
+    "heroTitle": "Uw auto, onberispelijk. Aan uw deur.",
+    "heroSub": "Kies een tijdslot van 2 uur, betaal een klein voorschot om het vast te leggen en betaal het saldo online. Bij u thuis of op het werk.",
+    "viewServices": "Bekijk diensten",
+    "viewPrices": "Prijzen per wagengrootte"
+  },
+  "Nav": {
+    "services": "Diensten",
+    "prices": "Prijzen",
+    "myBooking": "Mijn boeking",
+    "bookNow": "Nu boeken"
+  },
+  "Services": {
+    "title": "Diensten",
+    "subtitle": "Elke dienst neemt één slot van 2 uur. Prijzen hangen af van de wagengrootte.",
+    "from": "vanaf",
+    "book": "Boek",
+    "mostBooked": "Meest geboekt",
+    "addons": "Extra’s",
+    "addonNote": "[lijst extra’s is illustratief · klant bevestigt]"
+  },
+  "Prices": {
+    "title": "Prijzen",
+    "subtitle": "Kies uw wagengrootte. De prijs die u ziet is de prijs die u betaalt, plus eventuele verplaatsingskost.",
+    "slot2h": "slot van 2 uur",
+    "depositAt": "Voorschot bij boeking",
+    "flat": "vast",
+    "travelFee": "Verplaatsingskost",
+    "byPostcode": "per postcode",
+    "balance": "Saldo",
+    "balanceOnline": "online, tot op de dag",
+    "note": "Het voorschot is niet terugbetaalbaar. Verzetten is gratis tot 24u voor uw slot.",
+    "bookFor": "Boek voor"
+  },
+  "Tiers": {
+    "small": { "label": "Klein", "desc": "stadswagen" },
+    "medium": { "label": "Middel", "desc": "hatchback / sedan" },
+    "large": { "label": "Groot", "desc": "SUV / break" },
+    "van": { "label": "Bestelwagen", "desc": "MPV / bestelwagen" }
+  },
+  "Catalog": {
+    "interior": {
+      "name": "Enkel interieur",
+      "desc": "Stofzuigen · zetels & bekleding · dashboard · binnenruiten"
+    },
+    "exterior": {
+      "name": "Enkel exterieur",
+      "desc": "Handwas · velgen · buitenruiten · bandenglans"
+    },
+    "both": {
+      "name": "Interieur + exterieur",
+      "desc": "Alles uit beide pakketten, in één bezoek."
+    },
+    "full": {
+      "name": "Volledige detailing",
+      "desc": "Dieptereiniging · lakdecontaminatie · polish · bescherming · [scope te bevestigen]"
+    }
+  },
+  "AddOns": {
+    "pet_hair": "Dierenhaar verwijderen",
+    "odour": "Geurbehandeling",
+    "leather": "Lederverzorging",
+    "engine": "Motorruimte reinigen"
   }
 }

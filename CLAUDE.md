@@ -75,4 +75,6 @@ The full per-area **playbooks** (coding conventions, how code is written) are au
 
 ## Current state
 
-- **B0 complete.** Next.js App Router + TS scaffold, Supabase server/client helpers, next-intl (nl/en/fr) routing, `.env.example`, Vitest runner. Nothing from B1+ started.
+- **B0 complete.** Next.js App Router + TS scaffold, Supabase server/client helpers, next-intl (nl/en/fr) routing, `.env.example`, Vitest runner.
+- **B1 complete.** Postgres schema (migrations in `supabase/migrations`), integer-cents money, `payment` provider/method enums, no-double-booking partial unique index, config constants (`src/config/constants.ts`), placeholder seed. Tested via PGlite.
+- **B2 complete.** Catalog + availability read surfaces. Data-access layer in `src/lib/data/` (all functions take a `Queryable`, tested via PGlite): catalog, `getAvailableSlots` (open-only), `getTravelFee`. Services + Prices screens (`/[locale]/services`, `/[locale]/prices`) built to the Novavale POC design (dark/lime, Space Grotesk/Public Sans/JetBrains Mono), server-first (prices tier via `?size=`), price-by-tier from the `price` table, localized nl/en/fr. **B2 reads from a local seeded PGlite instance** (`src/lib/data/db.server.ts`) — swapping to the real Supabase Postgres is a later env-driven step; DAL callers won't change. First parse boundary added (`?size` via Zod). Nothing from B3+ started.

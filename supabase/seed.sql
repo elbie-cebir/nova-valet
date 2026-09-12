@@ -1,42 +1,56 @@
--- B1 seed — PLACEHOLDER DATA ONLY.
+-- B1/B2 seed — PLACEHOLDER DATA ONLY.
 -- Every amount and postcode below is a placeholder for local development and
 -- tests; none are real Nova Valet prices or service areas. Client to confirm
 -- real values later. Human-facing strings are i18n KEYS only, never literal
--- copy — the message catalogues resolve them per locale.
+-- copy — the next-intl message catalogues resolve them per locale.
+--
+-- The catalog shape (4 services, 4 vehicle tiers, 4 add-ons) mirrors the
+-- Novavale POC so the catalog/pricing screens match the design reference.
 
 -- Services -------------------------------------------------------------------
 insert into service (key, name_key, description_key, active) values
-  ('exterior_wash', 'service.exterior_wash.name', 'service.exterior_wash.desc', true),
-  ('full_valet',    'service.full_valet.name',    'service.full_valet.desc',    true),
-  ('interior_detail','service.interior_detail.name','service.interior_detail.desc', true);
+  ('interior', 'Catalog.interior.name', 'Catalog.interior.desc', true),
+  ('exterior', 'Catalog.exterior.name', 'Catalog.exterior.desc', true),
+  ('both',     'Catalog.both.name',     'Catalog.both.desc',     true),
+  ('full',     'Catalog.full.name',     'Catalog.full.desc',     true);
 
 -- Vehicle size tiers ---------------------------------------------------------
 insert into vehicle_size_tier (key, label_key, sort_order) values
-  ('small',  'tier.small.label',  1),
-  ('medium', 'tier.medium.label', 2),
-  ('large',  'tier.large.label',  3);
+  ('small',  'Tiers.small.label',  1),
+  ('medium', 'Tiers.medium.label', 2),
+  ('large',  'Tiers.large.label',  3),
+  ('van',    'Tiers.van.label',    4);
 
 -- Price matrix (service x tier) — PLACEHOLDER amounts in cents ---------------
 insert into price (service_id, vehicle_size_tier_id, amount_cents, currency)
 select s.id, t.id, p.amount_cents, 'EUR'
 from (values
-  ('exterior_wash',  'small',  4500),
-  ('exterior_wash',  'medium', 5500),
-  ('exterior_wash',  'large',  6500),
-  ('full_valet',     'small',  9500),
-  ('full_valet',     'medium', 11500),
-  ('full_valet',     'large',  13500),
-  ('interior_detail','small',  7500),
-  ('interior_detail','medium', 8500),
-  ('interior_detail','large',  9500)
+  ('interior', 'small',  3500),
+  ('interior', 'medium', 4500),
+  ('interior', 'large',  5500),
+  ('interior', 'van',    6500),
+  ('exterior', 'small',  3000),
+  ('exterior', 'medium', 4000),
+  ('exterior', 'large',  5000),
+  ('exterior', 'van',    6000),
+  ('both',     'small',  6000),
+  ('both',     'medium', 7500),
+  ('both',     'large',  9000),
+  ('both',     'van',    10500),
+  ('full',     'small',  12000),
+  ('full',     'medium', 14000),
+  ('full',     'large',  16000),
+  ('full',     'van',    18000)
 ) as p (service_key, tier_key, amount_cents)
 join service s on s.key = p.service_key
 join vehicle_size_tier t on t.key = p.tier_key;
 
 -- Add-ons — PLACEHOLDER amounts ---------------------------------------------
 insert into add_on (key, name_key, amount_cents, active) values
-  ('pet_hair_removal', 'addon.pet_hair_removal.name', 2000, true),
-  ('wax_seal',         'addon.wax_seal.name',         3000, true);
+  ('pet_hair', 'AddOns.pet_hair', 2000, true),
+  ('odour',    'AddOns.odour',    2500, true),
+  ('leather',  'AddOns.leather',  3000, true),
+  ('engine',   'AddOns.engine',   3500, true);
 
 -- Postcode areas — PLACEHOLDER prefixes / travel fees ------------------------
 insert into postcode_area (prefix, travel_fee_cents, in_area) values

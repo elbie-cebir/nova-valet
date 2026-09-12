@@ -1,30 +1,28 @@
 import { PGlite } from '@electric-sql/pglite';
-import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-
-const ROOT = process.cwd();
-const MIGRATIONS_DIR = join(ROOT, 'supabase', 'migrations');
-const SEED_FILE = join(ROOT, 'supabase', 'seed.sql');
+import { applyMigrations, applySeed } from '@/lib/data/migrate';
 
 /**
- * Spin up a fresh in-process Postgres (PGlite) and apply every migration in
- * order. This is the real Postgres engine, so enums, checks and partial
- * unique indexes behave exactly as they will on Supabase.
+ * Spin up a fresh in-process Postgres (PGlite) with every migration applied.
+ * This is the real Postgres engine, so enums, checks and partial unique
+ * indexes behave exactly as they will on Supabase. Uses the same migration
+ * loader the app uses, so tests and runtime never drift.
  */
 export async function freshDb(): Promise<PGlite> {
   const db = new PGlite();
-  const files = readdirSync(MIGRATIONS_DIR)
-    .filter((f) => f.endsWith('.sql'))
-    .sort();
-  for (const file of files) {
-    await db.exec(readFileSync(join(MIGRATIONS_DIR, file), 'utf8'));
-  }
+  await applyMigrations(db);
   return db;
 }
 
 /** Load the placeholder seed into an already-migrated database. */
 export async function loadSeed(db: PGlite): Promise<void> {
-  await db.exec(readFileSync(SEED_FILE, 'utf8'));
+  await applySeed(db);
+}
+
+/** Fresh database with migrations AND seed applied. */
+export async function freshSeededDb(): Promise<PGlite> {
+  const db = new PGlite();
+  await applyMigrations(db, { seed: true });
+  return db;
 }
 
 /**

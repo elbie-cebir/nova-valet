@@ -1,5 +1,68 @@
 {
   "Home": {
-    "tagline": "Nettoyage automobile mobile professionnel, réservé à votre porte."
+    "tagline": "Nettoyage automobile mobile professionnel, réservé à votre porte.",
+    "heroKicker": "Valeting mobile · Nous venons à vous",
+    "heroTitle": "Votre voiture, impeccable. Devant chez vous.",
+    "heroSub": "Réservez un créneau de 2 heures, bloquez-le avec un petit acompte et payez le solde en ligne. À domicile ou au travail.",
+    "viewServices": "Voir les services",
+    "viewPrices": "Tarifs par taille de véhicule"
+  },
+  "Nav": {
+    "services": "Services",
+    "prices": "Tarifs",
+    "myBooking": "Ma réservation",
+    "bookNow": "Réserver"
+  },
+  "Services": {
+    "title": "Services",
+    "subtitle": "Chaque service occupe un créneau de 2 heures. Les prix dépendent de la taille du véhicule.",
+    "from": "dès",
+    "book": "Réserver",
+    "mostBooked": "Le plus réservé",
+    "addons": "Options",
+    "addonNote": "[liste d’options indicative · client à confirmer]"
+  },
+  "Prices": {
+    "title": "Tarifs",
+    "subtitle": "Choisissez votre taille de véhicule. Le prix affiché est le prix payé, plus les éventuels frais de déplacement.",
+    "slot2h": "créneau de 2h",
+    "depositAt": "Acompte à la réservation",
+    "flat": "fixe",
+    "travelFee": "Frais de déplacement",
+    "byPostcode": "par code postal",
+    "balance": "Solde",
+    "balanceOnline": "en ligne, jusqu’au jour même",
+    "note": "L’acompte n’est pas remboursable. Le report est gratuit jusqu’à 24h avant votre créneau.",
+    "bookFor": "Réserver pour"
+  },
+  "Tiers": {
+    "small": { "label": "Petite", "desc": "citadine" },
+    "medium": { "label": "Moyenne", "desc": "compacte / berline" },
+    "large": { "label": "Grande", "desc": "SUV / break" },
+    "van": { "label": "Utilitaire", "desc": "monospace / utilitaire" }
+  },
+  "Catalog": {
+    "interior": {
+      "name": "Intérieur seul",
+      "desc": "Aspiration · sièges & tissus · tableau de bord · vitres intérieures"
+    },
+    "exterior": {
+      "name": "Extérieur seul",
+      "desc": "Lavage à la main · jantes · vitres extérieures · brillant pneus"
+    },
+    "both": {
+      "name": "Intérieur + extérieur",
+      "desc": "Tout des deux formules, en une visite."
+    },
+    "full": {
+      "name": "Detailing complet",
+      "desc": "Nettoyage en profondeur · décontamination · polish · protection · [périmètre à confirmer]"
+    }
+  },
+  "AddOns": {
+    "pet_hair": "Poils d’animaux",
+    "odour": "Traitement des odeurs",
+    "leather": "Soin du cuir",
+    "engine": "Nettoyage moteur"
   }
 }
