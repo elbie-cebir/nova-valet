@@ -57,3 +57,15 @@ insert into postcode_area (prefix, travel_fee_cents, in_area) values
   ('1000', 0,    true),   -- placeholder: base area, no travel fee
   ('9000', 1500, true),   -- placeholder: outer area, travel fee applies
   ('2000', 0,    false);  -- placeholder: out of service area
+
+-- Open slots — generated relative to now so the date/time step always has
+-- upcoming availability in dev. Four 2-hour slots per day (09/11/13/15) for
+-- the next 7 days. PLACEHOLDER schedule; the owner defines real slots (B6).
+insert into slot (start_at, end_at, status)
+select gs, gs + interval '2 hours', 'open'
+from generate_series(
+  date_trunc('day', now()) + interval '1 day' + interval '9 hours',
+  date_trunc('day', now()) + interval '7 days' + interval '15 hours',
+  interval '2 hours'
+) as gs
+where extract(hour from gs) in (9, 11, 13, 15);

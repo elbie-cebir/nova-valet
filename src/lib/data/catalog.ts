@@ -103,6 +103,33 @@ export async function getServicePricesForTier(
   }));
 }
 
+/** Every service × tier price, for the booking flow's live price display. */
+export async function getPriceMatrix(db: Queryable): Promise<
+  {
+    serviceId: string;
+    sizeKey: string;
+    amountCents: number;
+    currency: string;
+  }[]
+> {
+  const { rows } = await db.query<{
+    service_id: string;
+    size_key: string;
+    amount_cents: number;
+    currency: string;
+  }>(
+    `select p.service_id, t.key as size_key, p.amount_cents, p.currency
+     from price p
+     join vehicle_size_tier t on t.id = p.vehicle_size_tier_id`,
+  );
+  return rows.map((r) => ({
+    serviceId: r.service_id,
+    sizeKey: r.size_key,
+    amountCents: Number(r.amount_cents),
+    currency: r.currency,
+  }));
+}
+
 /** Vehicle-size tiers in display order. */
 export async function getTiers(db: Queryable): Promise<Tier[]> {
   const { rows } = await db.query<{

@@ -80,7 +80,7 @@ export function SiteHeader() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <LocaleSwitcher />
           <Link
-            href="/services"
+            href="/book"
             style={{
               height: 40,
               display: 'inline-flex',

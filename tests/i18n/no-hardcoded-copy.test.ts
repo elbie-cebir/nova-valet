@@ -17,6 +17,9 @@ const FILES = [
   'src/app/[locale]/prices/page.tsx',
   'src/components/site-header.tsx',
   'src/components/locale-switcher.tsx',
+  'src/components/booking/booking-flow.tsx',
+  'src/app/[locale]/book/page.tsx',
+  'src/app/[locale]/book/pending/[reference]/page.tsx',
 ];
 
 const ALLOWLIST = new Set(['Nova&nbsp;Valet']);

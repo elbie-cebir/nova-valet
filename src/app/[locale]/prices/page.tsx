@@ -180,7 +180,7 @@ export default async function PricesPage({
       </div>
 
       <Link
-        href="/services"
+        href="/book"
         style={{
           height: 54,
           display: 'inline-flex',

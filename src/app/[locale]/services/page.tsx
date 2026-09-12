@@ -120,7 +120,7 @@ export default async function ServicesPage({
               {tc(s.descriptionKey)}
             </div>
             <Link
-              href="/prices"
+              href="/book"
               style={{
                 alignSelf: 'flex-start',
                 height: 44,
