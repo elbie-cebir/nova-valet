@@ -3,6 +3,8 @@ import type { Queryable } from '@/lib/data/types';
 import { getBookingContact } from '@/lib/data/booking';
 import { issueMagicLink } from '@/lib/data/token';
 import { sendEmail, type EmailResult } from './email';
+import { notifyBookingConfirmed } from './whatsapp';
+import type { WhatsAppSendResult } from '@/lib/whatsapp/types';
 import { bookingUrl } from '@/lib/url';
 
 /** Compose + send the localized confirmation email carrying the magic link. */
@@ -46,7 +48,11 @@ export async function onDepositConfirmed(
   db: Queryable,
   bookingId: string,
   deps: ConfirmNotifyDeps = defaultDeps,
-): Promise<{ emailed: boolean; url: string } | null> {
+): Promise<{
+  emailed: boolean;
+  url: string;
+  whatsapp?: WhatsAppSendResult;
+} | null> {
   const contact = await getBookingContact(db, bookingId);
   if (!contact) return null;
   const raw = await deps.issue(db, bookingId, 90);
@@ -57,5 +63,14 @@ export async function onDepositConfirmed(
     reference: contact.reference,
     magicLinkUrl: url,
   });
-  return { emailed: result.sent, url };
+  // Email is the record + magic-link carrier; WhatsApp confirmation runs in
+  // parallel and only actually sends when the businessApi adapter is active.
+  // Failure-safe: it never throws, so a verified confirm is never broken.
+  const whatsapp = await notifyBookingConfirmed(db, bookingId).catch(
+    (e): WhatsAppSendResult => ({
+      sent: false,
+      error: e instanceof Error ? e.message : String(e),
+    }),
+  );
+  return { emailed: result.sent, url, whatsapp };
 }

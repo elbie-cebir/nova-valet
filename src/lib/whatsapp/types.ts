@@ -1,29 +1,44 @@
 /**
  * The ONE WhatsApp interface, with two adapters behind it:
- *  - `manual`     — live now. Produces `wa.me` tap links for the owner; no
- *                   messages are ever sent programmatically.
- *  - `businessApi`— base layer only, config-gated, OFF until WABA approval.
- *                   `send()` exists as a seam but is not wired.
- *
- * A message targets a phone number and carries a ready-to-send body.
+ *  - `manual`     — live. Produces `wa.me` tap links for the owner; never sends
+ *                   programmatically (`send()` reports skipped).
+ *  - `businessApi`— Cloud API. `send()` posts a template message via the Graph
+ *                   API. Config-gated: only sends when credentials are present.
  */
+
+/** A free-text message target — used for `wa.me` tap links. */
 export interface WhatsAppMessage {
   toPhone: string;
   body: string;
+}
+
+/**
+ * A Cloud API template message: a pre-approved template name, its language, and
+ * ordered body parameters. Business-initiated sends outside the 24h window must
+ * be templates (Meta rule).
+ */
+export interface WhatsAppTemplateMessage {
+  toPhone: string;
+  template: string;
+  languageCode: string;
+  params?: string[];
+}
+
+/** Result of a send attempt. Never thrown — always returned, so a send failure
+ * can never break a verified confirm (same discipline as the email seam). */
+export interface WhatsAppSendResult {
+  sent: boolean;
+  id?: string;
+  error?: string;
+  skipped?: boolean;
 }
 
 export interface WhatsAppAdapter {
   readonly name: 'manual' | 'businessApi';
   /** Whether this adapter is enabled in the current environment. */
   readonly enabled: boolean;
-  /**
-   * A `wa.me` tap link for the owner, or null if no valid number. The manual
-   * adapter's whole job; the businessApi adapter also exposes it for fallback.
-   */
+  /** A `wa.me` tap link for the owner, or null if there is no valid number. */
   buildLink(msg: WhatsAppMessage): string | null;
-  /**
-   * Programmatic send. Implemented only by a live businessApi adapter; the
-   * manual adapter throws (there is nothing to send — the owner taps a link).
-   */
-  send(msg: WhatsAppMessage): Promise<void>;
+  /** Send a template message. Manual reports skipped; businessApi posts to Graph. */
+  send(msg: WhatsAppTemplateMessage): Promise<WhatsAppSendResult>;
 }

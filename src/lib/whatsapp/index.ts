@@ -2,9 +2,15 @@ import type { WhatsAppAdapter } from './types';
 import { manualAdapter } from './manual';
 import { businessApiAdapter } from './business-api';
 
-export type { WhatsAppAdapter, WhatsAppMessage } from './types';
+export type {
+  WhatsAppAdapter,
+  WhatsAppMessage,
+  WhatsAppTemplateMessage,
+  WhatsAppSendResult,
+} from './types';
 export { buildWaLink, normalizeWaNumber } from './link';
 export { manualAdapter } from './manual';
+export { businessApiAdapter } from './business-api';
 
 /**
  * Select the active adapter from `WHATSAPP_ADAPTER`. Defaults to `manual` (live).

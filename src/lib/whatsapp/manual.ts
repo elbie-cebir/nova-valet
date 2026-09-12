@@ -1,9 +1,14 @@
-import type { WhatsAppAdapter, WhatsAppMessage } from './types';
+import type {
+  WhatsAppAdapter,
+  WhatsAppMessage,
+  WhatsAppSendResult,
+} from './types';
 import { buildWaLink } from './link';
 
 /**
- * The live adapter. It never sends anything — it only builds a `wa.me` tap link
- * for the owner to open. Always enabled.
+ * The manual adapter. It never sends anything programmatically — it only builds
+ * a `wa.me` tap link for the owner. `send()` reports skipped (owner-tap is the
+ * delivery mechanism), never throwing.
  */
 export const manualAdapter: WhatsAppAdapter = {
   name: 'manual',
@@ -11,9 +16,7 @@ export const manualAdapter: WhatsAppAdapter = {
   buildLink(msg: WhatsAppMessage): string | null {
     return buildWaLink(msg);
   },
-  async send(): Promise<void> {
-    throw new Error(
-      'whatsapp: manual adapter cannot send — the owner taps a wa.me link',
-    );
+  async send(): Promise<WhatsAppSendResult> {
+    return { sent: false, skipped: true };
   },
 };
