@@ -10,9 +10,11 @@ import { buildWaLink } from './link';
  */
 export const businessApiAdapter: WhatsAppAdapter = {
   name: 'businessApi',
+  // Standard WhatsApp Cloud API env names. Gate stays closed until BOTH the
+  // access token and phone-number id are set (send() is still not wired —
+  // activation lands in the B7 build step).
   enabled: Boolean(
-    process.env.WHATSAPP_BUSINESS_API_TOKEN &&
-    process.env.WHATSAPP_BUSINESS_PHONE_NUMBER_ID,
+    process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID,
   ),
   buildLink(msg: WhatsAppMessage): string | null {
     return buildWaLink(msg);
