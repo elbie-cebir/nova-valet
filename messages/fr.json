@@ -36,10 +36,22 @@
     "bookFor": "Réserver pour"
   },
   "Tiers": {
-    "small": { "label": "Petite", "desc": "citadine" },
-    "medium": { "label": "Moyenne", "desc": "compacte / berline" },
-    "large": { "label": "Grande", "desc": "SUV / break" },
-    "van": { "label": "Utilitaire", "desc": "monospace / utilitaire" }
+    "small": {
+      "label": "Petite",
+      "desc": "citadine"
+    },
+    "medium": {
+      "label": "Moyenne",
+      "desc": "compacte / berline"
+    },
+    "large": {
+      "label": "Grande",
+      "desc": "SUV / break"
+    },
+    "van": {
+      "label": "Utilitaire",
+      "desc": "monospace / utilitaire"
+    }
   },
   "Catalog": {
     "interior": {
@@ -177,5 +189,91 @@
     "confirmBody": "Merci — votre acompte est reçu et votre créneau est réservé. Réservation {reference}.",
     "openBooking": "Ouvrir ma réservation",
     "linkFallback": "Ou collez ce lien dans votre navigateur :"
+  },
+  "Admin": {
+    "brand": "Propriétaire",
+    "nav": {
+      "bookings": "Réservations",
+      "slots": "Créneaux",
+      "signOut": "Se déconnecter"
+    },
+    "login": {
+      "title": "Connexion propriétaire",
+      "sub": "Connectez-vous pour gérer les réservations et votre agenda.",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "error": "E-mail ou mot de passe incorrect."
+    },
+    "bookings": {
+      "title": "Réservations",
+      "empty": "Aucune réservation pour l’instant.",
+      "when": "Quand",
+      "customer": "Client",
+      "service": "Service",
+      "status": "Statut",
+      "payment": "Paiement",
+      "view": "Voir",
+      "prev": "Précédent",
+      "next": "Suivant",
+      "page": "Page {page} sur {pages}"
+    },
+    "paymentStatus": {
+      "awaiting_deposit": "En attente d’acompte",
+      "balance_outstanding": "Solde dû",
+      "fully_paid": "Entièrement payé"
+    },
+    "detail": {
+      "back": "Retour aux réservations",
+      "title": "Réservation {reference}",
+      "customer": "Client",
+      "contact": "Contact",
+      "service": "Service",
+      "when": "Quand",
+      "where": "Où",
+      "total": "Total",
+      "deposit": "Acompte",
+      "balance": "Solde",
+      "payments": "Paiements",
+      "paymentsEmpty": "Aucun paiement enregistré.",
+      "history": "Historique",
+      "historyEmpty": "Aucune action pour l’instant."
+    },
+    "actions": {
+      "title": "Actions",
+      "reschedule": "Reprogrammer",
+      "rescheduleTo": "Déplacer vers un autre créneau libre",
+      "rescheduleSubmit": "Reprogrammer",
+      "noOpenSlots": "Aucun créneau libre où déplacer.",
+      "complete": "Marquer comme terminé",
+      "cancel": "Annuler la réservation",
+      "cancelNote": "Le créneau est libéré. L’acompte n’est pas remboursable et sera perdu.",
+      "error": "Cette action n’a pas pu être appliquée."
+    },
+    "slots": {
+      "title": "Créneaux",
+      "sub": "Ouvrez des créneaux de 2 h que les clients peuvent réserver. Chacun requiert 1 h de trajet.",
+      "createTitle": "Ouvrir un créneau",
+      "start": "Début (heure de Bruxelles)",
+      "create": "Ouvrir le créneau",
+      "listTitle": "Prochains créneaux",
+      "empty": "Aucun créneau pour l’instant.",
+      "close": "Fermer",
+      "open": "Rouvrir",
+      "overlap": "Trop proche d’un autre créneau — laissez 1 h de trajet.",
+      "invalid": "Saisissez une date et une heure valides.",
+      "tag": {
+        "open": "Ouvert",
+        "held": "En attente",
+        "booked": "Réservé",
+        "closed": "Fermé"
+      }
+    },
+    "wa": {
+      "button": "Message sur WhatsApp"
+    }
+  },
+  "Wa": {
+    "message": "Bonjour {name}, ici Nova Valet au sujet de votre réservation {service} le {when} (réf {reference})."
   }
 }

@@ -21,6 +21,7 @@ describe('B1 schema + seed', () => {
         'add_on',
         'booking',
         'booking_add_on',
+        'booking_event',
         'booking_token',
         'payment',
         'postcode_area',

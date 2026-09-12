@@ -36,10 +36,22 @@
     "bookFor": "Book for"
   },
   "Tiers": {
-    "small": { "label": "Small", "desc": "city car" },
-    "medium": { "label": "Medium", "desc": "hatchback / sedan" },
-    "large": { "label": "Large", "desc": "SUV / estate" },
-    "van": { "label": "Van", "desc": "MPV / van" }
+    "small": {
+      "label": "Small",
+      "desc": "city car"
+    },
+    "medium": {
+      "label": "Medium",
+      "desc": "hatchback / sedan"
+    },
+    "large": {
+      "label": "Large",
+      "desc": "SUV / estate"
+    },
+    "van": {
+      "label": "Van",
+      "desc": "MPV / van"
+    }
   },
   "Catalog": {
     "interior": {
@@ -177,5 +189,91 @@
     "confirmBody": "Thanks — your deposit is received and your slot is booked. Booking {reference}.",
     "openBooking": "Open my booking",
     "linkFallback": "Or paste this link into your browser:"
+  },
+  "Admin": {
+    "brand": "Owner",
+    "nav": {
+      "bookings": "Bookings",
+      "slots": "Slots",
+      "signOut": "Sign out"
+    },
+    "login": {
+      "title": "Owner sign in",
+      "sub": "Sign in to manage bookings and your calendar.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "error": "Wrong email or password."
+    },
+    "bookings": {
+      "title": "Bookings",
+      "empty": "No bookings yet.",
+      "when": "When",
+      "customer": "Customer",
+      "service": "Service",
+      "status": "Status",
+      "payment": "Payment",
+      "view": "View",
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {pages}"
+    },
+    "paymentStatus": {
+      "awaiting_deposit": "Awaiting deposit",
+      "balance_outstanding": "Balance outstanding",
+      "fully_paid": "Fully paid"
+    },
+    "detail": {
+      "back": "Back to bookings",
+      "title": "Booking {reference}",
+      "customer": "Customer",
+      "contact": "Contact",
+      "service": "Service",
+      "when": "When",
+      "where": "Where",
+      "total": "Total",
+      "deposit": "Deposit",
+      "balance": "Balance",
+      "payments": "Payments",
+      "paymentsEmpty": "No payments recorded.",
+      "history": "History",
+      "historyEmpty": "No actions yet."
+    },
+    "actions": {
+      "title": "Actions",
+      "reschedule": "Reschedule",
+      "rescheduleTo": "Move to another open slot",
+      "rescheduleSubmit": "Reschedule",
+      "noOpenSlots": "No open slots to move to.",
+      "complete": "Mark completed",
+      "cancel": "Cancel booking",
+      "cancelNote": "The slot is released. The deposit is non-refundable and will be forfeited.",
+      "error": "That action couldn’t be applied."
+    },
+    "slots": {
+      "title": "Slots",
+      "sub": "Open 2-hour slots for customers to book. Each needs a 1-hour travel gap.",
+      "createTitle": "Open a slot",
+      "start": "Start (Brussels time)",
+      "create": "Open slot",
+      "listTitle": "Upcoming slots",
+      "empty": "No slots yet.",
+      "close": "Close",
+      "open": "Re-open",
+      "overlap": "Too close to another slot — leave a 1-hour travel gap.",
+      "invalid": "Enter a valid date and time.",
+      "tag": {
+        "open": "Open",
+        "held": "Held",
+        "booked": "Booked",
+        "closed": "Closed"
+      }
+    },
+    "wa": {
+      "button": "Message on WhatsApp"
+    }
+  },
+  "Wa": {
+    "message": "Hi {name}, this is Nova Valet about your {service} booking on {when} (ref {reference})."
   }
 }

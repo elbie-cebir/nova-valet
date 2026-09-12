@@ -19,6 +19,16 @@ export const DEPOSIT_AMOUNT_CENTS = 2500;
 /** Length of a bookable slot, in hours. */
 export const SLOT_LENGTH_HOURS = 2;
 
+/**
+ * Travel buffer the owner needs between appointments. A new slot must sit at
+ * least this many hours (edge to edge) from any other slot, so back-to-back
+ * jobs always leave time to drive. (ADR-015)
+ */
+export const TRAVEL_BUFFER_HOURS = 1;
+
+/** Page size for the owner bookings list — every admin read is bounded. */
+export const ADMIN_PAGE_SIZE = 20;
+
 /** Free reschedule is only allowed up to this many hours before the slot. */
 export const RESCHEDULE_CUTOFF_HOURS = 24;
 

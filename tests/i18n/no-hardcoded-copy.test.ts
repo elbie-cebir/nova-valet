@@ -24,6 +24,14 @@ const FILES = [
   'src/app/[locale]/book/pending/[reference]/page.tsx',
   'src/app/[locale]/booking/[token]/page.tsx',
   'src/app/[locale]/find/page.tsx',
+  'src/app/[locale]/admin/login/page.tsx',
+  'src/app/[locale]/admin/page.tsx',
+  'src/app/[locale]/admin/slots/page.tsx',
+  'src/app/[locale]/admin/bookings/[reference]/page.tsx',
+  'src/components/admin/login-form.tsx',
+  'src/components/admin/admin-shell.tsx',
+  'src/components/admin/booking-actions.tsx',
+  'src/components/admin/slot-manager.tsx',
 ];
 
 // Brand/proper nouns that are intentionally not localized.
@@ -41,7 +49,9 @@ function rawTextNodes(src: string): string[] {
   // The excluded char class drops `{}` (so `{t(...)}` expressions don't count)
   // and code punctuation `:;=()` (so TS generics like `Promise<{x: string}>`
   // and arrow fns `() =>` between angle brackets aren't mistaken for copy).
-  const re = />([^<>{}:;=()]*[A-Za-z]{2,}[^<>{}:;=()]*)</g;
+  // The `(?<!=)` lookbehind ignores the `>` in an arrow `=>` (so a return type
+  // like `=> Promise<T>` isn't read as JSX text); real JSX `>` is never after `=`.
+  const re = /(?<!=)>([^<>{}:;=()]*[A-Za-z]{2,}[^<>{}:;=()]*)</g;
   const hits: string[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(clean))) {

@@ -1,4 +1,5 @@
 import type { Queryable } from './types';
+import { RESCHEDULE_CUTOFF_HOURS } from '@/config/constants';
 
 /** Resolve a service + size-tier to its priced tier id and amount. */
 export async function getTierPrice(
@@ -231,10 +232,14 @@ export interface BookingSummary {
   reference: string;
   status: string;
   locale: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string;
   serviceKey: string;
   serviceNameKey: string;
   tierKey: string;
   tierLabelKey: string;
+  slotId: string;
   slotStartAt: string;
   slotEndAt: string;
   address: string;
@@ -275,8 +280,10 @@ export async function getBookingByReference(
 ): Promise<BookingSummary | null> {
   const { rows } = await db.query<Record<string, unknown>>(
     `select b.id, b.reference, b.status, b.locale,
+            b.customer_name, b.customer_phone, b.customer_email,
             s.key as service_key, s.name_key as service_name_key,
             t.key as tier_key, t.label_key as tier_label_key,
+            b.slot_id,
             sl.start_at as slot_start_at, sl.end_at as slot_end_at,
             sl.held_until,
             b.address, b.postcode, b.travel_fee_cents, b.subtotal_cents,
@@ -306,10 +313,14 @@ export async function getBookingByReference(
     reference: r.reference as string,
     status: r.status as string,
     locale: r.locale as string,
+    customerName: r.customer_name as string,
+    customerPhone: r.customer_phone as string,
+    customerEmail: r.customer_email as string,
     serviceKey: r.service_key as string,
     serviceNameKey: r.service_name_key as string,
     tierKey: r.tier_key as string,
     tierLabelKey: r.tier_label_key as string,
+    slotId: r.slot_id as string,
     slotStartAt: new Date(r.slot_start_at as string).toISOString(),
     slotEndAt: new Date(r.slot_end_at as string).toISOString(),
     address: r.address as string,
@@ -333,4 +344,202 @@ export async function getBookingByReference(
       amountCents: Number(a.amount_cents),
     })),
   };
+}
+
+/** Resolve a booking's internal id from its human reference. */
+export async function getBookingIdByReference(
+  db: Queryable,
+  reference: string,
+): Promise<string | null> {
+  const { rows } = await db.query<{ id: string }>(
+    `select id from booking where reference = $1`,
+    [reference],
+  );
+  return rows[0]?.id ?? null;
+}
+
+/**
+ * Append an attributed audit row. No booking lifecycle transition happens
+ * without one (Standards: no silent state change). Does NOT open its own
+ * transaction, so it composes inside the caller's.
+ */
+export async function recordBookingEvent(
+  db: Queryable,
+  e: {
+    bookingId: string;
+    type: string;
+    actor: string;
+    detail?: Record<string, unknown>;
+  },
+): Promise<void> {
+  await db.query(
+    `insert into booking_event (booking_id, type, actor, detail)
+     values ($1, $2, $3, $4::jsonb)`,
+    [e.bookingId, e.type, e.actor, JSON.stringify(e.detail ?? {})],
+  );
+}
+
+export type RescheduleResult =
+  | { ok: true; fromSlotId: string; toSlotId: string }
+  | {
+      ok: false;
+      reason: 'not_reschedulable' | 'past_cutoff' | 'slot_unavailable';
+    };
+
+/**
+ * Owner reschedule of a CONFIRMED booking, before the cutoff, as one atomic slot
+ * swap — no new deposit is taken and none of the money fields move.
+ *
+ *  - Allowed only while `status = 'confirmed'`.
+ *  - Rejected once the CURRENT slot is within `RESCHEDULE_CUTOFF_HOURS` of now
+ *    (invariant 5: free reschedule only before the cutoff), measured with the
+ *    DB clock.
+ *  - Claims the target slot with `where status = 'open' and not closed` (the row
+ *    lock serialises concurrent claims; the loser gets slot_unavailable), frees
+ *    the old slot, and repoints the booking. The no-double-booking unique index
+ *    is the backstop.
+ *  - Attributed + recorded.
+ */
+export async function rescheduleBooking(
+  db: Queryable,
+  p: { bookingId: string; newSlotId: string; actor: string },
+): Promise<RescheduleResult> {
+  await db.query('begin');
+  try {
+    const cur = await db.query<{
+      slot_id: string;
+      status: string;
+      past_cutoff: boolean;
+    }>(
+      `select b.slot_id, b.status,
+              sl.start_at <= now() + make_interval(hours => $2) as past_cutoff
+       from booking b join slot sl on sl.id = b.slot_id
+       where b.id = $1`,
+      [p.bookingId, RESCHEDULE_CUTOFF_HOURS],
+    );
+    const row = cur.rows[0];
+    if (!row || row.status !== 'confirmed') {
+      await db.query('rollback');
+      return { ok: false, reason: 'not_reschedulable' };
+    }
+    if (row.past_cutoff) {
+      await db.query('rollback');
+      return { ok: false, reason: 'past_cutoff' };
+    }
+    if (row.slot_id === p.newSlotId) {
+      await db.query('rollback');
+      return { ok: false, reason: 'slot_unavailable' };
+    }
+
+    const claim = await db.query<{ id: string }>(
+      `update slot set status = 'booked', booking_id = $2, held_until = null
+       where id = $1 and status = 'open' and not closed
+       returning id`,
+      [p.newSlotId, p.bookingId],
+    );
+    if (claim.rows.length === 0) {
+      await db.query('rollback');
+      return { ok: false, reason: 'slot_unavailable' };
+    }
+
+    await db.query(
+      `update slot set status = 'open', booking_id = null, held_until = null
+       where id = $1`,
+      [row.slot_id],
+    );
+    await db.query(`update booking set slot_id = $2 where id = $1`, [
+      p.bookingId,
+      p.newSlotId,
+    ]);
+    await recordBookingEvent(db, {
+      bookingId: p.bookingId,
+      type: 'rescheduled',
+      actor: p.actor,
+      detail: { from_slot: row.slot_id, to_slot: p.newSlotId },
+    });
+
+    await db.query('commit');
+    return { ok: true, fromSlotId: row.slot_id, toSlotId: p.newSlotId };
+  } catch (e) {
+    await db.query('rollback');
+    throw e;
+  }
+}
+
+export type CancelResult =
+  { ok: true } | { ok: false; reason: 'not_cancellable' };
+
+/**
+ * Owner cancel. The slot is released back to `open` so it can be rebooked; the
+ * flat deposit is NON-REFUNDABLE and is therefore FORFEITED — the paid payment
+ * row is left exactly as-is (no refund is issued here). Attributed + recorded.
+ */
+export async function cancelBooking(
+  db: Queryable,
+  p: { bookingId: string; actor: string },
+): Promise<CancelResult> {
+  await db.query('begin');
+  try {
+    const upd = await db.query<{ slot_id: string }>(
+      `update booking set status = 'cancelled'
+       where id = $1 and status in ('pending_deposit', 'confirmed')
+       returning slot_id`,
+      [p.bookingId],
+    );
+    if (upd.rows.length === 0) {
+      await db.query('rollback');
+      return { ok: false, reason: 'not_cancellable' };
+    }
+    await db.query(
+      `update slot set status = 'open', booking_id = null, held_until = null
+       where id = $1`,
+      [upd.rows[0].slot_id],
+    );
+    await recordBookingEvent(db, {
+      bookingId: p.bookingId,
+      type: 'cancelled',
+      actor: p.actor,
+      detail: { deposit_forfeited: true },
+    });
+    await db.query('commit');
+    return { ok: true };
+  } catch (e) {
+    await db.query('rollback');
+    throw e;
+  }
+}
+
+export type CompleteResult =
+  { ok: true } | { ok: false; reason: 'not_completable' };
+
+/**
+ * Mark a confirmed booking completed after the valet has been done. The slot
+ * stays `booked` (the appointment happened). Attributed + recorded.
+ */
+export async function completeBooking(
+  db: Queryable,
+  p: { bookingId: string; actor: string },
+): Promise<CompleteResult> {
+  await db.query('begin');
+  try {
+    const upd = await db.query<{ id: string }>(
+      `update booking set status = 'completed'
+       where id = $1 and status = 'confirmed' returning id`,
+      [p.bookingId],
+    );
+    if (upd.rows.length === 0) {
+      await db.query('rollback');
+      return { ok: false, reason: 'not_completable' };
+    }
+    await recordBookingEvent(db, {
+      bookingId: p.bookingId,
+      type: 'completed',
+      actor: p.actor,
+    });
+    await db.query('commit');
+    return { ok: true };
+  } catch (e) {
+    await db.query('rollback');
+    throw e;
+  }
 }

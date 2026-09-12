@@ -36,10 +36,22 @@
     "bookFor": "Boek voor"
   },
   "Tiers": {
-    "small": { "label": "Klein", "desc": "stadswagen" },
-    "medium": { "label": "Middel", "desc": "hatchback / sedan" },
-    "large": { "label": "Groot", "desc": "SUV / break" },
-    "van": { "label": "Bestelwagen", "desc": "MPV / bestelwagen" }
+    "small": {
+      "label": "Klein",
+      "desc": "stadswagen"
+    },
+    "medium": {
+      "label": "Middel",
+      "desc": "hatchback / sedan"
+    },
+    "large": {
+      "label": "Groot",
+      "desc": "SUV / break"
+    },
+    "van": {
+      "label": "Bestelwagen",
+      "desc": "MPV / bestelwagen"
+    }
   },
   "Catalog": {
     "interior": {
@@ -177,5 +189,91 @@
     "confirmBody": "Bedankt — uw voorschot is ontvangen en uw slot is geboekt. Boeking {reference}.",
     "openBooking": "Mijn boeking openen",
     "linkFallback": "Of plak deze link in uw browser:"
+  },
+  "Admin": {
+    "brand": "Eigenaar",
+    "nav": {
+      "bookings": "Boekingen",
+      "slots": "Slots",
+      "signOut": "Afmelden"
+    },
+    "login": {
+      "title": "Eigenaar aanmelden",
+      "sub": "Meld je aan om boekingen en je agenda te beheren.",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "submit": "Aanmelden",
+      "error": "Verkeerd e-mailadres of wachtwoord."
+    },
+    "bookings": {
+      "title": "Boekingen",
+      "empty": "Nog geen boekingen.",
+      "when": "Wanneer",
+      "customer": "Klant",
+      "service": "Dienst",
+      "status": "Status",
+      "payment": "Betaling",
+      "view": "Bekijken",
+      "prev": "Vorige",
+      "next": "Volgende",
+      "page": "Pagina {page} van {pages}"
+    },
+    "paymentStatus": {
+      "awaiting_deposit": "Wacht op voorschot",
+      "balance_outstanding": "Saldo openstaand",
+      "fully_paid": "Volledig betaald"
+    },
+    "detail": {
+      "back": "Terug naar boekingen",
+      "title": "Boeking {reference}",
+      "customer": "Klant",
+      "contact": "Contact",
+      "service": "Dienst",
+      "when": "Wanneer",
+      "where": "Waar",
+      "total": "Totaal",
+      "deposit": "Voorschot",
+      "balance": "Saldo",
+      "payments": "Betalingen",
+      "paymentsEmpty": "Geen betalingen geregistreerd.",
+      "history": "Geschiedenis",
+      "historyEmpty": "Nog geen acties."
+    },
+    "actions": {
+      "title": "Acties",
+      "reschedule": "Verplaatsen",
+      "rescheduleTo": "Verplaats naar een ander vrij slot",
+      "rescheduleSubmit": "Verplaatsen",
+      "noOpenSlots": "Geen vrije slots om naar te verplaatsen.",
+      "complete": "Als voltooid markeren",
+      "cancel": "Boeking annuleren",
+      "cancelNote": "Het slot komt vrij. Het voorschot is niet terugbetaalbaar en vervalt.",
+      "error": "Die actie kon niet worden uitgevoerd."
+    },
+    "slots": {
+      "title": "Slots",
+      "sub": "Open slots van 2 uur die klanten kunnen boeken. Elk slot heeft 1 uur reistijd nodig.",
+      "createTitle": "Een slot openen",
+      "start": "Start (Brusselse tijd)",
+      "create": "Slot openen",
+      "listTitle": "Komende slots",
+      "empty": "Nog geen slots.",
+      "close": "Sluiten",
+      "open": "Heropenen",
+      "overlap": "Te dicht bij een ander slot — laat 1 uur reistijd.",
+      "invalid": "Geef een geldige datum en tijd op.",
+      "tag": {
+        "open": "Open",
+        "held": "Gereserveerd",
+        "booked": "Geboekt",
+        "closed": "Gesloten"
+      }
+    },
+    "wa": {
+      "button": "Bericht via WhatsApp"
+    }
+  },
+  "Wa": {
+    "message": "Hallo {name}, dit is Nova Valet over je boeking {service} op {when} (ref {reference})."
   }
 }

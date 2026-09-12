@@ -9,9 +9,9 @@ export interface OpenSlot {
 /**
  * Open slots whose start falls in the half-open range [from, to).
  *
- * Only `status = 'open'` is returned: held and booked slots are excluded, so a
- * customer can never be offered a slot that is already taken or mid-checkout.
- * This is a read; the reserve-then-confirm transition lands in B3.
+ * Only `status = 'open'` AND not owner-closed is returned: held, booked and
+ * closed slots are excluded, so a customer can never be offered a slot that is
+ * already taken, mid-checkout, or that the owner has taken off the calendar.
  *
  * `from`/`to` are ISO timestamps.
  */
@@ -27,6 +27,7 @@ export async function getAvailableSlots(
     `select id, start_at, end_at
      from slot
      where status = 'open'
+       and not closed
        and start_at >= $1
        and start_at < $2
      order by start_at asc`,
