@@ -285,6 +285,7 @@
     "tConfirm": "Bonjour {name}, ici Nova Valet au sujet de votre réservation {ref} le {slot} à {addr}. Le solde de {bal} peut être payé en ligne via votre lien. À bientôt !",
     "tReminder": "Bonjour {name}, un rappel de Nova Valet : {slot} nous venons à {addr} pour votre {service}. Merci de rendre la voiture accessible. À bientôt !",
     "tBalance": "Bonjour {name}, le solde de {bal} pour la réservation {ref} est toujours dû. Vous pouvez le payer en ligne via votre lien. Merci !",
-    "tOnWay": "Bonjour {name}, Nova Valet est en route vers {addr}. À tout de suite !"
+    "tOnWay": "Bonjour {name}, Nova Valet est en route vers {addr}. À tout de suite !",
+    "tConfirmPaid": "Bonjour {name}, ici Nova Valet au sujet de votre réservation {ref} le {slot} à {addr}. Tout est payé — à bientôt !"
   }
 }

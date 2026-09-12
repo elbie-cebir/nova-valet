@@ -134,7 +134,8 @@ export default async function AdminBookingDetailPage({
     {
       key: 'confirm',
       label: uiWa('tConfirmLabel'),
-      body: bookingWa('tConfirm', vars),
+      // Fully-paid bookings drop the "outstanding balance" line.
+      body: bookingWa(balanceOutstanding ? 'tConfirm' : 'tConfirmPaid', vars),
     },
     {
       key: 'reminder',

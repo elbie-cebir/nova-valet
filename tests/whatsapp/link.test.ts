@@ -63,6 +63,10 @@ describe('owner-tap WhatsApp templates are localized + carry booking context', (
       for (const key of ['name', 'ref', 'slot', 'addr', 'bal']) {
         expect(wa.tConfirm).toContain(`{${key}}`);
       }
+      // The fully-paid confirmation exists and drops the balance line.
+      expect(wa.tConfirmPaid).toBeTruthy();
+      expect(wa.tConfirmPaid).not.toContain('{bal}');
+      expect(interpolate(wa.tConfirmPaid)).not.toMatch(/\{\w+\}/);
       const out = interpolate(wa.tConfirm);
       renderedConfirm[locale] = out;
       expect(out).toContain(vars.name);
