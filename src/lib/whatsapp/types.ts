@@ -41,4 +41,10 @@ export interface WhatsAppAdapter {
   buildLink(msg: WhatsAppMessage): string | null;
   /** Send a template message. Manual reports skipped; businessApi posts to Graph. */
   send(msg: WhatsAppTemplateMessage): Promise<WhatsAppSendResult>;
+  /**
+   * Send a free-text message. Only valid inside an open 24h customer window
+   * (Meta rule); outside it, Graph returns a re-engagement error. Manual reports
+   * skipped; businessApi posts a `type:"text"` message to Graph.
+   */
+  sendText(msg: WhatsAppMessage): Promise<WhatsAppSendResult>;
 }

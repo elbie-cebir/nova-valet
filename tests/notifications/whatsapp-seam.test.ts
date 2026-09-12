@@ -22,6 +22,7 @@ function spyAdapter(name: 'manual' | 'businessApi'): {
       calls.push(msg);
       return { sent: true, id: 'spy' };
     },
+    sendText: async () => ({ sent: false, skipped: true }),
   };
   return { adapter, calls };
 }
@@ -82,6 +83,7 @@ describe('WhatsApp confirmation seam routing', () => {
       send: async () => {
         throw new Error('graph exploded');
       },
+      sendText: async () => ({ sent: false, skipped: true }),
     };
     const res = await notifyBookingConfirmed(db, b.bookingId, {
       adapter: failing,

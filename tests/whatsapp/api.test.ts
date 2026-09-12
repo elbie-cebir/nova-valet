@@ -65,6 +65,33 @@ describe('businessApi adapter send()', () => {
     ]);
   });
 
+  it('sendText POSTs a type:text free-form payload', async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ messages: [{ id: 'wamid.TXT' }] }),
+    })) as unknown as typeof fetch;
+    vi.stubGlobal('fetch', fetchMock);
+
+    const res = await businessApiAdapter.sendText({
+      toPhone: '+32 470 12 34 56',
+      body: 'Hi Jan, see you then!',
+    });
+
+    expect(res).toEqual({ sent: true, id: 'wamid.TXT' });
+    const [url, init] = (fetchMock as unknown as ReturnType<typeof vi.fn>).mock
+      .calls[0];
+    expect(url).toBe('https://graph.facebook.com/v22.0/555000/messages');
+    const body = JSON.parse(init.body);
+    expect(body.messaging_product).toBe('whatsapp');
+    expect(body.to).toBe('32470123456');
+    expect(body.type).toBe('text');
+    expect(body.text).toEqual({
+      body: 'Hi Jan, see you then!',
+      preview_url: false,
+    });
+  });
+
   it('returns a non-throwing error result on a Graph API error', async () => {
     vi.stubGlobal(
       'fetch',

@@ -19,4 +19,7 @@ export const manualAdapter: WhatsAppAdapter = {
   async send(): Promise<WhatsAppSendResult> {
     return { sent: false, skipped: true };
   },
+  async sendText(): Promise<WhatsAppSendResult> {
+    return { sent: false, skipped: true };
+  },
 };
