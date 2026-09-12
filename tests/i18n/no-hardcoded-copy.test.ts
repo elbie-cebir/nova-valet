@@ -19,8 +19,11 @@ const FILES = [
   'src/components/locale-switcher.tsx',
   'src/components/booking/booking-flow.tsx',
   'src/components/booking/payment-picker.tsx',
+  'src/components/booking/find-form.tsx',
   'src/app/[locale]/book/page.tsx',
   'src/app/[locale]/book/pending/[reference]/page.tsx',
+  'src/app/[locale]/booking/[token]/page.tsx',
+  'src/app/[locale]/find/page.tsx',
 ];
 
 // Brand/proper nouns that are intentionally not localized.

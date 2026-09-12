@@ -75,6 +75,9 @@ export function SiteHeader() {
           <Link href="/prices" style={{ color: 'inherit' }}>
             {t('prices')}
           </Link>
+          <Link href="/find" style={{ color: 'inherit' }}>
+            {t('myBooking')}
+          </Link>
         </nav>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

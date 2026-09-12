@@ -4,13 +4,19 @@ import { z } from 'zod';
 import { getDb } from '@/lib/data/db.server';
 import { getBookingByReference } from '@/lib/data/booking';
 import { recordInitiatedPayment, findOpenPayment } from '@/lib/data/payment';
+import { issueMagicLink } from '@/lib/data/token';
 import { gatewayFor, providerFor } from '@/lib/payments/gateway';
+import { siteUrl, bookingUrl } from '@/lib/url';
 
 const inputSchema = z.object({
   reference: z.string().trim().min(1),
   method: z.enum(['bancontact', 'card']),
   kind: z.enum(['deposit', 'balance']),
   locale: z.enum(['nl', 'en', 'fr']),
+  // The current guest-view token, when paying from there (balance). When absent
+  // (deposit from the checkout page) a fresh magic link is minted so the return
+  // lands on the token-scoped guest view.
+  token: z.string().trim().optional(),
 });
 
 export type StartPaymentResult =
@@ -19,15 +25,6 @@ export type StartPaymentResult =
       ok: false;
       reason: 'invalid' | 'not_found' | 'bad_state' | 'provider_error';
     };
-
-function siteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-}
-
-function returnUrl(locale: string, reference: string): string {
-  const prefix = locale === 'nl' ? '' : `/${locale}`;
-  return `${siteUrl()}${prefix}/book/pending/${reference}`;
-}
 
 /**
  * Start a deposit or balance payment: pick the provider by method, create the
@@ -40,7 +37,7 @@ export async function startPaymentAction(
 ): Promise<StartPaymentResult> {
   const parsed = inputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, reason: 'invalid' };
-  const { reference, method, kind, locale } = parsed.data;
+  const { reference, method, kind, locale, token } = parsed.data;
 
   const db = await getDb();
   const booking = await getBookingByReference(db, reference);
@@ -72,6 +69,10 @@ export async function startPaymentAction(
   const amountCents =
     kind === 'deposit' ? booking.depositCents : booking.balanceCents;
 
+  // Return to the token-scoped guest view: reuse the current token (balance) or
+  // mint a fresh magic link (deposit) so the customer lands on their booking.
+  const returnToken = token ?? (await issueMagicLink(db, booking.id, 90));
+
   try {
     const checkout = await gateway.createCheckout({
       kind,
@@ -81,7 +82,7 @@ export async function startPaymentAction(
       reference: booking.reference,
       bookingId: booking.id,
       description: `Nova Valet ${kind} · ${booking.reference}`,
-      returnUrl: returnUrl(locale, reference),
+      returnUrl: bookingUrl(locale, returnToken),
       webhookUrl: `${siteUrl()}/api/webhooks/${provider}`,
     });
     await recordInitiatedPayment(db, {

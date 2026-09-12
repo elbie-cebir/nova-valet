@@ -155,5 +155,27 @@
     "completed": "Terminée",
     "cancelled": "Annulée",
     "expired": "Expirée"
+  },
+  "BookingView": {
+    "yourBooking": "Votre réservation",
+    "scanHint": "Scannez pour rouvrir votre réservation",
+    "depositPaid": "Acompte payé"
+  },
+  "Find": {
+    "title": "Retrouver ma réservation",
+    "sub": "Saisissez votre référence et l’e-mail ou le GSM utilisé.",
+    "refLabel": "Référence de réservation",
+    "refPh": "NV-______",
+    "contactLabel": "E-mail ou numéro de GSM",
+    "contactPh": "Celui utilisé à la réservation",
+    "open": "Ouvrir la réservation",
+    "notFound": "Aucune réservation trouvée pour cette référence et ce contact. Vérifiez les deux et réessayez."
+  },
+  "Email": {
+    "confirmSubject": "Votre réservation Nova Valet {reference} est confirmée",
+    "confirmHeading": "Votre réservation est confirmée",
+    "confirmBody": "Merci — votre acompte est reçu et votre créneau est réservé. Réservation {reference}.",
+    "openBooking": "Ouvrir ma réservation",
+    "linkFallback": "Ou collez ce lien dans votre navigateur :"
   }
 }

@@ -250,6 +250,24 @@ export interface BookingSummary {
   addOns: { nameKey: string; amountCents: number }[];
 }
 
+/** Minimal contact info for sending the confirmation email. */
+export async function getBookingContact(
+  db: Queryable,
+  bookingId: string,
+): Promise<{ email: string; locale: string; reference: string } | null> {
+  const { rows } = await db.query<{
+    customer_email: string;
+    locale: string;
+    reference: string;
+  }>(`select customer_email, locale, reference from booking where id = $1`, [
+    bookingId,
+  ]);
+  const r = rows[0];
+  return r
+    ? { email: r.customer_email, locale: r.locale, reference: r.reference }
+    : null;
+}
+
 /** Read a booking (with joined display keys) by its human reference. */
 export async function getBookingByReference(
   db: Queryable,

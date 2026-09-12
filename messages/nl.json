@@ -155,5 +155,27 @@
     "completed": "Afgewerkt",
     "cancelled": "Geannuleerd",
     "expired": "Vervallen"
+  },
+  "BookingView": {
+    "yourBooking": "Uw boeking",
+    "scanHint": "Scan om uw boeking te heropenen",
+    "depositPaid": "Voorschot betaald"
+  },
+  "Find": {
+    "title": "Mijn boeking zoeken",
+    "sub": "Voer uw referentie in en het e-mailadres of gsm-nummer waarmee u boekte.",
+    "refLabel": "Boekingsreferentie",
+    "refPh": "NV-______",
+    "contactLabel": "E-mail of gsm-nummer",
+    "contactPh": "Waarmee u boekte",
+    "open": "Boeking openen",
+    "notFound": "We vonden geen boeking voor die referentie en dat contact. Controleer beide en probeer opnieuw."
+  },
+  "Email": {
+    "confirmSubject": "Uw Nova Valet-boeking {reference} is bevestigd",
+    "confirmHeading": "Uw boeking is bevestigd",
+    "confirmBody": "Bedankt — uw voorschot is ontvangen en uw slot is geboekt. Boeking {reference}.",
+    "openBooking": "Mijn boeking openen",
+    "linkFallback": "Of plak deze link in uw browser:"
   }
 }

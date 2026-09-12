@@ -155,5 +155,27 @@
     "completed": "Completed",
     "cancelled": "Cancelled",
     "expired": "Hold expired"
+  },
+  "BookingView": {
+    "yourBooking": "Your booking",
+    "scanHint": "Scan to reopen your booking",
+    "depositPaid": "Deposit paid"
+  },
+  "Find": {
+    "title": "Find my booking",
+    "sub": "Enter your reference and the email or phone you booked with.",
+    "refLabel": "Booking reference",
+    "refPh": "NV-______",
+    "contactLabel": "Email or mobile number",
+    "contactPh": "The one you booked with",
+    "open": "Open booking",
+    "notFound": "We couldn’t find a booking for that reference and contact. Check both and try again."
+  },
+  "Email": {
+    "confirmSubject": "Your Nova Valet booking {reference} is confirmed",
+    "confirmHeading": "Your booking is confirmed",
+    "confirmBody": "Thanks — your deposit is received and your slot is booked. Booking {reference}.",
+    "openBooking": "Open my booking",
+    "linkFallback": "Or paste this link into your browser:"
   }
 }

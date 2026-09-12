@@ -1,9 +1,28 @@
 import type Stripe from 'stripe';
 import type { Queryable } from '@/lib/data/types';
 import { confirmPayment, failPayment } from '@/lib/data/payment';
+import { onDepositConfirmed } from '@/lib/notifications/booking';
 import type { PaymentGateway } from './types';
 
 export type ApplyResult = { applied: boolean; reason?: string };
+
+/** Confirm + (for a verified deposit) send the confirmation email with the link. */
+async function confirmAndNotify(
+  db: Queryable,
+  id: { provider: 'stripe' | 'mollie'; providerPaymentId: string },
+): Promise<ApplyResult> {
+  const r = await confirmPayment(db, id);
+  if (r.applied && r.kind === 'deposit' && r.bookingId) {
+    // A confirmation-email failure must never break the (already-verified)
+    // payment confirmation — the booking is confirmed regardless. Log + move on.
+    try {
+      await onDepositConfirmed(db, r.bookingId);
+    } catch (e) {
+      console.error('[confirm] confirmation email failed:', e);
+    }
+  }
+  return { applied: r.applied, reason: r.reason };
+}
 
 /**
  * Apply a VERIFIED Stripe event (signature already checked by the route). Only a
@@ -16,7 +35,7 @@ export async function applyStripeEvent(
   if (event.type === 'checkout.session.completed') {
     const s = event.data.object as Stripe.Checkout.Session;
     if (s.payment_status === 'paid') {
-      return confirmPayment(db, {
+      return confirmAndNotify(db, {
         provider: 'stripe',
         providerPaymentId: s.id,
       });
@@ -46,7 +65,7 @@ export async function applyMollieNotify(
 ): Promise<ApplyResult> {
   const status = await gateway.getStatus(providerPaymentId);
   if (status === 'paid') {
-    return confirmPayment(db, { provider: 'mollie', providerPaymentId });
+    return confirmAndNotify(db, { provider: 'mollie', providerPaymentId });
   }
   if (status === 'failed' || status === 'canceled' || status === 'expired') {
     await failPayment(db, { provider: 'mollie', providerPaymentId });

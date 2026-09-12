@@ -15,10 +15,12 @@ export function PaymentPicker({
   reference,
   locale,
   kind,
+  token,
 }: {
   reference: string;
   locale: string;
   kind: 'deposit' | 'balance';
+  token?: string;
 }) {
   const t = useTranslations('Checkout');
   const [pending, startTransition] = useTransition();
@@ -30,7 +32,13 @@ export function PaymentPicker({
     setError('');
     setChosen(method);
     startTransition(async () => {
-      const res = await startPaymentAction({ reference, method, kind, locale });
+      const res = await startPaymentAction({
+        reference,
+        method,
+        kind,
+        locale,
+        token,
+      });
       if (res.ok) {
         window.location.href = res.checkoutUrl;
       } else {
