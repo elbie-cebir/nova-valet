@@ -3,6 +3,7 @@ import { getDb } from '@/lib/data/db.server';
 import { getBookingByReference } from '@/lib/data/booking';
 import { formatMoney } from '@/lib/format';
 import { LOCALES } from '@/i18n/routing';
+import { BUSINESS_TIMEZONE } from '@/config/constants';
 
 const card = {
   borderRadius: 20,
@@ -45,22 +46,20 @@ export default async function BookingPendingPage({
   const bcp47 = LOCALES[locale as keyof typeof LOCALES] ?? locale;
   const start = new Date(booking.slotStartAt);
   const end = new Date(booking.slotEndAt);
-  const whenText = `${new Intl.DateTimeFormat(bcp47, {
+  const dateFmt = new Intl.DateTimeFormat(bcp47, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-  }).format(start)} · ${new Intl.DateTimeFormat(bcp47, {
+    timeZone: BUSINESS_TIMEZONE,
+  });
+  const timeFmt = new Intl.DateTimeFormat(bcp47, {
     hour: '2-digit',
     minute: '2-digit',
-  }).format(start)}–${new Intl.DateTimeFormat(bcp47, {
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(end)}`;
+    timeZone: BUSINESS_TIMEZONE,
+  });
+  const whenText = `${dateFmt.format(start)} · ${timeFmt.format(start)}–${timeFmt.format(end)}`;
   const heldText = booking.heldUntil
-    ? new Intl.DateTimeFormat(bcp47, {
-        hour: '2-digit',
-        minute: '2-digit',
-      }).format(new Date(booking.heldUntil))
+    ? timeFmt.format(new Date(booking.heldUntil))
     : null;
 
   return (

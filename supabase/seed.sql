@@ -60,14 +60,19 @@ insert into postcode_area (prefix, travel_fee_cents, in_area) values
 
 -- Open slots — generated relative to now so the date/time step always has
 -- upcoming availability in dev. Each appointment is a 2-hour slot with a
--- 1-hour travel gap before the next, so starts are every 3 hours:
--- 10-12, 13-15, 16-18, 19-21. PLACEHOLDER schedule; the owner defines real
--- slots (B6).
+-- 1-hour travel gap before the next: starts at 10, 13, 16, 19 in BRUSSELS
+-- local wall-clock (10-12, 13-15, 16-18, 19-21), stored as UTC. PLACEHOLDER
+-- schedule; the owner defines real slots (B6). (ADR-015)
 insert into slot (start_at, end_at, status)
-select gs, gs + interval '2 hours', 'open'
-from generate_series(
-  date_trunc('day', now()) + interval '1 day' + interval '10 hours',
-  date_trunc('day', now()) + interval '7 days' + interval '19 hours',
-  interval '1 hour'
-) as gs
-where extract(hour from gs) in (10, 13, 16, 19);
+select
+  start_local at time zone 'Europe/Brussels' as start_at,
+  (start_local + interval '2 hours') at time zone 'Europe/Brussels' as end_at,
+  'open'
+from (
+  select
+    date_trunc('day', now() at time zone 'Europe/Brussels')
+      + make_interval(days => d, hours => h) as start_local
+  from generate_series(1, 7) as d
+  cross join (values (10), (13), (16), (19)) as t (h)
+) s
+order by start_at;

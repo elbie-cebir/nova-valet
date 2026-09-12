@@ -6,6 +6,13 @@
  * lands in exactly one place.
  */
 
+/**
+ * The business timezone. All slot/appointment wall-clock times are displayed in
+ * this zone regardless of the viewer's browser; timestamps are stored in UTC.
+ * (ADR-015)
+ */
+export const BUSINESS_TIMEZONE = 'Europe/Brussels';
+
 /** Flat, non-refundable deposit taken up front. PLACEHOLDER €25 — client to confirm. */
 export const DEPOSIT_AMOUNT_CENTS = 2500;
 

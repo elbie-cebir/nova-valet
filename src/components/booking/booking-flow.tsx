@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { LOCALES } from '@/i18n/routing';
 import { formatMoney } from '@/lib/format';
+import { BUSINESS_TIMEZONE } from '@/config/constants';
 import {
   lookupTravelFeeAction,
   getUpcomingSlotsAction,
@@ -172,16 +173,26 @@ export function BookingFlow(props: {
 
   const money = (c: number) => formatMoney(c, currency, locale);
   const bcp47 = LOCALES[locale as keyof typeof LOCALES] ?? locale;
+  // Fixed business timezone so slot times read the same in any browser (ADR-015).
+  const tz = BUSINESS_TIMEZONE;
   const dayFmt = new Intl.DateTimeFormat(bcp47, {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
+    timeZone: tz,
   });
-  const dowFmt = new Intl.DateTimeFormat(bcp47, { weekday: 'short' });
-  const dnumFmt = new Intl.DateTimeFormat(bcp47, { day: 'numeric' });
+  const dowFmt = new Intl.DateTimeFormat(bcp47, {
+    weekday: 'short',
+    timeZone: tz,
+  });
+  const dnumFmt = new Intl.DateTimeFormat(bcp47, {
+    day: 'numeric',
+    timeZone: tz,
+  });
   const timeFmt = new Intl.DateTimeFormat(bcp47, {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: tz,
   });
 
   // ----- derived totals (display only; server recomputes authoritatively) -----
