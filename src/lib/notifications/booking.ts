@@ -72,5 +72,13 @@ export async function onDepositConfirmed(
       error: e instanceof Error ? e.message : String(e),
     }),
   );
+  // Never fail silently: an attempted-but-failed WhatsApp send (e.g. template
+  // not approved / outside window) is logged clearly. `skipped` (manual adapter
+  // or not configured) is expected and stays quiet.
+  if (whatsapp && !whatsapp.sent && !whatsapp.skipped) {
+    console.warn(
+      `[whatsapp] confirmation not delivered for booking ${bookingId}: ${whatsapp.error}`,
+    );
+  }
   return { emailed: result.sent, url, whatsapp };
 }

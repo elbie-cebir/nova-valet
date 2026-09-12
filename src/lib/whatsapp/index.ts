@@ -11,6 +11,12 @@ export type {
 export { buildWaLink, normalizeWaNumber } from './link';
 export { manualAdapter } from './manual';
 export { businessApiAdapter } from './business-api';
+export {
+  checkTemplatesApproved,
+  fetchTemplateStatuses,
+  REQUIRED_TEMPLATES,
+  type PreflightResult,
+} from './template-status';
 
 /**
  * Select the active adapter from `WHATSAPP_ADAPTER`. Defaults to `manual` (live).
