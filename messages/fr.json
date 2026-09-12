@@ -287,5 +287,28 @@
     "tBalance": "Bonjour {name}, le solde de {bal} pour la réservation {ref} est toujours dû. Vous pouvez le payer en ligne via votre lien. Merci !",
     "tOnWay": "Bonjour {name}, Nova Valet est en route vers {addr}. À tout de suite !",
     "tConfirmPaid": "Bonjour {name}, ici Nova Valet au sujet de votre réservation {ref} le {slot} à {addr}. Tout est payé — à bientôt !"
+  },
+  "Manage": {
+    "reschedule": "Reporter",
+    "freeUntil": "Gratuit jusqu’au {cutoff}",
+    "windowClosed": "La période de report gratuit est terminée (24h avant votre créneau). Contactez-nous pour le déplacer.",
+    "cancelBooking": "Annuler la réservation",
+    "notRefunded": "L’acompte n’est pas remboursé",
+    "moveTitle": "Déplacer votre créneau",
+    "freeMove": "Gratuit. Pas de nouvel acompte. Vous reportez avant la limite.",
+    "current": "Actuel",
+    "chooseSlot": "Choisissez un nouveau créneau",
+    "noSlots": "Aucun créneau libre pour le moment.",
+    "confirmMove": "Confirmer le report",
+    "moveNote": "L’ancien créneau est libéré et le nouveau bloqué en une seule étape. Acompte et solde inchangés.",
+    "cancelQ": "Annuler cette réservation ?",
+    "forfeited": "Acompte perdu",
+    "notRefundedBig": "n’est pas remboursé",
+    "forfeitNote": "L’acompte n’est pas remboursable. Rien d’autre n’est débité ; le solde dû est annulé.",
+    "cancelForfeit": "Annuler et perdre l’acompte",
+    "rescheduleInstead": "Reporter plutôt",
+    "keep": "Garder ma réservation",
+    "back": "Retour",
+    "error": "Cela n’a pas fonctionné — réessayez."
   }
 }

@@ -20,6 +20,7 @@ const FILES = [
   'src/components/booking/booking-flow.tsx',
   'src/components/booking/payment-picker.tsx',
   'src/components/booking/find-form.tsx',
+  'src/components/booking/guest-actions.tsx',
   'src/app/[locale]/book/page.tsx',
   'src/app/[locale]/book/pending/[reference]/page.tsx',
   'src/app/[locale]/booking/[token]/page.tsx',

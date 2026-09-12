@@ -287,5 +287,28 @@
     "tBalance": "Hi {name}, the balance of {bal} for booking {ref} is still outstanding. You can pay it online via your link. Thank you!",
     "tOnWay": "Hi {name}, Nova Valet is on the way to {addr}. See you soon!",
     "tConfirmPaid": "Hi {name}, this is Nova Valet about your booking {ref} on {slot} at {addr}. You are all paid up — see you then!"
+  },
+  "Manage": {
+    "reschedule": "Reschedule",
+    "freeUntil": "Free until {cutoff}",
+    "windowClosed": "The free reschedule window has closed (24h before your slot). Message us to move it.",
+    "cancelBooking": "Cancel booking",
+    "notRefunded": "Deposit is not refunded",
+    "moveTitle": "Move your slot",
+    "freeMove": "Free. No new deposit. You’re rescheduling before the cutoff.",
+    "current": "Current",
+    "chooseSlot": "Choose a new slot",
+    "noSlots": "No open slots to move to right now.",
+    "confirmMove": "Confirm move",
+    "moveNote": "Your old slot is released and the new one secured in one step. Deposit and balance carry over unchanged.",
+    "cancelQ": "Cancel this booking?",
+    "forfeited": "Deposit forfeited",
+    "notRefundedBig": "is not refunded",
+    "forfeitNote": "The deposit is non-refundable. No further amount is charged; the outstanding balance is cleared.",
+    "cancelForfeit": "Cancel and forfeit deposit",
+    "rescheduleInstead": "Reschedule instead",
+    "keep": "Keep my booking",
+    "back": "Back",
+    "error": "That didn’t work — please try again."
   }
 }

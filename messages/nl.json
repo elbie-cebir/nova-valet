@@ -287,5 +287,28 @@
     "tBalance": "Dag {name}, het saldo van {bal} voor boeking {ref} staat nog open. U kan het online betalen via uw link. Bedankt!",
     "tOnWay": "Dag {name}, Nova Valet is onderweg naar {addr}. Tot zo!",
     "tConfirmPaid": "Dag {name}, dit is Nova Valet over uw boeking {ref} op {slot} te {addr}. Alles is betaald — tot dan!"
+  },
+  "Manage": {
+    "reschedule": "Verzetten",
+    "freeUntil": "Gratis tot {cutoff}",
+    "windowClosed": "De gratis verzetperiode is gesloten (24u voor uw slot). Stuur ons een bericht om te verzetten.",
+    "cancelBooking": "Boeking annuleren",
+    "notRefunded": "Voorschot wordt niet terugbetaald",
+    "moveTitle": "Verzet uw slot",
+    "freeMove": "Gratis. Geen nieuw voorschot. U verzet vóór de deadline.",
+    "current": "Huidig",
+    "chooseSlot": "Kies een nieuw slot",
+    "noSlots": "Momenteel geen vrije slots om naar te verplaatsen.",
+    "confirmMove": "Verzetting bevestigen",
+    "moveNote": "Uw oude slot wordt vrijgegeven en het nieuwe vastgelegd in één stap. Voorschot en saldo blijven ongewijzigd.",
+    "cancelQ": "Deze boeking annuleren?",
+    "forfeited": "Voorschot verloren",
+    "notRefundedBig": "wordt niet terugbetaald",
+    "forfeitNote": "Het voorschot is niet terugbetaalbaar. Er wordt niets extra aangerekend; het openstaande saldo vervalt.",
+    "cancelForfeit": "Annuleren en voorschot verliezen",
+    "rescheduleInstead": "Liever verzetten",
+    "keep": "Mijn boeking behouden",
+    "back": "Terug",
+    "error": "Dat lukte niet — probeer opnieuw."
   }
 }

@@ -3,11 +3,13 @@ import { notFound } from 'next/navigation';
 import QRCode from 'qrcode';
 import { getDb } from '@/lib/data/db.server';
 import { resolveBookingByToken } from '@/lib/data/token';
+import { getAvailableSlots } from '@/lib/data/availability';
 import { formatMoney } from '@/lib/format';
 import { LOCALES } from '@/i18n/routing';
-import { BUSINESS_TIMEZONE } from '@/config/constants';
+import { BUSINESS_TIMEZONE, RESCHEDULE_CUTOFF_HOURS } from '@/config/constants';
 import { bookingUrl } from '@/lib/url';
 import { PaymentPicker } from '@/components/booking/payment-picker';
+import { GuestActions } from '@/components/booking/guest-actions';
 
 const card = {
   borderRadius: 20,
@@ -68,6 +70,35 @@ export default async function GuestBookingPage({
     isConfirmed &&
     (booking.balancePaidAt !== null || booking.balanceCents === 0);
   const isDead = booking.status === 'cancelled' || booking.status === 'expired';
+
+  // Guest self-service (B8): reschedule is free only before the cutoff; the
+  // server re-checks regardless. Offer open slots to move to, excluding the
+  // current one. Reuses B6 reschedule/cancel, token-scoped.
+  const cutoffMs = RESCHEDULE_CUTOFF_HOURS * 3_600_000;
+  const beforeCutoff = start.getTime() - Date.now() > cutoffMs;
+  const shortFmt = new Intl.DateTimeFormat(bcp47, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: BUSINESS_TIMEZONE,
+  });
+  const cutoffLabel = shortFmt.format(new Date(start.getTime() - cutoffMs));
+  const openSlots =
+    isConfirmed && beforeCutoff
+      ? (
+          await getAvailableSlots(db, {
+            from: new Date().toISOString(),
+            to: new Date(Date.now() + 45 * 24 * 3_600_000).toISOString(),
+          })
+        )
+          .filter((s) => s.id !== booking.slotId)
+          .map((s) => ({
+            id: s.id,
+            label: `${shortFmt.format(new Date(s.startAt))}–${timeFmt.format(new Date(s.endAt))}`,
+          }))
+      : [];
 
   const pill = isConfirmed
     ? { bg: 'rgba(214,240,77,.15)', fg: 'var(--nv-lime)' }
@@ -164,6 +195,17 @@ export default async function GuestBookingPage({
               <span className="nv-mono">{money(booking.totalCents)}</span>
             </div>
           </div>
+
+          {/* guest self-service: reschedule (before cutoff) + cancel (B8) */}
+          {isConfirmed && (
+            <GuestActions
+              token={token}
+              canReschedule={beforeCutoff}
+              cutoffLabel={cutoffLabel}
+              currentSlotLabel={whenText}
+              openSlots={openSlots}
+            />
+          )}
         </div>
 
         {/* ---- right: QR + payment/status ---- */}
