@@ -55,3 +55,34 @@ h3 {
 .nv-mono {
   font-family: var(--font-mono);
 }
+
+/* Booking flow: single column on phone, content + sticky side summary on web
+   (mirrors the POC's two-column booking layout). */
+.nv-book-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.nv-book-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (min-width: 900px) {
+  .nv-book-grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+  .nv-book-aside {
+    position: sticky;
+    top: 88px;
+  }
+}
+
+/* Horizontal, scrollable day selector for the slot step. */
+.nv-day-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
