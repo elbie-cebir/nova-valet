@@ -133,5 +133,25 @@
     "continueToPayment": "Continue to payment",
     "b4Note": "Payment (deposit + method picker) is wired in the next build step.",
     "notFound": "Booking not found."
+  },
+  "Checkout": {
+    "chooseMethod": "Choose how to pay",
+    "card": "Card",
+    "redirecting": "Redirecting to secure checkout…",
+    "methodsNote": "Card via Stripe · Bancontact via Mollie",
+    "error": "Couldn’t start payment. Please try again.",
+    "confirmedTitle": "Your booking is confirmed",
+    "confirmedSub": "Deposit received — your slot is booked.",
+    "balanceTitle": "Balance to pay",
+    "balanceSub": "Pay the remaining balance any time up to the day.",
+    "fullyPaidTitle": "Fully paid",
+    "fullyPaidSub": "Nothing left to pay. See you then."
+  },
+  "Statuses": {
+    "pending_deposit": "Awaiting deposit",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "expired": "Hold expired"
   }
 }

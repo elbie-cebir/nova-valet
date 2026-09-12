@@ -133,5 +133,25 @@
     "continueToPayment": "Continuer vers le paiement",
     "b4Note": "Le paiement (acompte + choix du moyen) sera ajouté à la prochaine étape de construction.",
     "notFound": "Réservation introuvable."
+  },
+  "Checkout": {
+    "chooseMethod": "Choisissez comment payer",
+    "card": "Carte",
+    "redirecting": "Redirection vers le paiement sécurisé…",
+    "methodsNote": "Carte via Stripe · Bancontact via Mollie",
+    "error": "Le paiement n’a pas pu démarrer. Réessayez.",
+    "confirmedTitle": "Votre réservation est confirmée",
+    "confirmedSub": "Acompte reçu — votre créneau est réservé.",
+    "balanceTitle": "Solde à payer",
+    "balanceSub": "Payez le solde restant jusqu’au jour même.",
+    "fullyPaidTitle": "Entièrement payé",
+    "fullyPaidSub": "Plus rien à payer. À bientôt."
+  },
+  "Statuses": {
+    "pending_deposit": "En attente d’acompte",
+    "confirmed": "Confirmée",
+    "completed": "Terminée",
+    "cancelled": "Annulée",
+    "expired": "Expirée"
   }
 }

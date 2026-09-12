@@ -4,6 +4,7 @@ import { getBookingByReference } from '@/lib/data/booking';
 import { formatMoney } from '@/lib/format';
 import { LOCALES } from '@/i18n/routing';
 import { BUSINESS_TIMEZONE } from '@/config/constants';
+import { PaymentPicker } from '@/components/booking/payment-picker';
 
 const card = {
   borderRadius: 20,
@@ -29,6 +30,7 @@ export default async function BookingPendingPage({
   const { locale, reference } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('BookingPending');
+  const tp = await getTranslations('Checkout');
   const tc = await getTranslations();
 
   const db = await getDb();
@@ -62,6 +64,30 @@ export default async function BookingPendingPage({
     ? timeFmt.format(new Date(booking.heldUntil))
     : null;
 
+  const isPending = booking.status === 'pending_deposit';
+  const isConfirmed = booking.status === 'confirmed';
+  const balanceDue =
+    isConfirmed && booking.balancePaidAt === null && booking.balanceCents > 0;
+  const fullyPaid =
+    isConfirmed &&
+    (booking.balancePaidAt !== null || booking.balanceCents === 0);
+
+  const heading = isPending
+    ? { icon: '⏳', warn: true, title: t('title'), sub: t('sub') }
+    : isConfirmed
+      ? {
+          icon: '✓',
+          warn: false,
+          title: tp('confirmedTitle'),
+          sub: tp('confirmedSub'),
+        }
+      : {
+          icon: '•',
+          warn: false,
+          title: tc(`Statuses.${booking.status}`),
+          sub: '',
+        };
+
   return (
     <main
       style={{
@@ -79,31 +105,35 @@ export default async function BookingPendingPage({
           width: 52,
           height: 52,
           borderRadius: 999,
-          background: 'rgba(245,192,138,.16)',
-          border: '1px solid var(--nv-warn)',
-          color: 'var(--nv-warn)',
+          background: heading.warn ? 'rgba(245,192,138,.16)' : 'var(--nv-lime)',
+          border: heading.warn ? '1px solid var(--nv-warn)' : '0',
+          color: heading.warn ? 'var(--nv-warn)' : 'var(--nv-bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 22,
+          fontSize: 24,
+          fontWeight: 700,
         }}
       >
-        ⏳
+        {heading.icon}
       </div>
       <h1 style={{ fontSize: 'clamp(30px,4vw,44px)', lineHeight: 1.02 }}>
-        {t('title')}
+        {heading.title}
       </h1>
-      <p
-        style={{
-          margin: 0,
-          fontSize: 15,
-          color: 'var(--nv-muted)',
-          lineHeight: 1.55,
-        }}
-      >
-        {t('sub')}
-      </p>
+      {heading.sub && (
+        <p
+          style={{
+            margin: 0,
+            fontSize: 15,
+            color: 'var(--nv-muted)',
+            lineHeight: 1.55,
+          }}
+        >
+          {heading.sub}
+        </p>
+      )}
 
+      {/* Booking summary */}
       <div style={card}>
         <div style={row}>
           <span style={{ color: 'var(--nv-muted)' }}>{t('reference')}</span>
@@ -125,12 +155,6 @@ export default async function BookingPendingPage({
             {booking.address}, {booking.postcode}
           </strong>
         </div>
-        {booking.addOns.map((a) => (
-          <div style={{ ...row, color: 'var(--nv-muted)' }} key={a.nameKey}>
-            <span>{tc(a.nameKey)}</span>
-            <span className="nv-mono">+{money(a.amountCents)}</span>
-          </div>
-        ))}
         {booking.travelFeeCents > 0 && (
           <div style={{ ...row, color: 'var(--nv-muted)' }}>
             <span>{tc('Booking.travelFee')}</span>
@@ -150,90 +174,102 @@ export default async function BookingPendingPage({
         </div>
       </div>
 
-      <div
-        style={{
-          borderRadius: 20,
-          padding: 22,
-          background:
-            'linear-gradient(160deg,rgba(214,240,77,.16),rgba(214,240,77,.04))',
-          border: '1px solid rgba(214,240,77,.4)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: 12,
-                letterSpacing: '.12em',
-                textTransform: 'uppercase',
-                color: 'var(--nv-lime)',
-                fontWeight: 600,
-              }}
-            >
-              {t('depositNow')}
-            </div>
-            <div
-              className="nv-mono"
-              style={{ fontSize: 32, lineHeight: 1, marginTop: 6 }}
-            >
-              {money(booking.depositCents)}
-            </div>
-          </div>
+      {/* ===== PENDING: deposit ===== */}
+      {isPending && (
+        <>
           <div
             style={{
-              textAlign: 'right',
-              fontSize: 13,
-              color: 'var(--nv-muted)',
+              borderRadius: 20,
+              padding: 22,
+              background:
+                'linear-gradient(160deg,rgba(214,240,77,.16),rgba(214,240,77,.04))',
+              border: '1px solid rgba(214,240,77,.4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
             }}
           >
-            <span className="nv-mono">{money(booking.balanceCents)}</span>
-            <br />
-            {t('balanceLater')}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    letterSpacing: '.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--nv-lime)',
+                    fontWeight: 600,
+                  }}
+                >
+                  {t('depositNow')}
+                </div>
+                <div
+                  className="nv-mono"
+                  style={{ fontSize: 32, lineHeight: 1, marginTop: 6 }}
+                >
+                  {money(booking.depositCents)}
+                </div>
+              </div>
+              <div
+                style={{
+                  textAlign: 'right',
+                  fontSize: 13,
+                  color: 'var(--nv-muted)',
+                }}
+              >
+                <span className="nv-mono">{money(booking.balanceCents)}</span>
+                <br />
+                {t('balanceLater')}
+              </div>
+            </div>
+            {heldText && (
+              <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+                {t('heldUntil')} <span className="nv-mono">{heldText}</span>
+              </div>
+            )}
+          </div>
+          <PaymentPicker
+            reference={booking.reference}
+            locale={locale}
+            kind="deposit"
+          />
+        </>
+      )}
+
+      {/* ===== CONFIRMED: balance due ===== */}
+      {balanceDue && (
+        <>
+          <div style={card}>
+            <div style={{ ...row, fontWeight: 600 }}>
+              <span>{tp('balanceTitle')}</span>
+              <span className="nv-mono">{money(booking.balanceCents)}</span>
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+              {tp('balanceSub')}
+            </div>
+          </div>
+          <PaymentPicker
+            reference={booking.reference}
+            locale={locale}
+            kind="balance"
+          />
+        </>
+      )}
+
+      {/* ===== CONFIRMED: fully paid ===== */}
+      {fullyPaid && (
+        <div style={card}>
+          <strong>{tp('fullyPaidTitle')}</strong>
+          <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+            {tp('fullyPaidSub')}
           </div>
         </div>
-        {heldText && (
-          <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
-            {t('heldUntil')} <span className="nv-mono">{heldText}</span>
-          </div>
-        )}
-      </div>
-
-      {/* B4 wires the real deposit + provider method picker. Placeholder handoff. */}
-      <button
-        disabled
-        style={{
-          height: 54,
-          borderRadius: 999,
-          border: 0,
-          background: 'var(--nv-surface-2)',
-          color: 'var(--nv-faint)',
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          fontSize: 16,
-          cursor: 'not-allowed',
-        }}
-      >
-        {t('continueToPayment')}
-      </button>
-      <p
-        style={{
-          fontSize: 12,
-          color: 'var(--nv-faint)',
-          textAlign: 'center',
-          margin: 0,
-        }}
-      >
-        {t('b4Note')}
-      </p>
+      )}
     </main>
   );
 }

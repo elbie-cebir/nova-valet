@@ -244,6 +244,8 @@ export interface BookingSummary {
   totalCents: number;
   depositCents: number;
   balanceCents: number;
+  depositPaidAt: string | null;
+  balancePaidAt: string | null;
   heldUntil: string | null;
   addOns: { nameKey: string; amountCents: number }[];
 }
@@ -260,7 +262,8 @@ export async function getBookingByReference(
             sl.start_at as slot_start_at, sl.end_at as slot_end_at,
             sl.held_until,
             b.address, b.postcode, b.travel_fee_cents, b.subtotal_cents,
-            b.total_cents, b.deposit_cents, b.balance_cents
+            b.total_cents, b.deposit_cents, b.balance_cents,
+            b.deposit_paid_at, b.balance_paid_at
      from booking b
      join service s on s.id = b.service_id
      join vehicle_size_tier t on t.id = b.vehicle_size_tier_id
@@ -298,6 +301,12 @@ export async function getBookingByReference(
     totalCents: Number(r.total_cents),
     depositCents: Number(r.deposit_cents),
     balanceCents: Number(r.balance_cents),
+    depositPaidAt: r.deposit_paid_at
+      ? new Date(r.deposit_paid_at as string).toISOString()
+      : null,
+    balancePaidAt: r.balance_paid_at
+      ? new Date(r.balance_paid_at as string).toISOString()
+      : null,
     heldUntil: r.held_until
       ? new Date(r.held_until as string).toISOString()
       : null,

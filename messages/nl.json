@@ -133,5 +133,25 @@
     "continueToPayment": "Verder naar betaling",
     "b4Note": "Betaling (voorschot + methodekeuze) wordt in de volgende bouwstap toegevoegd.",
     "notFound": "Boeking niet gevonden."
+  },
+  "Checkout": {
+    "chooseMethod": "Kies hoe u betaalt",
+    "card": "Kaart",
+    "redirecting": "Doorsturen naar beveiligde betaling…",
+    "methodsNote": "Kaart via Stripe · Bancontact via Mollie",
+    "error": "Betaling kon niet starten. Probeer opnieuw.",
+    "confirmedTitle": "Uw boeking is bevestigd",
+    "confirmedSub": "Voorschot ontvangen — uw slot is geboekt.",
+    "balanceTitle": "Saldo te betalen",
+    "balanceSub": "Betaal het resterende saldo tot op de dag.",
+    "fullyPaidTitle": "Volledig betaald",
+    "fullyPaidSub": "Niets meer te betalen. Tot dan."
+  },
+  "Statuses": {
+    "pending_deposit": "Wacht op voorschot",
+    "confirmed": "Bevestigd",
+    "completed": "Afgewerkt",
+    "cancelled": "Geannuleerd",
+    "expired": "Vervallen"
   }
 }

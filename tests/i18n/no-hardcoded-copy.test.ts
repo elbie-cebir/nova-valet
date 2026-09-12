@@ -18,11 +18,13 @@ const FILES = [
   'src/components/site-header.tsx',
   'src/components/locale-switcher.tsx',
   'src/components/booking/booking-flow.tsx',
+  'src/components/booking/payment-picker.tsx',
   'src/app/[locale]/book/page.tsx',
   'src/app/[locale]/book/pending/[reference]/page.tsx',
 ];
 
-const ALLOWLIST = new Set(['Nova&nbsp;Valet']);
+// Brand/proper nouns that are intentionally not localized.
+const ALLOWLIST = new Set(['Nova&nbsp;Valet', 'Bancontact']);
 
 function stripComments(src: string): string {
   return src
