@@ -132,21 +132,13 @@ export function SlotWeekManager({
   );
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,300px),1fr))',
-        gap: 20,
-        alignItems: 'start',
-      }}
-    >
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* ── week grid ── */}
       <div
         style={{
-          gridColumn: '1/-1',
           display: 'flex',
           flexDirection: 'column',
-          gap: 12,
+          gap: 10,
           minWidth: 0,
         }}
       >
@@ -261,198 +253,222 @@ export function SlotWeekManager({
         </div>
       </div>
 
-      {/* ── create panel ── */}
+      {/* ── create + legend row (fills the width; wraps on phone) ── */}
       <div
         style={{
-          borderRadius: 20,
-          padding: 20,
-          background: 'var(--nv-surface)',
-          border: '1px solid var(--nv-border-strong)',
           display: 'flex',
-          flexDirection: 'column',
-          gap: 14,
+          gap: 16,
+          flexWrap: 'wrap',
+          alignItems: 'stretch',
         }}
       >
+        {/* ── create panel ── */}
         <div
           style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 600,
-            fontSize: 20,
-            letterSpacing: '-.02em',
+            flex: '3 1 360px',
+            borderRadius: 16,
+            padding: 18,
+            background: 'var(--nv-surface)',
+            border: '1px solid var(--nv-border-strong)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
           }}
         >
-          {t('createSlots')}
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <label
-            style={{ fontSize: 12, fontWeight: 600, color: 'var(--nv-muted)' }}
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 600,
+              fontSize: 18,
+              letterSpacing: '-.02em',
+            }}
           >
-            {t('days')}
-          </label>
-          <div style={{ display: 'flex', gap: 4 }}>
-            {dayLetters.map((d, i) => {
-              const on = pickedDays.includes(d.n);
-              return (
-                <button
-                  key={i}
-                  onClick={() =>
-                    setPickedDays((p) =>
-                      p.includes(d.n)
-                        ? p.filter((x) => x !== d.n)
-                        : [...p, d.n],
-                    )
-                  }
-                  style={{
-                    flex: 1,
-                    height: 36,
-                    borderRadius: 8,
-                    border: 0,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    background: on ? 'var(--nv-ink)' : 'var(--nv-surface-2)',
-                    color: on ? 'var(--nv-bg)' : 'var(--nv-faint)',
-                  }}
-                >
-                  {d.l}
-                </button>
-              );
-            })}
+            {t('createSlots')}
           </div>
-        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <label
-            style={{ fontSize: 12, fontWeight: 600, color: 'var(--nv-muted)' }}
-          >
-            {t('startTimes')}
-          </label>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {timeChips.map((tm) => {
-              const on = pickedTimes.includes(tm);
-              return (
-                <button
-                  key={tm}
-                  onClick={() =>
-                    setPickedTimes((p) =>
-                      p.includes(tm) ? p.filter((x) => x !== tm) : [...p, tm],
-                    )
-                  }
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 999,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    border: on ? 0 : '1px solid var(--nv-border-strong)',
-                    background: on ? 'var(--nv-ink)' : 'transparent',
-                    color: on ? 'var(--nv-bg)' : 'var(--nv-muted)',
-                  }}
-                >
-                  {tm}
-                </button>
-              );
-            })}
-            <input
-              type="time"
-              step={1800}
-              value={customTime}
-              onChange={(e) => setCustomTime(e.target.value)}
-              onBlur={() => {
-                if (/^\d{2}:\d{2}$/.test(customTime)) {
-                  setPickedTimes((p) =>
-                    p.includes(customTime) ? p : [...p, customTime],
-                  );
-                  setCustomTime('');
-                }
-              }}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label
               style={{
-                height: 34,
-                borderRadius: 999,
-                background: 'var(--nv-surface-2)',
-                border: '1px dashed var(--nv-border-strong)',
-                color: 'var(--nv-ink)',
-                padding: '0 10px',
                 fontSize: 12,
+                fontWeight: 600,
+                color: 'var(--nv-muted)',
               }}
-            />
+            >
+              {t('days')}
+            </label>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {dayLetters.map((d, i) => {
+                const on = pickedDays.includes(d.n);
+                return (
+                  <button
+                    key={i}
+                    onClick={() =>
+                      setPickedDays((p) =>
+                        p.includes(d.n)
+                          ? p.filter((x) => x !== d.n)
+                          : [...p, d.n],
+                      )
+                    }
+                    style={{
+                      flex: 1,
+                      height: 36,
+                      borderRadius: 8,
+                      border: 0,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      background: on ? 'var(--nv-ink)' : 'var(--nv-surface-2)',
+                      color: on ? 'var(--nv-bg)' : 'var(--nv-faint)',
+                    }}
+                  >
+                    {d.l}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <label
-            style={{ fontSize: 12, fontWeight: 600, color: 'var(--nv-muted)' }}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: 'var(--nv-muted)',
+              }}
+            >
+              {t('startTimes')}
+            </label>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {timeChips.map((tm) => {
+                const on = pickedTimes.includes(tm);
+                return (
+                  <button
+                    key={tm}
+                    onClick={() =>
+                      setPickedTimes((p) =>
+                        p.includes(tm) ? p.filter((x) => x !== tm) : [...p, tm],
+                      )
+                    }
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 999,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      border: on ? 0 : '1px solid var(--nv-border-strong)',
+                      background: on ? 'var(--nv-ink)' : 'transparent',
+                      color: on ? 'var(--nv-bg)' : 'var(--nv-muted)',
+                    }}
+                  >
+                    {tm}
+                  </button>
+                );
+              })}
+              <input
+                type="time"
+                step={1800}
+                value={customTime}
+                onChange={(e) => setCustomTime(e.target.value)}
+                onBlur={() => {
+                  if (/^\d{2}:\d{2}$/.test(customTime)) {
+                    setPickedTimes((p) =>
+                      p.includes(customTime) ? p : [...p, customTime],
+                    );
+                    setCustomTime('');
+                  }
+                }}
+                style={{
+                  height: 34,
+                  borderRadius: 999,
+                  background: 'var(--nv-surface-2)',
+                  border: '1px dashed var(--nv-border-strong)',
+                  color: 'var(--nv-ink)',
+                  padding: '0 10px',
+                  fontSize: 12,
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: 'var(--nv-muted)',
+              }}
+            >
+              {t('range')}
+            </label>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <input
+                type="date"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                style={dateInput}
+              />
+              <input
+                type="date"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                style={dateInput}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: '12px 14px',
+              borderRadius: 12,
+              background: 'var(--nv-surface-2)',
+              fontSize: 13,
+              lineHeight: 1.5,
+              color: 'var(--nv-muted)',
+            }}
           >
-            {t('range')}
-          </label>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <input
-              type="date"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              style={dateInput}
-            />
-            <input
-              type="date"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              style={dateInput}
-            />
+            {t('createsN')}
           </div>
+
+          <button
+            onClick={create}
+            disabled={pending}
+            style={{
+              height: 48,
+              borderRadius: 999,
+              border: 0,
+              background: 'var(--nv-lime)',
+              color: 'var(--nv-bg)',
+              fontFamily: 'var(--font-display)',
+              fontWeight: 700,
+              fontSize: 15,
+            }}
+          >
+            {t('createOpen')}
+          </button>
+          {note && (
+            <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>{note}</div>
+          )}
         </div>
 
+        {/* ── legend ── */}
         <div
           style={{
-            padding: '12px 14px',
-            borderRadius: 12,
-            background: 'var(--nv-surface-2)',
+            flex: '1 1 200px',
+            borderRadius: 16,
+            padding: 18,
+            background: 'var(--nv-surface)',
+            border: '1px solid var(--nv-border)',
             fontSize: 13,
-            lineHeight: 1.5,
             color: 'var(--nv-muted)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
           }}
         >
-          {t('createsN')}
+          <strong style={{ color: 'var(--nv-ink)' }}>{t('legend')}</strong>
+          {legendSwatch('open', t('open'))}
+          {legendSwatch('held', t('heldCheckout'))}
+          {legendSwatch('booked', t('booked'))}
+          {legendSwatch('closed', t('closed'))}
         </div>
-
-        <button
-          onClick={create}
-          disabled={pending}
-          style={{
-            height: 48,
-            borderRadius: 999,
-            border: 0,
-            background: 'var(--nv-lime)',
-            color: 'var(--nv-bg)',
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: 15,
-          }}
-        >
-          {t('createOpen')}
-        </button>
-        {note && (
-          <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>{note}</div>
-        )}
-      </div>
-
-      {/* ── legend ── */}
-      <div
-        style={{
-          borderRadius: 20,
-          padding: 20,
-          background: 'var(--nv-surface)',
-          border: '1px solid var(--nv-border)',
-          fontSize: 13,
-          color: 'var(--nv-muted)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 10,
-        }}
-      >
-        <strong style={{ color: 'var(--nv-ink)' }}>{t('legend')}</strong>
-        {legendSwatch('open', t('open'))}
-        {legendSwatch('held', t('heldCheckout'))}
-        {legendSwatch('booked', t('booked'))}
-        {legendSwatch('closed', t('closed'))}
       </div>
     </div>
   );

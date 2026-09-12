@@ -124,10 +124,10 @@ export default async function AdminSlotsPage({
     >
       <div
         style={{
-          padding: '24px 20px 40px',
+          padding: '18px 20px 36px',
           display: 'flex',
           flexDirection: 'column',
-          gap: 18,
+          gap: 14,
         }}
       >
         <div

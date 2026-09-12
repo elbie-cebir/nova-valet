@@ -18,13 +18,13 @@ import { LOCALES } from '@/i18n/routing';
 import { BUSINESS_TIMEZONE } from '@/config/constants';
 
 const card = {
-  borderRadius: 22,
-  padding: 20,
+  borderRadius: 16,
+  padding: 16,
   background: 'var(--nv-surface)',
   border: '1px solid var(--nv-border-strong)',
   display: 'flex',
   flexDirection: 'column' as const,
-  gap: 12,
+  gap: 9,
   fontSize: 14,
 };
 const rowSB = { display: 'flex', justifyContent: 'space-between', gap: 10 };
@@ -162,11 +162,12 @@ export default async function AdminBookingDetailPage({
     >
       <div
         style={{
-          padding: '20px 20px 40px',
+          padding: '18px 24px 36px',
           display: 'flex',
           flexDirection: 'column',
-          gap: 18,
-          maxWidth: 1000,
+          gap: 14,
+          maxWidth: 1120,
+          width: '100%',
         }}
       >
         <div style={{ ...rowSB, alignItems: 'center' }}>
@@ -192,8 +193,8 @@ export default async function AdminBookingDetailPage({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,360px),1fr))',
-            gap: 20,
+            gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,460px),1fr))',
+            gap: 16,
             alignItems: 'start',
           }}
         >
@@ -202,7 +203,7 @@ export default async function AdminBookingDetailPage({
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: 14,
+              gap: 12,
               minWidth: 0,
             }}
           >
@@ -257,7 +258,7 @@ export default async function AdminBookingDetailPage({
           </div>
 
           {/* ── right: summary + actions ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={card}>
               <div style={rowSB}>
                 <span style={{ color: 'var(--nv-muted)' }}>{t('service')}</span>
