@@ -86,3 +86,36 @@ h3 {
   overflow-x: auto;
   padding-bottom: 4px;
 }
+
+/* ── Owner admin shell ──────────────────────────────────────────────────
+   Left sidebar on web (POC); a sticky pill-tab top bar on phone. */
+.nv-admin {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100dvh;
+}
+.nv-admin-side {
+  display: none;
+}
+.nv-admin-top {
+  display: flex;
+}
+@media (min-width: 900px) {
+  .nv-admin {
+    grid-template-columns: 232px minmax(0, 1fr);
+  }
+  .nv-admin-side {
+    display: flex;
+  }
+  .nv-admin-top {
+    display: none;
+  }
+}
+
+/* Slots week grid: fixed time-label column + 7 day columns, scrolls on phone. */
+.nv-slot-grid {
+  min-width: 720px;
+  display: grid;
+  grid-template-columns: 72px repeat(7, 1fr);
+  gap: 6px;
+}

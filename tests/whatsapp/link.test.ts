@@ -24,45 +24,59 @@ describe('wa.me link builder', () => {
   });
 });
 
-describe('owner-tap WhatsApp message is localized + carries booking context', () => {
+describe('owner-tap WhatsApp templates are localized + carry booking context', () => {
   const catalogs = { en, nl, fr } as Record<string, Record<string, unknown>>;
-  const vars = {
+  const vars: Record<string, string> = {
     name: 'Jan Peeters',
-    service: 'Full detailing',
-    when: 'Sun 13 Sept 13:00',
-    reference: 'NV-GTRJ3J',
+    ref: 'NV-GTRJ3J',
+    slot: 'Sunday 13 September 13:00',
+    addr: 'Rue de la Loi 16, 1000',
+    bal: '€115.00',
+    service: 'Full detailing · Medium',
+    time: '13:00',
   };
 
   function interpolate(template: string): string {
     return template.replace(/\{(\w+)\}/g, (_, k: string) =>
-      k in vars ? (vars as Record<string, string>)[k] : `{${k}}`,
+      k in vars ? vars[k] : `{${k}}`,
     );
   }
 
-  const rendered: Record<string, string> = {};
+  const renderedConfirm: Record<string, string> = {};
 
   for (const locale of ['en', 'nl', 'fr']) {
-    it(`[${locale}] template exposes every booking placeholder`, () => {
+    it(`[${locale}] confirmation template carries name, ref, slot, address, balance`, () => {
       const wa = catalogs[locale].Wa as Record<string, string>;
-      expect(wa?.message).toBeTruthy();
-      for (const key of ['name', 'service', 'when', 'reference']) {
-        expect(wa.message).toContain(`{${key}}`);
+      // All four templates + their chip labels exist.
+      for (const k of [
+        'tConfirm',
+        'tReminder',
+        'tBalance',
+        'tOnWay',
+        'tConfirmLabel',
+        'tReminderLabel',
+        'tBalanceLabel',
+        'tOnWayLabel',
+      ]) {
+        expect(wa[k]).toBeTruthy();
       }
-      const out = interpolate(wa.message);
-      rendered[locale] = out;
-      // The concrete booking context is present in the final body.
+      for (const key of ['name', 'ref', 'slot', 'addr', 'bal']) {
+        expect(wa.tConfirm).toContain(`{${key}}`);
+      }
+      const out = interpolate(wa.tConfirm);
+      renderedConfirm[locale] = out;
       expect(out).toContain(vars.name);
-      expect(out).toContain(vars.service);
-      expect(out).toContain(vars.when);
-      expect(out).toContain(vars.reference);
-      // No leftover placeholders.
+      expect(out).toContain(vars.ref);
+      expect(out).toContain(vars.slot);
+      expect(out).toContain(vars.addr);
+      expect(out).toContain(vars.bal);
       expect(out).not.toMatch(/\{\w+\}/);
     });
   }
 
   it('the three locales are genuinely different copy', () => {
-    expect(rendered.en).not.toBe(rendered.nl);
-    expect(rendered.en).not.toBe(rendered.fr);
-    expect(rendered.nl).not.toBe(rendered.fr);
+    expect(renderedConfirm.en).not.toBe(renderedConfirm.nl);
+    expect(renderedConfirm.en).not.toBe(renderedConfirm.fr);
+    expect(renderedConfirm.nl).not.toBe(renderedConfirm.fr);
   });
 });

@@ -5,7 +5,7 @@ import { redirect } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { requireOwner } from '@/lib/auth/owner';
 import { getDb } from '@/lib/data/db.server';
-import { createSlot, setSlotClosed } from '@/lib/data/slots';
+import { createSlots, setSlotClosed } from '@/lib/data/slots';
 import {
   getBookingIdByReference,
   rescheduleBooking,
@@ -23,19 +23,57 @@ export async function signOutAction(locale: string): Promise<void> {
   redirect({ href: '/admin/login', locale });
 }
 
-const createSlotSchema = z.object({ localDateTime: z.string().min(1) });
+export type CreateSlotsResult =
+  | { ok: true; created: number; skipped: number }
+  | { ok: false; reason: string };
 
-export async function createSlotAction(input: unknown): Promise<ActionResult> {
+const createSlotsSchema = z.object({
+  weekdays: z.array(z.number().int().min(0).max(6)).min(1),
+  times: z.array(z.string().regex(/^\d{2}:\d{2}$/)).min(1),
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+const MAX_BULK_SLOTS = 400;
+
+/**
+ * Open slots across the chosen weekdays + start times over a date range. Each
+ * candidate is converted from Brussels wall-clock to UTC and created through the
+ * buffer-guarded DAL, so clashes are skipped, not fatal.
+ */
+export async function createSlotsAction(
+  input: unknown,
+): Promise<CreateSlotsResult> {
   await requireOwner();
-  const parsed = createSlotSchema.safeParse(input);
+  const parsed = createSlotsSchema.safeParse(input);
   if (!parsed.success) return { ok: false, reason: 'invalid' };
+  const { weekdays, times, from, to } = parsed.data;
 
-  const startAt = businessWallClockToUtcIso(parsed.data.localDateTime);
-  if (!startAt) return { ok: false, reason: 'invalid' };
+  const fromMs = Date.parse(`${from}T00:00:00Z`);
+  const toMs = Date.parse(`${to}T00:00:00Z`);
+  if (Number.isNaN(fromMs) || Number.isNaN(toMs) || toMs < fromMs) {
+    return { ok: false, reason: 'invalid' };
+  }
+
+  const want = new Set(weekdays);
+  const starts: string[] = [];
+  for (let ms = fromMs; ms <= toMs; ms += 86_400_000) {
+    const d = new Date(ms);
+    if (!want.has(d.getUTCDay())) continue;
+    const dateStr = d.toISOString().slice(0, 10);
+    for (const time of times) {
+      const iso = businessWallClockToUtcIso(`${dateStr}T${time}`);
+      if (iso) starts.push(iso);
+      if (starts.length > MAX_BULK_SLOTS) {
+        return { ok: false, reason: 'too_many' };
+      }
+    }
+  }
+  if (starts.length === 0) return { ok: false, reason: 'invalid' };
 
   const db = await getDb();
-  const res = await createSlot(db, { startAt });
-  return res.ok ? { ok: true } : { ok: false, reason: res.reason };
+  const { created, skipped } = await createSlots(db, starts);
+  return { ok: true, created, skipped };
 }
 
 const setClosedSchema = z.object({

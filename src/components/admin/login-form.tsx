@@ -16,7 +16,7 @@ const inputStyle = {
 };
 
 export function LoginForm({ locale }: { locale: string }) {
-  const t = useTranslations('Admin.login');
+  const t = useTranslations('Admin');
   const [pending, startTransition] = useTransition();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,7 +77,9 @@ export function LoginForm({ locale }: { locale: string }) {
         {t('submit')}
       </button>
       {error && (
-        <div style={{ fontSize: 13, color: 'var(--nv-err)' }}>{t('error')}</div>
+        <div style={{ fontSize: 13, color: 'var(--nv-err)' }}>
+          {t('signInError')}
+        </div>
       )}
     </div>
   );

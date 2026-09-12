@@ -9,6 +9,8 @@ export interface AdminBookingRow {
   locale: string;
   customerName: string;
   customerEmail: string;
+  customerPhone: string;
+  postcode: string;
   serviceNameKey: string;
   tierLabelKey: string;
   slotStartAt: string;
@@ -31,17 +33,39 @@ export function paymentStatusOf(b: {
   return 'balance_outstanding';
 }
 
+export type BookingFilter =
+  'upcoming' | 'balance' | 'completed' | 'cancelled' | 'all';
+
+/** The WHERE fragment for a filter (uses the DB clock; no params). */
+function filterClause(filter: BookingFilter | undefined): string {
+  switch (filter) {
+    case 'upcoming':
+      return `where b.status = 'confirmed' and sl.start_at >= now()`;
+    case 'balance':
+      return `where b.status = 'confirmed' and b.balance_paid_at is null and b.balance_cents > 0`;
+    case 'completed':
+      return `where b.status = 'completed'`;
+    case 'cancelled':
+      return `where b.status in ('cancelled', 'expired')`;
+    default:
+      return '';
+  }
+}
+
 /**
- * Owner bookings list — most imminent first. ALWAYS bounded by limit/offset;
- * there is no unbounded booking read anywhere in the admin.
+ * Owner bookings list, optionally filtered. ALWAYS bounded by limit/offset;
+ * there is no unbounded booking read anywhere in the admin. `upcoming` sorts
+ * soonest-first; everything else newest-first.
  */
 export async function listBookings(
   db: Queryable,
-  page: { limit: number; offset: number },
+  page: { limit: number; offset: number; filter?: BookingFilter },
 ): Promise<AdminBookingRow[]> {
+  const where = filterClause(page.filter);
+  const order = page.filter === 'upcoming' ? 'asc' : 'desc';
   const { rows } = await db.query<Record<string, unknown>>(
     `select b.reference, b.status, b.locale,
-            b.customer_name, b.customer_email,
+            b.customer_name, b.customer_email, b.customer_phone, b.postcode,
             s.name_key as service_name_key,
             t.label_key as tier_label_key,
             sl.start_at, sl.end_at,
@@ -51,7 +75,8 @@ export async function listBookings(
      join service s on s.id = b.service_id
      join vehicle_size_tier t on t.id = b.vehicle_size_tier_id
      join slot sl on sl.id = b.slot_id
-     order by sl.start_at desc
+     ${where}
+     order by sl.start_at ${order}
      limit $1 offset $2`,
     [page.limit, page.offset],
   );
@@ -69,6 +94,8 @@ export async function listBookings(
       locale: r.locale as string,
       customerName: r.customer_name as string,
       customerEmail: r.customer_email as string,
+      customerPhone: r.customer_phone as string,
+      postcode: r.postcode as string,
       serviceNameKey: r.service_name_key as string,
       tierLabelKey: r.tier_label_key as string,
       slotStartAt: new Date(r.start_at as string).toISOString(),
@@ -86,12 +113,64 @@ export async function listBookings(
   });
 }
 
-/** Total booking count, for pagination controls. */
-export async function countBookings(db: Queryable): Promise<number> {
+/** Booking count for the given filter, for pagination controls. */
+export async function countBookings(
+  db: Queryable,
+  filter?: BookingFilter,
+): Promise<number> {
+  const where = filterClause(filter);
   const { rows } = await db.query<{ n: string }>(
-    `select count(*)::text as n from booking`,
+    `select count(*)::text as n
+     from booking b
+     join slot sl on sl.id = b.slot_id
+     ${where}`,
   );
   return Number(rows[0].n);
+}
+
+export interface AdminStats {
+  upcoming: number;
+  balancesOutstanding: number;
+  balancesOutstandingCents: number;
+  openSlotsThisWeek: number;
+}
+
+/**
+ * The four headline numbers on the bookings dashboard, computed with the DB
+ * clock. `weekTo` bounds the "open slots this week" count.
+ */
+export async function getAdminStats(
+  db: Queryable,
+  week: { from: string; to: string },
+): Promise<AdminStats> {
+  const { rows } = await db.query<{
+    upcoming: string;
+    bal_count: string;
+    bal_cents: string;
+    open_slots: string;
+  }>(
+    `select
+       (select count(*) from booking b
+          join slot sl on sl.id = b.slot_id
+          where b.status = 'confirmed' and sl.start_at >= now())::text as upcoming,
+       (select count(*) from booking
+          where status = 'confirmed' and balance_paid_at is null
+            and balance_cents > 0)::text as bal_count,
+       (select coalesce(sum(balance_cents), 0) from booking
+          where status = 'confirmed' and balance_paid_at is null
+            and balance_cents > 0)::text as bal_cents,
+       (select count(*) from slot
+          where status = 'open' and not closed
+            and start_at >= $1 and start_at < $2)::text as open_slots`,
+    [week.from, week.to],
+  );
+  const r = rows[0];
+  return {
+    upcoming: Number(r.upcoming),
+    balancesOutstanding: Number(r.bal_count),
+    balancesOutstandingCents: Number(r.bal_cents),
+    openSlotsThisWeek: Number(r.open_slots),
+  };
 }
 
 export interface AdminPaymentRow {

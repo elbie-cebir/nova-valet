@@ -10,38 +10,36 @@ import {
   type ActionResult,
 } from '@/app/[locale]/admin/actions';
 
-const btn = {
-  height: 46,
-  borderRadius: 12,
-  border: '1px solid var(--nv-border-strong)',
-  background: 'var(--nv-surface)',
-  color: 'var(--nv-ink)',
+const displayBtn = {
+  height: 48,
+  borderRadius: 999,
   fontFamily: 'var(--font-display)',
   fontWeight: 600,
-  fontSize: 15,
+  fontSize: 14,
   padding: '0 16px',
 };
 
 export function BookingActions({
   reference,
   status,
+  balanceOutstanding,
   openSlots,
 }: {
   reference: string;
   status: string;
+  balanceOutstanding: boolean;
   openSlots: { id: string; label: string }[];
 }) {
-  const t = useTranslations('Admin.actions');
+  const t = useTranslations('Admin');
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState(false);
   const [slotId, setSlotId] = useState('');
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
 
-  // Only a live booking can be acted on.
   const isConfirmed = status === 'confirmed';
   const isPending = status === 'pending_deposit';
-  const canAct = isConfirmed || isPending;
-  if (!canAct) return null;
+  if (!isConfirmed && !isPending) return null;
 
   function run(fn: () => Promise<ActionResult>) {
     if (pending) return;
@@ -54,19 +52,7 @@ export function BookingActions({
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div
-        style={{
-          fontSize: 12,
-          letterSpacing: '.12em',
-          textTransform: 'uppercase',
-          color: 'var(--nv-muted)',
-          fontWeight: 600,
-        }}
-      >
-        {t('title')}
-      </div>
-
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {isConfirmed && (
         <>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -82,7 +68,14 @@ export function BookingActions({
                 <select
                   value={slotId}
                   onChange={(e) => setSlotId(e.target.value)}
-                  style={{ ...btn, flex: 1, minWidth: 200 }}
+                  style={{
+                    ...displayBtn,
+                    flex: 1,
+                    minWidth: 180,
+                    background: 'var(--nv-surface)',
+                    border: '1px solid var(--nv-border-strong)',
+                    color: 'var(--nv-ink)',
+                  }}
                 >
                   <option value="">—</option>
                   {openSlots.map((s) => (
@@ -99,12 +92,13 @@ export function BookingActions({
                     )
                   }
                   style={{
-                    ...btn,
-                    borderColor: 'var(--nv-lime)',
+                    ...displayBtn,
+                    background: 'var(--nv-surface)',
+                    border: '1px solid var(--nv-lime)',
                     color: slotId ? 'var(--nv-lime)' : 'var(--nv-faint)',
                   }}
                 >
-                  {t('rescheduleSubmit')}
+                  {t('reschedule')}
                 </button>
               </div>
             )}
@@ -114,36 +108,123 @@ export function BookingActions({
             disabled={pending}
             onClick={() => run(() => completeAction({ reference }))}
             style={{
-              ...btn,
-              background: 'var(--nv-lime)',
-              color: 'var(--nv-bg)',
+              ...displayBtn,
+              height: 52,
+              background: 'var(--nv-ink)',
               border: 0,
+              color: 'var(--nv-bg)',
+              fontWeight: 700,
+              fontSize: 15,
             }}
           >
-            {t('complete')}
+            {t('markCompleted')}
           </button>
+          {balanceOutstanding && (
+            <div
+              style={{
+                fontSize: 12,
+                color: 'var(--nv-faint)',
+                lineHeight: 1.5,
+              }}
+            >
+              {t('completeWarn')}
+            </div>
+          )}
         </>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {/* cancel + forfeit confirmation */}
+      {!confirmingCancel ? (
         <button
           disabled={pending}
-          onClick={() => run(() => cancelAction({ reference }))}
+          onClick={() => setConfirmingCancel(true)}
           style={{
-            ...btn,
-            borderColor: 'var(--nv-err)',
+            ...displayBtn,
+            background: 'none',
+            border: '1px solid rgba(255,138,126,.6)',
             color: 'var(--nv-err)',
           }}
         >
-          {t('cancel')}
+          {t('cancelBooking')}
         </button>
-        <span style={{ fontSize: 12, color: 'var(--nv-faint)' }}>
-          {t('cancelNote')}
-        </span>
-      </div>
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            padding: 16,
+            borderRadius: 16,
+            background: 'rgba(255,120,110,.1)',
+            border: '1px solid rgba(255,120,110,.4)',
+          }}
+        >
+          <strong
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 18,
+              color: 'var(--nv-ink)',
+            }}
+          >
+            {t('cancelQ')}
+          </strong>
+          <div
+            style={{ fontSize: 13, color: 'var(--nv-muted)', lineHeight: 1.5 }}
+          >
+            {t('cancelSub')}
+          </div>
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: '.1em',
+              textTransform: 'uppercase',
+              color: 'var(--nv-err)',
+            }}
+          >
+            {t('forfeited')}
+          </div>
+          <div
+            style={{ fontSize: 13, color: 'var(--nv-err)', lineHeight: 1.5 }}
+          >
+            {t('forfeitNote')}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <button
+              disabled={pending}
+              onClick={() => run(() => cancelAction({ reference }))}
+              style={{
+                ...displayBtn,
+                height: 50,
+                background: 'none',
+                border: '1px solid rgba(255,138,126,.7)',
+                color: 'var(--nv-err)',
+                fontWeight: 700,
+                fontSize: 15,
+              }}
+            >
+              {t('cancelForfeit')}
+            </button>
+            <button
+              onClick={() => setConfirmingCancel(false)}
+              style={{
+                ...displayBtn,
+                height: 44,
+                background: 'none',
+                border: 0,
+                color: 'var(--nv-muted)',
+              }}
+            >
+              {t('keep')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {error && (
-        <div style={{ fontSize: 13, color: 'var(--nv-err)' }}>{t('error')}</div>
+        <div style={{ fontSize: 13, color: 'var(--nv-err)' }}>
+          {t('actionError')}
+        </div>
       )}
     </div>
   );

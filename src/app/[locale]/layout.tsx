@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { SiteHeader } from '@/components/site-header';
+import { SiteChrome } from '@/components/site-chrome';
 import type { ReactNode } from 'react';
 import '../globals.css';
 
@@ -92,7 +93,9 @@ export default async function LocaleLayout({
               />
             </div>
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <SiteHeader />
+              <SiteChrome>
+                <SiteHeader />
+              </SiteChrome>
               {children}
             </div>
           </div>

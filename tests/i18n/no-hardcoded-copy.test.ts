@@ -31,11 +31,12 @@ const FILES = [
   'src/components/admin/login-form.tsx',
   'src/components/admin/admin-shell.tsx',
   'src/components/admin/booking-actions.tsx',
-  'src/components/admin/slot-manager.tsx',
+  'src/components/admin/slot-week-manager.tsx',
+  'src/components/admin/wa-composer.tsx',
 ];
 
-// Brand/proper nouns that are intentionally not localized.
-const ALLOWLIST = new Set(['Nova&nbsp;Valet', 'Bancontact']);
+// Brand/proper nouns + universal abbreviations that are intentionally not localized.
+const ALLOWLIST = new Set(['Nova&nbsp;Valet', 'Bancontact', 'WA', 'Stripe']);
 
 function stripComments(src: string): string {
   return src

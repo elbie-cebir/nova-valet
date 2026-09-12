@@ -69,6 +69,26 @@ export async function createSlot(
   }
 }
 
+/**
+ * Bulk-open slots from a list of start instants (UTC ISO). Each goes through
+ * `createSlot`, so the travel buffer and 2-hour length are enforced per slot and
+ * anything that clashes (with an existing slot OR one created earlier in this
+ * call) is skipped rather than failing the whole batch.
+ */
+export async function createSlots(
+  db: Queryable,
+  startAts: string[],
+): Promise<{ created: number; skipped: number }> {
+  let created = 0;
+  let skipped = 0;
+  for (const startAt of startAts) {
+    const res = await createSlot(db, { startAt });
+    if (res.ok) created += 1;
+    else skipped += 1;
+  }
+  return { created, skipped };
+}
+
 export type SetClosedResult =
   { ok: true } | { ok: false; reason: 'not_found' | 'in_use' };
 

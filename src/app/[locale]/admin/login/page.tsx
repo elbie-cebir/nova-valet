@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { redirect } from '@/i18n/navigation';
+import { redirect, Link } from '@/i18n/navigation';
 import { getAuthenticatedOwner } from '@/lib/auth/owner';
 import { LoginForm } from '@/components/admin/login-form';
 
@@ -19,29 +19,86 @@ export default async function AdminLoginPage({
     redirect({ href: '/admin', locale });
   }
 
-  const t = await getTranslations('Admin.login');
+  const t = await getTranslations('Admin');
 
   return (
     <main
       style={{
-        maxWidth: 420,
+        maxWidth: 440,
         width: '100%',
         margin: '0 auto',
-        padding: '48px 20px 64px',
+        padding: '60px 24px 48px',
         display: 'flex',
         flexDirection: 'column',
-        gap: 16,
+        gap: 14,
+        minHeight: '100dvh',
       }}
     >
-      <div>
-        <h1 style={{ fontSize: 'clamp(26px,3.4vw,36px)', lineHeight: 1.05 }}>
-          {t('title')}
-        </h1>
-        <p style={{ color: 'var(--nv-muted)', marginTop: 8, fontSize: 15 }}>
-          {t('sub')}
-        </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span
+          style={{
+            width: 12,
+            height: 12,
+            background: 'var(--nv-lime)',
+            borderRadius: 3,
+            boxShadow: '0 0 16px rgba(214,240,77,.7)',
+          }}
+        />
+        <span
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: 20,
+            letterSpacing: '-.02em',
+          }}
+        >
+          Nova&nbsp;Valet
+        </span>
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '.12em',
+            textTransform: 'uppercase',
+            color: 'var(--nv-faint)',
+            marginLeft: 4,
+          }}
+        >
+          {t('owner')}
+        </span>
       </div>
+
+      <h1
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'clamp(34px,4vw,48px)',
+          lineHeight: 1,
+          letterSpacing: '-.035em',
+          margin: '20px 0 0',
+        }}
+      >
+        {t('signIn')}
+      </h1>
+      <p
+        style={{
+          margin: '0 0 12px',
+          fontSize: 14,
+          color: 'var(--nv-muted)',
+          lineHeight: 1.5,
+        }}
+      >
+        {t('signInSub')}
+      </p>
+
       <LoginForm locale={locale} />
+
+      <div
+        style={{ marginTop: 'auto', fontSize: 12, color: 'var(--nv-faint)' }}
+      >
+        <Link href="/" style={{ color: 'var(--nv-faint)' }}>
+          ← Nova&nbsp;Valet
+        </Link>
+      </div>
     </main>
   );
 }
