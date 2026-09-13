@@ -144,12 +144,11 @@ export async function AdminShell({
           <Link href="/admin/catalog" style={navItem(active === 'catalog')}>
             <span>{t('pricesAddons')}</span>
           </Link>
+          <Link href="/admin/area" style={navItem(active === 'area')}>
+            <span>{t('areaFees')}</span>
+          </Link>
           <div style={soon}>
             {t('payments')}
-            {soonTag}
-          </div>
-          <div style={soon}>
-            {t('areaFees')}
             {soonTag}
           </div>
         </nav>

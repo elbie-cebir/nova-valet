@@ -189,12 +189,15 @@ export function AdminMobileBar({
             >
               <span>{t('pricesAddons')}</span>
             </Link>
+            <Link
+              href="/admin/area"
+              onClick={close}
+              style={navItem(active === 'area')}
+            >
+              <span>{t('areaFees')}</span>
+            </Link>
             <div style={soon}>
               {t('payments')}
-              {soonTag}
-            </div>
-            <div style={soon}>
-              {t('areaFees')}
               {soonTag}
             </div>
           </nav>

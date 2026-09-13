@@ -338,7 +338,16 @@
     "catService": "Service",
     "colNl": "NL",
     "colEn": "EN",
-    "colFr": "FR"
+    "colFr": "FR",
+    "areaTitle": "Service area & fees",
+    "areaSub": "Postcode prefixes and travel fees. Longest matching prefix wins; out-of-area blocks booking. Changes go live immediately.",
+    "areaPrefix": "Postcode prefix",
+    "areaFee": "Travel fee (€)",
+    "areaInArea": "In service area",
+    "areaAdd": "Add area",
+    "areaNew": "New area",
+    "areaDelete": "Delete",
+    "areaEmpty": "No areas yet."
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

@@ -338,7 +338,16 @@
     "catService": "Service",
     "colNl": "NL",
     "colEn": "EN",
-    "colFr": "FR"
+    "colFr": "FR",
+    "areaTitle": "Zone desservie & frais",
+    "areaSub": "Préfixes de code postal et frais de déplacement. Le préfixe le plus long l’emporte ; hors zone bloque la réservation. Changements immédiats.",
+    "areaPrefix": "Préfixe code postal",
+    "areaFee": "Frais de déplacement (€)",
+    "areaInArea": "Dans la zone",
+    "areaAdd": "Ajouter une zone",
+    "areaNew": "Nouvelle zone",
+    "areaDelete": "Supprimer",
+    "areaEmpty": "Aucune zone pour l’instant."
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

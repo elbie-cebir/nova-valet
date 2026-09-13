@@ -338,7 +338,16 @@
     "catService": "Dienst",
     "colNl": "NL",
     "colEn": "EN",
-    "colFr": "FR"
+    "colFr": "FR",
+    "areaTitle": "Werkgebied & kosten",
+    "areaSub": "Postcodeprefixen en verplaatsingskosten. Langste match wint; buiten gebied blokkeert boeking. Wijzigingen zijn meteen live.",
+    "areaPrefix": "Postcodeprefix",
+    "areaFee": "Verplaatsingskost (€)",
+    "areaInArea": "In werkgebied",
+    "areaAdd": "Gebied toevoegen",
+    "areaNew": "Nieuw gebied",
+    "areaDelete": "Verwijderen",
+    "areaEmpty": "Nog geen gebieden."
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",
