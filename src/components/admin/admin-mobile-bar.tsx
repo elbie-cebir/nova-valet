@@ -149,7 +149,11 @@ export function AdminMobileBar({
           </div>
 
           <nav style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Link href="/admin" onClick={close} style={navItem(active === 'bookings')}>
+            <Link
+              href="/admin"
+              onClick={close}
+              style={navItem(active === 'bookings')}
+            >
               <span>{t('bookings')}</span>
               <span
                 style={{
@@ -164,7 +168,11 @@ export function AdminMobileBar({
                 {bookingCount}
               </span>
             </Link>
-            <Link href="/admin/slots" onClick={close} style={navItem(active === 'slots')}>
+            <Link
+              href="/admin/slots"
+              onClick={close}
+              style={navItem(active === 'slots')}
+            >
               <span>{t('slots')}</span>
             </Link>
             <div style={soon}>
