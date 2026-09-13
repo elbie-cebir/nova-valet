@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { getDb } from '@/lib/data/db.server';
-import { getTravelFee } from '@/lib/data/travel';
+import { getTravelFee } from '@/lib/content/reads';
 import { getAvailableSlots } from '@/lib/data/availability';
 import {
   reserveSlot,
@@ -32,8 +32,7 @@ export async function lookupTravelFeeAction(
 ): Promise<TravelFeeView> {
   const parsed = postcodeSchema.safeParse(postcode);
   if (!parsed.success) return { found: false, inArea: false, feeCents: 0 };
-  const db = await getDb();
-  const r = await getTravelFee(db, parsed.data);
+  const r = await getTravelFee(parsed.data);
   return { found: r.found, inArea: r.inArea, feeCents: r.feeCents };
 }
 
@@ -80,7 +79,7 @@ export async function reserveBookingAction(
 
   const addOns = await getAddOnAmounts(db, data.addOnIds);
 
-  const travel = await getTravelFee(db, data.postcode);
+  const travel = await getTravelFee(data.postcode);
   if (!travel.inArea) return { ok: false, reason: 'out_of_area' };
 
   const totals = computeTotals({

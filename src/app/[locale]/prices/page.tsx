@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getDb } from '@/lib/data/db.server';
-import { getTiers, getServicePricesForTier } from '@/lib/data/catalog';
+import { getTiers, getServicePricesForTier } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 import { parseVehicleSize } from '@/lib/validation/params';
 import { DEPOSIT_AMOUNT_CENTS } from '@/config/constants';
@@ -33,10 +32,9 @@ export default async function PricesPage({
   const t = await getTranslations('Prices');
   const tc = await getTranslations();
 
-  const db = await getDb();
   const [tiers, rows] = await Promise.all([
-    getTiers(db),
-    getServicePricesForTier(db, activeSize),
+    getTiers(),
+    getServicePricesForTier(activeSize),
   ]);
 
   return (

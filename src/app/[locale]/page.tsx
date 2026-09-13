@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getDb } from '@/lib/data/db.server';
-import { getServicesWithFromPrice } from '@/lib/data/catalog';
+import { getServicesWithFromPrice } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 import { DEPOSIT_AMOUNT_CENTS } from '@/config/constants';
 
@@ -46,8 +45,7 @@ export default async function HomePage({
 
   const t = await getTranslations('Home');
   const tc = await getTranslations();
-  const db = await getDb();
-  const services = await getServicesWithFromPrice(db);
+  const services = await getServicesWithFromPrice();
   const money = (c: number, cur = 'EUR') => formatMoney(c, cur, locale);
   const ownerNumber = process.env.NEXT_PUBLIC_WHATSAPP_OWNER_NUMBER;
 

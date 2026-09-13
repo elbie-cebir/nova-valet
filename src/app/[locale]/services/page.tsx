@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getDb } from '@/lib/data/db.server';
-import { getServicesWithFromPrice, getAddOns } from '@/lib/data/catalog';
+import { getServicesWithFromPrice, getAddOns } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 
 const wrap = {
@@ -25,10 +24,9 @@ export default async function ServicesPage({
   const t = await getTranslations('Services');
   const tc = await getTranslations();
 
-  const db = await getDb();
   const [services, addons] = await Promise.all([
-    getServicesWithFromPrice(db),
-    getAddOns(db),
+    getServicesWithFromPrice(),
+    getAddOns(),
   ]);
 
   return (

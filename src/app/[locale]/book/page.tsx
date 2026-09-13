@@ -1,11 +1,10 @@
 import { setRequestLocale } from 'next-intl/server';
-import { getDb } from '@/lib/data/db.server';
 import {
   getServicesWithFromPrice,
   getTiers,
   getAddOns,
   getPriceMatrix,
-} from '@/lib/data/catalog';
+} from '@/lib/content/reads';
 import { DEPOSIT_AMOUNT_CENTS } from '@/config/constants';
 import { BookingFlow } from '@/components/booking/booking-flow';
 
@@ -17,13 +16,12 @@ export default async function BookPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // Data-access layer only; the component receives plain data, never SQL.
-  const db = await getDb();
+  // Cache-first content reads; the component receives plain data, never SQL.
   const [services, tiers, addOns, priceMatrix] = await Promise.all([
-    getServicesWithFromPrice(db),
-    getTiers(db),
-    getAddOns(db),
-    getPriceMatrix(db),
+    getServicesWithFromPrice(),
+    getTiers(),
+    getAddOns(),
+    getPriceMatrix(),
   ]);
 
   const currency = priceMatrix[0]?.currency ?? 'EUR';
