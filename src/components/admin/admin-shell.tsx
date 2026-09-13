@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { signOutAction } from '@/app/[locale]/admin/actions';
+import { AdminMobileBar } from './admin-mobile-bar';
 import type { ReactNode } from 'react';
 
 /**
@@ -74,15 +75,6 @@ export async function AdminShell({
     background: isActive ? 'var(--nv-surface-2)' : 'transparent',
     color: isActive ? 'var(--nv-ink)' : 'var(--nv-muted)',
     width: '100%',
-  });
-  const pill = (isActive: boolean) => ({
-    padding: '6px 14px',
-    borderRadius: 999,
-    border: 0,
-    fontSize: 13,
-    fontWeight: 600,
-    background: isActive ? 'var(--nv-lime)' : 'transparent',
-    color: isActive ? 'var(--nv-bg)' : 'var(--nv-muted)',
   });
   const soon = {
     padding: '12px 14px',
@@ -237,59 +229,14 @@ export async function AdminShell({
         </div>
       </aside>
 
-      {/* ── content column (with phone top bar) ── */}
+      {/* ── content column (phone chrome slides the nav in from the right) ── */}
       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <div
-          className="nv-admin-top"
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 5,
-            padding: '10px 18px',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 8,
-            backdropFilter: 'blur(20px)',
-            background: 'rgba(11,12,10,.6)',
-            borderBottom: '1px solid var(--nv-border)',
-          }}
-        >
-          <Brand size={16} />
-          <div
-            style={{
-              display: 'flex',
-              gap: 4,
-              background: 'var(--nv-surface-2)',
-              borderRadius: 999,
-              padding: 3,
-            }}
-          >
-            <Link href="/admin" style={pill(active === 'bookings')}>
-              {t('bookings')}
-            </Link>
-            <Link href="/admin/slots" style={pill(active === 'slots')}>
-              {t('slots')}
-            </Link>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <LocaleSwitcher />
-            <form action={signOutAction.bind(null, locale)}>
-              <button
-                type="submit"
-                style={{
-                  background: 'none',
-                  border: 0,
-                  color: 'var(--nv-faint)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                }}
-              >
-                {t('signOut')}
-              </button>
-            </form>
-          </div>
-        </div>
+        <AdminMobileBar
+          locale={locale}
+          ownerEmail={ownerEmail}
+          active={active}
+          bookingCount={bookingCount}
+        />
 
         {children}
       </div>

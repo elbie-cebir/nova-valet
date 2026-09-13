@@ -43,7 +43,9 @@
     "services": "Diensten",
     "prices": "Prijzen",
     "myBooking": "Mijn boeking",
-    "bookNow": "Nu boeken"
+    "bookNow": "Nu boeken",
+    "menu": "Menu openen",
+    "close": "Menu sluiten"
   },
   "Services": {
     "title": "Diensten",
@@ -307,7 +309,9 @@
     "created": "{n} open sloten aangemaakt.",
     "overlapSkipped": "{n} overgeslagen wegens de reistijd van 1 uur.",
     "invalid": "Kies minstens één dag en één starttijd.",
-    "signInError": "Verkeerd e-mailadres of wachtwoord."
+    "signInError": "Verkeerd e-mailadres of wachtwoord.",
+    "openMenu": "Menu openen",
+    "closeMenu": "Menu sluiten"
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",

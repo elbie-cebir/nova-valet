@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { LocaleSwitcher } from './locale-switcher';
+import { MobileMenu } from './mobile-menu';
 
 /**
  * Sticky top bar from the POC: brand wordmark, primary nav, locale switch and
@@ -60,15 +61,7 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav
-          style={{
-            display: 'flex',
-            gap: 26,
-            fontSize: 14,
-            fontWeight: 500,
-            color: 'var(--nv-muted)',
-          }}
-        >
+        <nav className="nv-nav-desktop">
           <Link href="/services" style={{ color: 'inherit' }}>
             {t('services')}
           </Link>
@@ -80,7 +73,12 @@ export function SiteHeader() {
           </Link>
         </nav>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Phone: everything collapses into a hamburger sheet. */}
+        <div className="nv-nav-mobile">
+          <MobileMenu />
+        </div>
+
+        <div className="nv-actions-desktop">
           <LocaleSwitcher />
           <Link
             href="/book"

@@ -43,7 +43,9 @@
     "services": "Services",
     "prices": "Prices",
     "myBooking": "My booking",
-    "bookNow": "Book now"
+    "bookNow": "Book now",
+    "menu": "Open menu",
+    "close": "Close menu"
   },
   "Services": {
     "title": "Services",
@@ -307,7 +309,9 @@
     "created": "Created {n} open slots.",
     "overlapSkipped": "Skipped {n} that clashed with the 1-hour travel buffer.",
     "invalid": "Pick at least one day and one start time.",
-    "signInError": "Wrong email or password."
+    "signInError": "Wrong email or password.",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

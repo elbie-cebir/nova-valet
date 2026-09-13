@@ -56,6 +56,33 @@ h3 {
   font-family: var(--font-mono);
 }
 
+/* ── Site header ─────────────────────────────────────────────────────────
+   Full nav + locale + CTA on web; a hamburger sheet on phone. */
+.nv-nav-desktop {
+  display: flex;
+  gap: 26px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--nv-muted);
+}
+.nv-actions-desktop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nv-nav-mobile {
+  display: none;
+}
+@media (max-width: 767px) {
+  .nv-nav-desktop,
+  .nv-actions-desktop {
+    display: none;
+  }
+  .nv-nav-mobile {
+    display: flex;
+  }
+}
+
 /* Booking flow: single column on phone, content + sticky side summary on web
    (mirrors the POC's two-column booking layout). */
 .nv-book-grid {

@@ -43,7 +43,9 @@
     "services": "Services",
     "prices": "Tarifs",
     "myBooking": "Ma réservation",
-    "bookNow": "Réserver"
+    "bookNow": "Réserver",
+    "menu": "Ouvrir le menu",
+    "close": "Fermer le menu"
   },
   "Services": {
     "title": "Services",
@@ -307,7 +309,9 @@
     "created": "{n} créneaux ouverts créés.",
     "overlapSkipped": "{n} ignoré(s) à cause du trajet d’1 heure.",
     "invalid": "Choisissez au moins un jour et une heure.",
-    "signInError": "E-mail ou mot de passe incorrect."
+    "signInError": "E-mail ou mot de passe incorrect.",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",
