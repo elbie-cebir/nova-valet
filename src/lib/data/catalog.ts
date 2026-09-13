@@ -1,23 +1,29 @@
 import type { Queryable } from './types';
 
+/** Pick the value for a locale from the three per-locale columns (nl default). */
+function pick(loc: string, nl: string, en: string, fr: string): string {
+  return loc === 'en' ? en : loc === 'fr' ? fr : nl;
+}
+
 export interface Service {
   id: string;
   key: string;
-  nameKey: string;
-  descriptionKey: string;
+  name: string;
+  description: string;
 }
 
 export interface Tier {
   id: string;
   key: string;
-  labelKey: string;
+  label: string;
+  desc: string;
   sortOrder: number;
 }
 
 export interface AddOn {
   id: string;
   key: string;
-  nameKey: string;
+  name: string;
   amountCents: number;
 }
 
@@ -33,36 +39,54 @@ export interface ServiceTierPrice extends Service {
   currency: string;
 }
 
+const SERVICE_COLS = `s.id, s.key,
+  s.name_nl, s.name_en, s.name_fr,
+  s.desc_nl, s.desc_en, s.desc_fr`;
+
+interface ServiceRow {
+  id: string;
+  key: string;
+  name_nl: string;
+  name_en: string;
+  name_fr: string;
+  desc_nl: string;
+  desc_en: string;
+  desc_fr: string;
+}
+
+function toService(r: ServiceRow, loc: string): Service {
+  return {
+    id: r.id,
+    key: r.key,
+    name: pick(loc, r.name_nl, r.name_en, r.name_fr),
+    description: pick(loc, r.desc_nl, r.desc_en, r.desc_fr),
+  };
+}
+
 /**
- * Active services with their "from" price (cheapest tier). Ordered cheapest
- * first so the catalog reads low-to-high. A service with no price row is
- * omitted — there is nothing to book without a price.
+ * Active services with their "from" price (cheapest tier), cheapest first. A
+ * service with no price row is omitted — there is nothing to book without a
+ * price. Names/descriptions are returned already localized to `locale`.
  */
 export async function getServicesWithFromPrice(
   db: Queryable,
+  locale: string,
 ): Promise<ServiceFromPrice[]> {
-  const { rows } = await db.query<{
-    id: string;
-    key: string;
-    name_key: string;
-    description_key: string;
-    from_cents: number;
-    currency: string;
-  }>(
-    `select s.id, s.key, s.name_key, s.description_key,
+  const { rows } = await db.query<
+    ServiceRow & { from_cents: number; currency: string }
+  >(
+    `select ${SERVICE_COLS},
             min(p.amount_cents) as from_cents,
             min(p.currency) as currency
      from service s
      join price p on p.service_id = s.id
      where s.active
-     group by s.id, s.key, s.name_key, s.description_key
+     group by s.id, s.key, s.name_nl, s.name_en, s.name_fr,
+              s.desc_nl, s.desc_en, s.desc_fr
      order by from_cents asc, s.key asc`,
   );
   return rows.map((r) => ({
-    id: r.id,
-    key: r.key,
-    nameKey: r.name_key,
-    descriptionKey: r.description_key,
+    ...toService(r, locale),
     fromCents: Number(r.from_cents),
     currency: r.currency,
   }));
@@ -74,18 +98,13 @@ export async function getServicesWithFromPrice(
  */
 export async function getServicePricesForTier(
   db: Queryable,
+  locale: string,
   tierKey: string,
 ): Promise<ServiceTierPrice[]> {
-  const { rows } = await db.query<{
-    id: string;
-    key: string;
-    name_key: string;
-    description_key: string;
-    amount_cents: number;
-    currency: string;
-  }>(
-    `select s.id, s.key, s.name_key, s.description_key,
-            p.amount_cents, p.currency
+  const { rows } = await db.query<
+    ServiceRow & { amount_cents: number; currency: string }
+  >(
+    `select ${SERVICE_COLS}, p.amount_cents, p.currency
      from service s
      join price p on p.service_id = s.id
      join vehicle_size_tier t on t.id = p.vehicle_size_tier_id
@@ -94,10 +113,7 @@ export async function getServicePricesForTier(
     [tierKey],
   );
   return rows.map((r) => ({
-    id: r.id,
-    key: r.key,
-    nameKey: r.name_key,
-    descriptionKey: r.description_key,
+    ...toService(r, locale),
     amountCents: Number(r.amount_cents),
     currency: r.currency,
   }));
@@ -130,35 +146,47 @@ export async function getPriceMatrix(db: Queryable): Promise<
   }));
 }
 
-/** Vehicle-size tiers in display order. */
-export async function getTiers(db: Queryable): Promise<Tier[]> {
+/** Vehicle-size tiers in display order, labels localized to `locale`. */
+export async function getTiers(db: Queryable, locale: string): Promise<Tier[]> {
   const { rows } = await db.query<{
     id: string;
     key: string;
-    label_key: string;
+    label_nl: string;
+    label_en: string;
+    label_fr: string;
+    desc_nl: string;
+    desc_en: string;
+    desc_fr: string;
     sort_order: number;
   }>(
-    `select id, key, label_key, sort_order
+    `select id, key, label_nl, label_en, label_fr,
+            desc_nl, desc_en, desc_fr, sort_order
      from vehicle_size_tier
      order by sort_order asc`,
   );
   return rows.map((r) => ({
     id: r.id,
     key: r.key,
-    labelKey: r.label_key,
+    label: pick(locale, r.label_nl, r.label_en, r.label_fr),
+    desc: pick(locale, r.desc_nl, r.desc_en, r.desc_fr),
     sortOrder: Number(r.sort_order),
   }));
 }
 
-/** Active add-ons, cheapest first. */
-export async function getAddOns(db: Queryable): Promise<AddOn[]> {
+/** Active add-ons, cheapest first, names localized to `locale`. */
+export async function getAddOns(
+  db: Queryable,
+  locale: string,
+): Promise<AddOn[]> {
   const { rows } = await db.query<{
     id: string;
     key: string;
-    name_key: string;
+    name_nl: string;
+    name_en: string;
+    name_fr: string;
     amount_cents: number;
   }>(
-    `select id, key, name_key, amount_cents
+    `select id, key, name_nl, name_en, name_fr, amount_cents
      from add_on
      where active
      order by amount_cents asc, key asc`,
@@ -166,7 +194,7 @@ export async function getAddOns(db: Queryable): Promise<AddOn[]> {
   return rows.map((r) => ({
     id: r.id,
     key: r.key,
-    nameKey: r.name_key,
+    name: pick(locale, r.name_nl, r.name_en, r.name_fr),
     amountCents: Number(r.amount_cents),
   }));
 }

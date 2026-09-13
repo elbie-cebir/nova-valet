@@ -170,7 +170,7 @@ export default async function GuestBookingPage({
             <div style={row}>
               <span style={{ color: 'var(--nv-muted)' }}>{tb('service')}</span>
               <strong>
-                {tc(booking.serviceNameKey)} · {tc(booking.tierLabelKey)}
+                {booking.serviceName} · {booking.tierLabel}
               </strong>
             </div>
             <div style={row}>

@@ -16,18 +16,19 @@ import {
 
 interface ServiceOpt {
   id: string;
-  nameKey: string;
-  descKey: string;
+  name: string;
+  desc: string;
   fromCents: number;
 }
 interface TierOpt {
   id: string;
   key: string;
-  labelKey: string;
+  label: string;
+  desc: string;
 }
 interface AddOnOpt {
   id: string;
-  nameKey: string;
+  name: string;
   amountCents: number;
 }
 interface PriceCell {
@@ -150,7 +151,6 @@ export function BookingFlow(props: {
     priceMatrix,
   } = props;
   const t = useTranslations('Booking');
-  const tc = useTranslations();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -214,8 +214,8 @@ export function BookingFlow(props: {
   const total = subtotal + travelFee;
   const deposit = Math.min(depositCents, total);
 
-  const serviceName = services.find((s) => s.id === serviceId)?.nameKey;
-  const sizeLabel = tiers.find((tr) => tr.key === size)?.labelKey;
+  const serviceName = services.find((s) => s.id === serviceId)?.name;
+  const sizeLabel = tiers.find((tr) => tr.key === size)?.label;
   const selectedSlot = slots?.find((s) => s.id === slotId) ?? null;
   const chosenAddOns = addOns.filter((a) => addOnIds.includes(a.id));
 
@@ -449,7 +449,7 @@ export function BookingFlow(props: {
                           fontSize: 17,
                         }}
                       >
-                        {tc(s.nameKey)}
+                        {s.name}
                       </span>
                       <span style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
                         {t('from')}{' '}
@@ -474,7 +474,7 @@ export function BookingFlow(props: {
                 >
                   {t('s2sub')}{' '}
                   <strong style={{ color: 'var(--nv-ink)' }}>
-                    {tc(serviceName)}
+                    {serviceName}
                   </strong>
                 </p>
               )}
@@ -513,10 +513,10 @@ export function BookingFlow(props: {
                           fontSize: 16,
                         }}
                       >
-                        {tc(tr.labelKey)}
+                        {tr.label}
                       </div>
                       <div style={{ fontSize: 12, color: 'var(--nv-muted)' }}>
-                        {tc(`Tiers.${tr.key}.desc`)}
+                        {tr.desc}
                       </div>
                       <div
                         className="nv-mono"
@@ -558,7 +558,7 @@ export function BookingFlow(props: {
                   >
                     <span style={checkbox(on)}>{on ? '✓' : ''}</span>
                     <span style={{ flex: 1, fontWeight: 600, fontSize: 16 }}>
-                      {tc(a.nameKey)}
+                      {a.name}
                     </span>
                     <span
                       className="nv-mono"
@@ -910,7 +910,7 @@ export function BookingFlow(props: {
               >
                 <span style={{ color: 'var(--nv-muted)' }}>{t('service')}</span>
                 <strong style={{ textAlign: 'right' }}>
-                  {serviceName ? tc(serviceName) : '—'}
+                  {serviceName ?? '—'}
                 </strong>
               </div>
               <div
@@ -922,7 +922,7 @@ export function BookingFlow(props: {
               >
                 <span style={{ color: 'var(--nv-muted)' }}>{t('size')}</span>
                 <strong style={{ textAlign: 'right' }}>
-                  {sizeLabel ? tc(sizeLabel) : '—'}
+                  {sizeLabel ?? '—'}
                 </strong>
               </div>
               <div
@@ -936,7 +936,7 @@ export function BookingFlow(props: {
                 <strong style={{ textAlign: 'right' }}>
                   {chosenAddOns.length === 0
                     ? t('none')
-                    : chosenAddOns.map((a) => tc(a.nameKey)).join(', ')}
+                    : chosenAddOns.map((a) => a.name).join(', ')}
                 </strong>
               </div>
               <div

@@ -1,8 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getServicesWithFromPrice } from '@/lib/content/reads';
+import { getServicesWithFromPrice, getDepositCents } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
-import { DEPOSIT_AMOUNT_CENTS } from '@/config/constants';
 
 const section = {
   maxWidth: 1180,
@@ -44,8 +43,10 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
-  const tc = await getTranslations();
-  const services = await getServicesWithFromPrice();
+  const [services, depositCents] = await Promise.all([
+    getServicesWithFromPrice(locale),
+    getDepositCents(),
+  ]);
   const money = (c: number, cur = 'EUR') => formatMoney(c, cur, locale);
   const ownerNumber = process.env.NEXT_PUBLIC_WHATSAPP_OWNER_NUMBER;
 
@@ -325,7 +326,7 @@ export default async function HomePage({
                     letterSpacing: '-.01em',
                   }}
                 >
-                  {tc(s.nameKey)}
+                  {s.name}
                 </div>
                 <div
                   style={{
@@ -362,11 +363,7 @@ export default async function HomePage({
           {(
             [
               ['1', t('how1t'), t('how1d')],
-              [
-                '2',
-                t('how2t', { deposit: money(DEPOSIT_AMOUNT_CENTS) }),
-                t('how2d'),
-              ],
+              ['2', t('how2t', { deposit: money(depositCents) }), t('how2d')],
               ['3', t('how3t'), t('how3d')],
             ] as const
           ).map(([n, title, desc], i) => (

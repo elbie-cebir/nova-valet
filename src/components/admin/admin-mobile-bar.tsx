@@ -23,7 +23,14 @@ export function AdminMobileBar({
 }: {
   locale: string;
   ownerEmail: string;
-  active: 'bookings' | 'slots';
+  active:
+    | 'bookings'
+    | 'slots'
+    | 'catalog'
+    | 'area'
+    | 'homepage'
+    | 'reviews'
+    | 'legal';
   bookingCount: number;
 }) {
   const t = useTranslations('Admin');
@@ -175,16 +182,19 @@ export function AdminMobileBar({
             >
               <span>{t('slots')}</span>
             </Link>
+            <Link
+              href="/admin/catalog"
+              onClick={close}
+              style={navItem(active === 'catalog')}
+            >
+              <span>{t('pricesAddons')}</span>
+            </Link>
             <div style={soon}>
               {t('payments')}
               {soonTag}
             </div>
             <div style={soon}>
               {t('areaFees')}
-              {soonTag}
-            </div>
-            <div style={soon}>
-              {t('pricesAddons')}
               {soonTag}
             </div>
           </nav>

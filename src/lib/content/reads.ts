@@ -1,6 +1,7 @@
 import { getDb } from '@/lib/data/db.server';
 import * as catalog from '@/lib/data/catalog';
 import { getTravelFee as getTravelFeeDal } from '@/lib/data/travel';
+import { getDepositCents as getDepositCentsDal } from '@/lib/data/settings';
 import { cachedContent, CACHE_TAGS } from './cache';
 
 /**
@@ -9,19 +10,20 @@ import { cachedContent, CACHE_TAGS } from './cache';
  * or the DB per request — the result is served from cache until the matching
  * tag is revalidated by an admin edit.
  *
- * Pages import these instead of the raw `@/lib/data/*` functions. The DAL stays
- * the single place that writes SQL; this is only the caching seam over it.
+ * Catalog reads are localized: they take a `locale` and the cache keys each
+ * locale separately, so nl/en/fr each cache their own rendered strings.
  */
 
 export const getServicesWithFromPrice = cachedContent(
-  async () => catalog.getServicesWithFromPrice(await getDb()),
+  async (locale: string) =>
+    catalog.getServicesWithFromPrice(await getDb(), locale),
   ['content:services-from-price'],
   [CACHE_TAGS.catalog],
 );
 
 export const getServicePricesForTier = cachedContent(
-  async (tierKey: string) =>
-    catalog.getServicePricesForTier(await getDb(), tierKey),
+  async (locale: string, tierKey: string) =>
+    catalog.getServicePricesForTier(await getDb(), locale, tierKey),
   ['content:service-prices-tier'],
   [CACHE_TAGS.catalog],
 );
@@ -33,14 +35,21 @@ export const getPriceMatrix = cachedContent(
 );
 
 export const getTiers = cachedContent(
-  async () => catalog.getTiers(await getDb()),
+  async (locale: string) => catalog.getTiers(await getDb(), locale),
   ['content:tiers'],
   [CACHE_TAGS.catalog],
 );
 
 export const getAddOns = cachedContent(
-  async () => catalog.getAddOns(await getDb()),
+  async (locale: string) => catalog.getAddOns(await getDb(), locale),
   ['content:add-ons'],
+  [CACHE_TAGS.catalog],
+);
+
+/** Flat deposit in cents — cached under the catalog tag (admin edits it there). */
+export const getDepositCents = cachedContent(
+  async () => getDepositCentsDal(await getDb()),
+  ['content:deposit-cents'],
   [CACHE_TAGS.catalog],
 );
 

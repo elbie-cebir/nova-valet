@@ -22,11 +22,10 @@ export default async function ServicesPage({
   setRequestLocale(locale);
 
   const t = await getTranslations('Services');
-  const tc = await getTranslations();
 
   const [services, addons] = await Promise.all([
-    getServicesWithFromPrice(),
-    getAddOns(),
+    getServicesWithFromPrice(locale),
+    getAddOns(locale),
   ]);
 
   return (
@@ -92,7 +91,7 @@ export default async function ServicesPage({
                   letterSpacing: '-.02em',
                 }}
               >
-                {tc(s.nameKey)}
+                {s.name}
               </div>
               <span
                 style={{
@@ -115,7 +114,7 @@ export default async function ServicesPage({
                 flex: 1,
               }}
             >
-              {tc(s.descriptionKey)}
+              {s.description}
             </div>
             <Link
               href="/book"
@@ -172,7 +171,7 @@ export default async function ServicesPage({
               fontSize: 15,
             }}
           >
-            <span>{tc(a.nameKey)}</span>
+            <span>{a.name}</span>
             <span
               className="nv-mono"
               style={{ fontSize: 13, color: 'var(--nv-muted)' }}

@@ -20,7 +20,14 @@ export async function AdminShell({
 }: {
   locale: string;
   ownerEmail: string;
-  active: 'bookings' | 'slots';
+  active:
+    | 'bookings'
+    | 'slots'
+    | 'catalog'
+    | 'area'
+    | 'homepage'
+    | 'reviews'
+    | 'legal';
   bookingCount: number;
   children: ReactNode;
 }) {
@@ -134,16 +141,15 @@ export async function AdminShell({
           <Link href="/admin/slots" style={navItem(active === 'slots')}>
             <span>{t('slots')}</span>
           </Link>
+          <Link href="/admin/catalog" style={navItem(active === 'catalog')}>
+            <span>{t('pricesAddons')}</span>
+          </Link>
           <div style={soon}>
             {t('payments')}
             {soonTag}
           </div>
           <div style={soon}>
             {t('areaFees')}
-            {soonTag}
-          </div>
-          <div style={soon}>
-            {t('pricesAddons')}
             {soonTag}
           </div>
         </nav>

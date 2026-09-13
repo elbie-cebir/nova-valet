@@ -142,7 +142,7 @@ export default async function BookingPendingPage({
         <div style={row}>
           <span style={{ color: 'var(--nv-muted)' }}>{t('service')}</span>
           <strong>
-            {tc(booking.serviceNameKey)} · {tc(booking.tierLabelKey)}
+            {booking.serviceName} · {booking.tierLabel}
           </strong>
         </div>
         <div style={row}>

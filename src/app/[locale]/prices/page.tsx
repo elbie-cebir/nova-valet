@@ -1,9 +1,12 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getTiers, getServicePricesForTier } from '@/lib/content/reads';
+import {
+  getTiers,
+  getServicePricesForTier,
+  getDepositCents,
+} from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 import { parseVehicleSize } from '@/lib/validation/params';
-import { DEPOSIT_AMOUNT_CENTS } from '@/config/constants';
 
 const wrap = {
   maxWidth: 900,
@@ -30,12 +33,13 @@ export default async function PricesPage({
   const activeSize = parseVehicleSize(size);
 
   const t = await getTranslations('Prices');
-  const tc = await getTranslations();
 
-  const [tiers, rows] = await Promise.all([
-    getTiers(),
-    getServicePricesForTier(activeSize),
+  const [tiers, rows, depositCents] = await Promise.all([
+    getTiers(locale),
+    getServicePricesForTier(locale, activeSize),
+    getDepositCents(),
   ]);
+  const activeTier = tiers.find((tier) => tier.key === activeSize);
 
   return (
     <main style={wrap}>
@@ -90,9 +94,9 @@ export default async function PricesPage({
                 textAlign: 'center',
               }}
             >
-              <span>{tc(tier.labelKey)}</span>
+              <span>{tier.label}</span>
               <span style={{ fontSize: 10, fontWeight: 500, opacity: 0.7 }}>
-                {tc(`Tiers.${tier.key}.desc`)}
+                {tier.desc}
               </span>
             </Link>
           );
@@ -122,7 +126,7 @@ export default async function PricesPage({
                   fontSize: 18,
                 }}
               >
-                {tc(s.nameKey)}
+                {s.name}
               </div>
               <div style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
                 {t('slot2h')}
@@ -154,7 +158,7 @@ export default async function PricesPage({
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ color: 'var(--nv-muted)' }}>{t('depositAt')}</span>
           <strong className="nv-mono" style={{ fontWeight: 500 }}>
-            {formatMoney(DEPOSIT_AMOUNT_CENTS, 'EUR', locale)} {t('flat')}
+            {formatMoney(depositCents, 'EUR', locale)} {t('flat')}
           </strong>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -193,7 +197,7 @@ export default async function PricesPage({
           boxShadow: '0 14px 40px -12px rgba(214,240,77,.8)',
         }}
       >
-        {t('bookFor')} {tc(`Tiers.${activeSize}.label`)}
+        {t('bookFor')} {activeTier?.label ?? ''}
       </Link>
     </main>
   );

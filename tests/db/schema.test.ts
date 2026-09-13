@@ -27,6 +27,7 @@ describe('B1 schema + seed', () => {
         'postcode_area',
         'price',
         'service',
+        'setting',
         'slot',
         'vehicle_size_tier',
       ].sort(),

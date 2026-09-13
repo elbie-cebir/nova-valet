@@ -236,9 +236,9 @@ export interface BookingSummary {
   customerPhone: string;
   customerEmail: string;
   serviceKey: string;
-  serviceNameKey: string;
+  serviceName: string;
   tierKey: string;
-  tierLabelKey: string;
+  tierLabel: string;
   slotId: string;
   slotStartAt: string;
   slotEndAt: string;
@@ -252,7 +252,7 @@ export interface BookingSummary {
   depositPaidAt: string | null;
   balancePaidAt: string | null;
   heldUntil: string | null;
-  addOns: { nameKey: string; amountCents: number }[];
+  addOns: { name: string; amountCents: number }[];
 }
 
 /** Minimal contact info for sending the confirmation email. */
@@ -281,8 +281,12 @@ export async function getBookingByReference(
   const { rows } = await db.query<Record<string, unknown>>(
     `select b.id, b.reference, b.status, b.locale,
             b.customer_name, b.customer_phone, b.customer_email,
-            s.key as service_key, s.name_key as service_name_key,
-            t.key as tier_key, t.label_key as tier_label_key,
+            s.key as service_key,
+            case when b.locale='en' then s.name_en
+                 when b.locale='fr' then s.name_fr else s.name_nl end as service_name,
+            t.key as tier_key,
+            case when b.locale='en' then t.label_en
+                 when b.locale='fr' then t.label_fr else t.label_nl end as tier_label,
             b.slot_id,
             sl.start_at as slot_start_at, sl.end_at as slot_end_at,
             sl.held_until,
@@ -299,13 +303,15 @@ export async function getBookingByReference(
   const r = rows[0];
   if (!r) return null;
 
-  const addOns = await db.query<{ name_key: string; amount_cents: number }>(
-    `select a.name_key, ba.amount_cents
+  const addOns = await db.query<{ name: string; amount_cents: number }>(
+    `select case when $2='en' then a.name_en
+                 when $2='fr' then a.name_fr else a.name_nl end as name,
+            ba.amount_cents
      from booking_add_on ba
      join add_on a on a.id = ba.add_on_id
      where ba.booking_id = $1
      order by ba.amount_cents asc`,
-    [r.id as string],
+    [r.id as string, r.locale as string],
   );
 
   return {
@@ -317,9 +323,9 @@ export async function getBookingByReference(
     customerPhone: r.customer_phone as string,
     customerEmail: r.customer_email as string,
     serviceKey: r.service_key as string,
-    serviceNameKey: r.service_name_key as string,
+    serviceName: r.service_name as string,
     tierKey: r.tier_key as string,
-    tierLabelKey: r.tier_label_key as string,
+    tierLabel: r.tier_label as string,
     slotId: r.slot_id as string,
     slotStartAt: new Date(r.slot_start_at as string).toISOString(),
     slotEndAt: new Date(r.slot_end_at as string).toISOString(),
@@ -340,7 +346,7 @@ export async function getBookingByReference(
       ? new Date(r.held_until as string).toISOString()
       : null,
     addOns: addOns.rows.map((a) => ({
-      nameKey: a.name_key,
+      name: a.name,
       amountCents: Number(a.amount_cents),
     })),
   };

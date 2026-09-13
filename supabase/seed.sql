@@ -8,18 +8,32 @@
 -- Novavale POC so the catalog/pricing screens match the design reference.
 
 -- Services -------------------------------------------------------------------
-insert into service (key, name_key, description_key, active) values
-  ('interior', 'Catalog.interior.name', 'Catalog.interior.desc', true),
-  ('exterior', 'Catalog.exterior.name', 'Catalog.exterior.desc', true),
-  ('both',     'Catalog.both.name',     'Catalog.both.desc',     true),
-  ('full',     'Catalog.full.name',     'Catalog.full.desc',     true);
+-- Per-locale content (nl/en/fr). These mirror the current translations; the
+-- owner edits them in admin (B9). PLACEHOLDER copy where marked with [ ].
+insert into service (key, name_nl, name_en, name_fr, desc_nl, desc_en, desc_fr, active) values
+  ('interior', 'Enkel interieur', 'Interior only', 'Intérieur seul',
+    'Stofzuigen · zetels & bekleding · dashboard · binnenruiten',
+    'Vacuum · seats & upholstery · dashboard · interior glass',
+    'Aspiration · sièges & tissus · tableau de bord · vitres intérieures', true),
+  ('exterior', 'Enkel exterieur', 'Exterior only', 'Extérieur seul',
+    'Handwas · velgen · buitenruiten · bandenglans',
+    'Hand wash · wheels · exterior glass · tyre dressing',
+    'Lavage à la main · jantes · vitres extérieures · brillant pneus', true),
+  ('both', 'Interieur + exterieur', 'Interior + exterior', 'Intérieur + extérieur',
+    'Alles uit beide pakketten, in één bezoek.',
+    'Everything in both packages, one visit.',
+    'Tout des deux formules, en une visite.', true),
+  ('full', 'Volledige detailing', 'Full detailing', 'Detailing complet',
+    'Dieptereiniging · lakdecontaminatie · polish · bescherming · [scope te bevestigen]',
+    'Deep clean · paint decontamination · polish · protection · [scope to confirm]',
+    'Nettoyage en profondeur · décontamination · polish · protection · [périmètre à confirmer]', true);
 
 -- Vehicle size tiers ---------------------------------------------------------
-insert into vehicle_size_tier (key, label_key, sort_order) values
-  ('small',  'Tiers.small.label',  1),
-  ('medium', 'Tiers.medium.label', 2),
-  ('large',  'Tiers.large.label',  3),
-  ('van',    'Tiers.van.label',    4);
+insert into vehicle_size_tier (key, label_nl, label_en, label_fr, desc_nl, desc_en, desc_fr, sort_order) values
+  ('small',  'Klein', 'Small', 'Petite', 'stadswagen', 'city car', 'citadine', 1),
+  ('medium', 'Middel', 'Medium', 'Moyenne', 'hatchback / sedan', 'hatchback / sedan', 'compacte / berline', 2),
+  ('large',  'Groot', 'Large', 'Grande', 'SUV / break', 'SUV / estate', 'SUV / break', 3),
+  ('van',    'Bestelwagen', 'Van', 'Utilitaire', 'MPV / bestelwagen', 'MPV / van', 'monospace / utilitaire', 4);
 
 -- Price matrix (service x tier) — PLACEHOLDER amounts in cents ---------------
 insert into price (service_id, vehicle_size_tier_id, amount_cents, currency)
@@ -46,11 +60,11 @@ join service s on s.key = p.service_key
 join vehicle_size_tier t on t.key = p.tier_key;
 
 -- Add-ons — PLACEHOLDER amounts ---------------------------------------------
-insert into add_on (key, name_key, amount_cents, active) values
-  ('pet_hair', 'AddOns.pet_hair', 2000, true),
-  ('odour',    'AddOns.odour',    2500, true),
-  ('leather',  'AddOns.leather',  3000, true),
-  ('engine',   'AddOns.engine',   3500, true);
+insert into add_on (key, name_nl, name_en, name_fr, amount_cents, active) values
+  ('pet_hair', 'Dierenhaar verwijderen', 'Pet hair removal', 'Poils d’animaux', 2000, true),
+  ('odour',    'Geurbehandeling', 'Odour treatment', 'Traitement des odeurs', 2500, true),
+  ('leather',  'Lederverzorging', 'Leather conditioning', 'Soin du cuir', 3000, true),
+  ('engine',   'Motorruimte reinigen', 'Engine bay clean', 'Nettoyage moteur', 3500, true);
 
 -- Postcode areas — PLACEHOLDER prefixes / travel fees ------------------------
 insert into postcode_area (prefix, travel_fee_cents, in_area) values

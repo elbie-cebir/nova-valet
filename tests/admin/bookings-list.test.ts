@@ -85,7 +85,7 @@ describe('owner bookings list + payment status', () => {
     expect(byRef['NV-LIST03'].paymentStatus).toBe('fully_paid');
     // Display fields are joined in for the list.
     expect(byRef['NV-LIST01'].customerName).toBe('Payment Tester');
-    expect(byRef['NV-LIST01'].serviceNameKey).toBeTruthy();
+    expect(byRef['NV-LIST01'].serviceName).toBeTruthy();
   });
 
   it('is bounded: limit + offset paginate, never an unbounded read', async () => {

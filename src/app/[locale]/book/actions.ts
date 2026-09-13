@@ -13,7 +13,8 @@ import {
 import { computeTotals } from '@/lib/booking/pricing';
 import { generateReference } from '@/lib/booking/reference';
 import { reserveInputSchema } from '@/lib/validation/booking';
-import { DEPOSIT_AMOUNT_CENTS, HOLD_TTL_MINUTES } from '@/config/constants';
+import { getDepositCents } from '@/lib/data/settings';
+import { HOLD_TTL_MINUTES } from '@/config/constants';
 
 const postcodeSchema = z
   .string()
@@ -82,11 +83,12 @@ export async function reserveBookingAction(
   const travel = await getTravelFee(data.postcode);
   if (!travel.inArea) return { ok: false, reason: 'out_of_area' };
 
+  const depositCents = await getDepositCents(db);
   const totals = computeTotals({
     tierPriceCents: price.amountCents,
     addOnAmountsCents: addOns.map((a) => a.amountCents),
     travelFeeCents: travel.feeCents,
-    depositCents: DEPOSIT_AMOUNT_CENTS,
+    depositCents,
   });
 
   // Retry only on the (rare) reference collision.

@@ -256,7 +256,7 @@ export default async function AdminBookingsPage({
                       </div>
                     </Link>
                     <span style={{ color: 'var(--nv-muted)' }}>
-                      {tc(b.serviceNameKey)} · {tc(b.tierLabelKey)}
+                      {b.serviceName} · {b.tierLabel}
                     </span>
                     <span
                       className="nv-mono"

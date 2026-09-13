@@ -4,8 +4,8 @@ import {
   getTiers,
   getAddOns,
   getPriceMatrix,
+  getDepositCents,
 } from '@/lib/content/reads';
-import { DEPOSIT_AMOUNT_CENTS } from '@/config/constants';
 import { BookingFlow } from '@/components/booking/booking-flow';
 
 export default async function BookPage({
@@ -17,12 +17,14 @@ export default async function BookPage({
   setRequestLocale(locale);
 
   // Cache-first content reads; the component receives plain data, never SQL.
-  const [services, tiers, addOns, priceMatrix] = await Promise.all([
-    getServicesWithFromPrice(),
-    getTiers(),
-    getAddOns(),
-    getPriceMatrix(),
-  ]);
+  const [services, tiers, addOns, priceMatrix, depositCents] =
+    await Promise.all([
+      getServicesWithFromPrice(locale),
+      getTiers(locale),
+      getAddOns(locale),
+      getPriceMatrix(),
+      getDepositCents(),
+    ]);
 
   const currency = priceMatrix[0]?.currency ?? 'EUR';
 
@@ -30,17 +32,22 @@ export default async function BookPage({
     <BookingFlow
       locale={locale}
       currency={currency}
-      depositCents={DEPOSIT_AMOUNT_CENTS}
+      depositCents={depositCents}
       services={services.map((s) => ({
         id: s.id,
-        nameKey: s.nameKey,
-        descKey: s.descriptionKey,
+        name: s.name,
+        desc: s.description,
         fromCents: s.fromCents,
       }))}
-      tiers={tiers.map((t) => ({ id: t.id, key: t.key, labelKey: t.labelKey }))}
+      tiers={tiers.map((t) => ({
+        id: t.id,
+        key: t.key,
+        label: t.label,
+        desc: t.desc,
+      }))}
       addOns={addOns.map((a) => ({
         id: a.id,
-        nameKey: a.nameKey,
+        name: a.name,
         amountCents: a.amountCents,
       }))}
       priceMatrix={priceMatrix.map((p) => ({

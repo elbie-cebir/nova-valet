@@ -127,7 +127,7 @@ export default async function AdminBookingDetailPage({
     slot: waWhen,
     addr: `${booking.address}, ${booking.postcode}`,
     bal: formatMoney(booking.balanceCents, 'EUR', booking.locale),
-    service: `${bookingTc(booking.serviceNameKey)} · ${bookingTc(booking.tierLabelKey)}`,
+    service: `${booking.serviceName} · ${booking.tierLabel}`,
     time: timeFmt.format(start),
   };
   const templates: WaTemplate[] = [
@@ -265,7 +265,7 @@ export default async function AdminBookingDetailPage({
               <div style={rowSB}>
                 <span style={{ color: 'var(--nv-muted)' }}>{t('service')}</span>
                 <strong style={{ textAlign: 'right' }}>
-                  {tc(booking.serviceNameKey)} · {tc(booking.tierLabelKey)}
+                  {booking.serviceName} · {booking.tierLabel}
                 </strong>
               </div>
               {booking.addOns.length > 0 && (
@@ -274,7 +274,7 @@ export default async function AdminBookingDetailPage({
                     {t('addons')}
                   </span>
                   <strong style={{ textAlign: 'right' }}>
-                    {booking.addOns.map((a) => tc(a.nameKey)).join(', ')}
+                    {booking.addOns.map((a) => a.name).join(', ')}
                   </strong>
                 </div>
               )}

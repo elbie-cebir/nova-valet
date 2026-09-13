@@ -11,8 +11,8 @@ export interface AdminBookingRow {
   customerEmail: string;
   customerPhone: string;
   postcode: string;
-  serviceNameKey: string;
-  tierLabelKey: string;
+  serviceName: string;
+  tierLabel: string;
   slotStartAt: string;
   slotEndAt: string;
   totalCents: number;
@@ -66,8 +66,10 @@ export async function listBookings(
   const { rows } = await db.query<Record<string, unknown>>(
     `select b.reference, b.status, b.locale,
             b.customer_name, b.customer_email, b.customer_phone, b.postcode,
-            s.name_key as service_name_key,
-            t.label_key as tier_label_key,
+            case when b.locale='en' then s.name_en
+                 when b.locale='fr' then s.name_fr else s.name_nl end as service_name,
+            case when b.locale='en' then t.label_en
+                 when b.locale='fr' then t.label_fr else t.label_nl end as tier_label,
             sl.start_at, sl.end_at,
             b.total_cents, b.balance_cents,
             b.deposit_paid_at, b.balance_paid_at
@@ -96,8 +98,8 @@ export async function listBookings(
       customerEmail: r.customer_email as string,
       customerPhone: r.customer_phone as string,
       postcode: r.postcode as string,
-      serviceNameKey: r.service_name_key as string,
-      tierLabelKey: r.tier_label_key as string,
+      serviceName: r.service_name as string,
+      tierLabel: r.tier_label as string,
       slotStartAt: new Date(r.start_at as string).toISOString(),
       slotEndAt: new Date(r.end_at as string).toISOString(),
       totalCents: Number(r.total_cents),
