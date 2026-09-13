@@ -3,6 +3,7 @@ import * as catalog from '@/lib/data/catalog';
 import { getTravelFee as getTravelFeeDal } from '@/lib/data/travel';
 import { getDepositCents as getDepositCentsDal } from '@/lib/data/settings';
 import { getHomepageContent as getHomepageContentDal } from '@/lib/data/homepage';
+import { getPublishedReviews as getPublishedReviewsDal } from '@/lib/data/reviews';
 import { cachedContent, CACHE_TAGS } from './cache';
 
 /**
@@ -64,4 +65,10 @@ export const getHomepageContent = cachedContent(
   async (locale: string) => getHomepageContentDal(await getDb(), locale),
   ['content:homepage'],
   [CACHE_TAGS.homepage],
+);
+
+export const getPublishedReviews = cachedContent(
+  async () => getPublishedReviewsDal(await getDb()),
+  ['content:reviews'],
+  [CACHE_TAGS.reviews],
 );

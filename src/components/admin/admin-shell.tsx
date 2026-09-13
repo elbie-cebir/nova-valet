@@ -150,6 +150,9 @@ export async function AdminShell({
           <Link href="/admin/homepage" style={navItem(active === 'homepage')}>
             <span>{t('homeTitle')}</span>
           </Link>
+          <Link href="/admin/reviews" style={navItem(active === 'reviews')}>
+            <span>{t('revTitle')}</span>
+          </Link>
           <div style={soon}>
             {t('payments')}
             {soonTag}

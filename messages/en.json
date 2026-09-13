@@ -37,7 +37,8 @@
     "alreadyBooked": "Already booked? Open your booking with the link in your email or your reference.",
     "findBooking": "Find my booking",
     "poweredBy": "Novabiz · [VAT no.]",
-    "owner": "Owner"
+    "owner": "Owner",
+    "reviewsTitle": "What customers say"
   },
   "Nav": {
     "services": "Services",
@@ -360,7 +361,18 @@
     "homeUploading": "Uploading…",
     "homeNoImage": "No image yet",
     "homeImageHelp": "JPEG, PNG or WebP · max 5 MB",
-    "homeChoose": "Choose file"
+    "homeChoose": "Choose file",
+    "revTitle": "Reviews",
+    "revSub": "Customer testimonials shown on the homepage. Add only genuine reviews.",
+    "revAuthor": "Author",
+    "revBody": "Review",
+    "revRating": "Rating (1–5, optional)",
+    "revPublished": "Published",
+    "revOrder": "Order",
+    "revAdd": "Add review",
+    "revNew": "New review",
+    "revDelete": "Delete",
+    "revEmpty": "No reviews yet."
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

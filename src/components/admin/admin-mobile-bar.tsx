@@ -203,6 +203,13 @@ export function AdminMobileBar({
             >
               <span>{t('homeTitle')}</span>
             </Link>
+            <Link
+              href="/admin/reviews"
+              onClick={close}
+              style={navItem(active === 'reviews')}
+            >
+              <span>{t('revTitle')}</span>
+            </Link>
             <div style={soon}>
               {t('payments')}
               {soonTag}

@@ -36,6 +36,7 @@ const FILES = [
   'src/components/admin/catalog-editor.tsx',
   'src/components/admin/area-editor.tsx',
   'src/components/admin/homepage-editor.tsx',
+  'src/components/admin/reviews-editor.tsx',
   'src/components/admin/booking-actions.tsx',
   'src/components/admin/slot-week-manager.tsx',
   'src/components/admin/wa-composer.tsx',

@@ -37,7 +37,8 @@
     "alreadyBooked": "Al geboekt? Open uw boeking met de link uit uw e-mail of met uw referentie.",
     "findBooking": "Mijn boeking zoeken",
     "poweredBy": "Novabiz · [BTW-nr.]",
-    "owner": "Eigenaar"
+    "owner": "Eigenaar",
+    "reviewsTitle": "Wat klanten zeggen"
   },
   "Nav": {
     "services": "Diensten",
@@ -360,7 +361,18 @@
     "homeUploading": "Uploaden…",
     "homeNoImage": "Nog geen foto",
     "homeImageHelp": "JPEG, PNG of WebP · max 5 MB",
-    "homeChoose": "Bestand kiezen"
+    "homeChoose": "Bestand kiezen",
+    "revTitle": "Reviews",
+    "revSub": "Klantengetuigenissen op de startpagina. Voeg enkel echte reviews toe.",
+    "revAuthor": "Auteur",
+    "revBody": "Review",
+    "revRating": "Score (1–5, optioneel)",
+    "revPublished": "Gepubliceerd",
+    "revOrder": "Volgorde",
+    "revAdd": "Review toevoegen",
+    "revNew": "Nieuwe review",
+    "revDelete": "Verwijderen",
+    "revEmpty": "Nog geen reviews."
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",

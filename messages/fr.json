@@ -37,7 +37,8 @@
     "alreadyBooked": "Déjà réservé ? Ouvrez votre réservation via le lien de votre e-mail ou votre référence.",
     "findBooking": "Retrouver ma réservation",
     "poweredBy": "Novabiz · [n° TVA]",
-    "owner": "Propriétaire"
+    "owner": "Propriétaire",
+    "reviewsTitle": "Ce que disent les clients"
   },
   "Nav": {
     "services": "Services",
@@ -360,7 +361,18 @@
     "homeUploading": "Téléversement…",
     "homeNoImage": "Pas encore de photo",
     "homeImageHelp": "JPEG, PNG ou WebP · max 5 Mo",
-    "homeChoose": "Choisir un fichier"
+    "homeChoose": "Choisir un fichier",
+    "revTitle": "Avis",
+    "revSub": "Témoignages clients affichés sur l’accueil. N’ajoutez que de vrais avis.",
+    "revAuthor": "Auteur",
+    "revBody": "Avis",
+    "revRating": "Note (1–5, facultatif)",
+    "revPublished": "Publié",
+    "revOrder": "Ordre",
+    "revAdd": "Ajouter un avis",
+    "revNew": "Nouvel avis",
+    "revDelete": "Supprimer",
+    "revEmpty": "Aucun avis pour l’instant."
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

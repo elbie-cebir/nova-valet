@@ -4,6 +4,7 @@ import {
   getServicesWithFromPrice,
   getDepositCents,
   getHomepageContent,
+  getPublishedReviews,
 } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 
@@ -47,10 +48,11 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
-  const [services, depositCents, home] = await Promise.all([
+  const [services, depositCents, home, reviews] = await Promise.all([
     getServicesWithFromPrice(locale),
     getDepositCents(),
     getHomepageContent(locale),
+    getPublishedReviews(),
   ]);
   const money = (c: number, cur = 'EUR') => formatMoney(c, cur, locale);
   const ownerNumber = process.env.NEXT_PUBLIC_WHATSAPP_OWNER_NUMBER;
@@ -512,6 +514,68 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+      {/* ── reviews / trust (only when the owner has added genuine reviews) ── */}
+      {reviews.length > 0 && (
+        <section style={{ ...section, paddingTop: 56 }}>
+          <h2
+            style={{
+              fontSize: 'clamp(26px,3vw,40px)',
+              letterSpacing: '-.03em',
+              margin: '0 0 20px',
+            }}
+          >
+            {t('reviewsTitle')}
+          </h2>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns:
+                'repeat(auto-fit,minmax(min(100%,300px),1fr))',
+              gap: 12,
+            }}
+          >
+            {reviews.map((r) => (
+              <figure key={r.id} style={{ ...glassCard, margin: 0, gap: 10 }}>
+                {r.rating !== null && (
+                  <div
+                    aria-label={`${r.rating}/5`}
+                    style={{
+                      color: 'var(--nv-lime)',
+                      fontSize: 15,
+                      letterSpacing: 2,
+                    }}
+                  >
+                    {'★'.repeat(r.rating)}
+                    <span style={{ color: 'var(--nv-faint)' }}>
+                      {'★'.repeat(5 - r.rating)}
+                    </span>
+                  </div>
+                )}
+                <blockquote
+                  style={{
+                    margin: 0,
+                    fontSize: 15,
+                    lineHeight: 1.55,
+                    color: 'var(--nv-ink)',
+                  }}
+                >
+                  {r.body}
+                </blockquote>
+                <figcaption
+                  style={{
+                    fontSize: 13,
+                    color: 'var(--nv-muted)',
+                    fontWeight: 600,
+                  }}
+                >
+                  {r.authorName}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── closing band + footer ── */}
       <section style={{ ...section, paddingTop: 56 }}>
