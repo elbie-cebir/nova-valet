@@ -18,4 +18,11 @@ export const routing = defineRouting({
   // 'nl' is served from '/', 'en'/'fr' are prefixed. Change to 'always' to
   // force a prefix on every locale.
   localePrefix: 'as-needed',
+  // The URL path is the single source of truth for locale. Detection is OFF on
+  // purpose: with 'as-needed' the default locale (nl) lives at '/', so if the
+  // middleware honoured the NEXT_LOCALE cookie it would bounce '/' back to the
+  // previously-selected locale — making it impossible to switch *to* Dutch from
+  // en/fr. Switching is driven solely by the locale switcher navigating to the
+  // target path.
+  localeDetection: false,
 });
