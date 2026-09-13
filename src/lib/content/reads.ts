@@ -4,6 +4,8 @@ import { getTravelFee as getTravelFeeDal } from '@/lib/data/travel';
 import { getDepositCents as getDepositCentsDal } from '@/lib/data/settings';
 import { getHomepageContent as getHomepageContentDal } from '@/lib/data/homepage';
 import { getPublishedReviews as getPublishedReviewsDal } from '@/lib/data/reviews';
+import { getLegalContent as getLegalContentDal } from '@/lib/data/legal';
+import { getBusinessDetails as getBusinessDetailsDal } from '@/lib/data/business';
 import { cachedContent, CACHE_TAGS } from './cache';
 
 /**
@@ -71,4 +73,16 @@ export const getPublishedReviews = cachedContent(
   async () => getPublishedReviewsDal(await getDb()),
   ['content:reviews'],
   [CACHE_TAGS.reviews],
+);
+
+export const getLegalContent = cachedContent(
+  async (locale: string) => getLegalContentDal(await getDb(), locale),
+  ['content:legal'],
+  [CACHE_TAGS.legal],
+);
+
+export const getBusinessDetails = cachedContent(
+  async () => getBusinessDetailsDal(await getDb()),
+  ['content:business'],
+  [CACHE_TAGS.business],
 );

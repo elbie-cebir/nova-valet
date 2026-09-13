@@ -372,7 +372,18 @@
     "revAdd": "Review toevoegen",
     "revNew": "Nieuwe review",
     "revDelete": "Verwijderen",
-    "revEmpty": "Nog geen reviews."
+    "revEmpty": "Nog geen reviews.",
+    "legTitle": "Juridisch & bedrijf",
+    "legSub": "Privacy-, voorwaarden- en cookietekst (per taal) plus je bedrijfsgegevens voor de footer en facturen. Wijzigingen zijn meteen live.",
+    "legPrivacy": "Privacybeleid",
+    "legTerms": "Algemene voorwaarden",
+    "legCookie": "Cookiebanner-tekst",
+    "legBusiness": "Bedrijfsgegevens",
+    "legName": "Wettelijke naam",
+    "legAddress": "Adres",
+    "legVat": "Btw-nummer",
+    "legEmail": "Contact e-mail",
+    "legPhone": "Contact telefoon"
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",
@@ -407,5 +418,14 @@
     "keep": "Mijn boeking behouden",
     "back": "Terug",
     "error": "Dat lukte niet — probeer opnieuw."
+  },
+  "Legal": {
+    "privacyTitle": "Privacybeleid",
+    "termsTitle": "Algemene voorwaarden",
+    "backHome": "Terug naar start",
+    "cookieAccept": "Aanvaarden",
+    "cookieDecline": "Weigeren",
+    "privacyLink": "Privacy",
+    "termsLink": "Voorwaarden"
   }
 }

@@ -372,7 +372,18 @@
     "revAdd": "Add review",
     "revNew": "New review",
     "revDelete": "Delete",
-    "revEmpty": "No reviews yet."
+    "revEmpty": "No reviews yet.",
+    "legTitle": "Legal & business",
+    "legSub": "Privacy, terms and cookie text (per locale) plus your business details for the footer and invoices. Changes go live immediately.",
+    "legPrivacy": "Privacy policy",
+    "legTerms": "Terms & conditions",
+    "legCookie": "Cookie banner text",
+    "legBusiness": "Business details",
+    "legName": "Legal name",
+    "legAddress": "Address",
+    "legVat": "VAT number",
+    "legEmail": "Contact email",
+    "legPhone": "Contact phone"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",
@@ -407,5 +418,14 @@
     "keep": "Keep my booking",
     "back": "Back",
     "error": "That didn’t work — please try again."
+  },
+  "Legal": {
+    "privacyTitle": "Privacy policy",
+    "termsTitle": "Terms & conditions",
+    "backHome": "Back to home",
+    "cookieAccept": "Accept",
+    "cookieDecline": "Decline",
+    "privacyLink": "Privacy",
+    "termsLink": "Terms"
   }
 }

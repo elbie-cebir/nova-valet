@@ -5,6 +5,7 @@ import {
   getDepositCents,
   getHomepageContent,
   getPublishedReviews,
+  getBusinessDetails,
 } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 
@@ -48,11 +49,13 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
-  const [services, depositCents, home, reviews] = await Promise.all([
+  const tLegal = await getTranslations('Legal');
+  const [services, depositCents, home, reviews, business] = await Promise.all([
     getServicesWithFromPrice(locale),
     getDepositCents(),
     getHomepageContent(locale),
     getPublishedReviews(),
+    getBusinessDetails(),
   ]);
   const money = (c: number, cur = 'EUR') => formatMoney(c, cur, locale);
   const ownerNumber = process.env.NEXT_PUBLIC_WHATSAPP_OWNER_NUMBER;
@@ -640,10 +643,22 @@ export default async function HomePage({
             marginTop: 20,
           }}
         >
-          <span>{t('poweredBy')}</span>
-          <Link href="/admin" style={{ color: 'var(--nv-faint)' }}>
-            {t('owner')}
-          </Link>
+          <span>
+            {business
+              ? `${business.legalName} · ${business.vatNumber}`
+              : t('poweredBy')}
+          </span>
+          <span style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+            <Link href="/privacy" style={{ color: 'var(--nv-faint)' }}>
+              {tLegal('privacyLink')}
+            </Link>
+            <Link href="/terms" style={{ color: 'var(--nv-faint)' }}>
+              {tLegal('termsLink')}
+            </Link>
+            <Link href="/admin" style={{ color: 'var(--nv-faint)' }}>
+              {t('owner')}
+            </Link>
+          </span>
         </div>
       </section>
     </div>

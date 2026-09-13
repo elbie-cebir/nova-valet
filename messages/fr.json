@@ -372,7 +372,18 @@
     "revAdd": "Ajouter un avis",
     "revNew": "Nouvel avis",
     "revDelete": "Supprimer",
-    "revEmpty": "Aucun avis pour l’instant."
+    "revEmpty": "Aucun avis pour l’instant.",
+    "legTitle": "Juridique & entreprise",
+    "legSub": "Textes confidentialité, conditions et cookies (par langue) ainsi que vos coordonnées pour le pied de page et les factures. Changements immédiats.",
+    "legPrivacy": "Politique de confidentialité",
+    "legTerms": "Conditions générales",
+    "legCookie": "Texte bannière cookies",
+    "legBusiness": "Coordonnées de l’entreprise",
+    "legName": "Nom légal",
+    "legAddress": "Adresse",
+    "legVat": "Numéro de TVA",
+    "legEmail": "E-mail de contact",
+    "legPhone": "Téléphone de contact"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",
@@ -407,5 +418,14 @@
     "keep": "Garder ma réservation",
     "back": "Retour",
     "error": "Cela n’a pas fonctionné — réessayez."
+  },
+  "Legal": {
+    "privacyTitle": "Politique de confidentialité",
+    "termsTitle": "Conditions générales",
+    "backHome": "Retour à l’accueil",
+    "cookieAccept": "Accepter",
+    "cookieDecline": "Refuser",
+    "privacyLink": "Confidentialité",
+    "termsLink": "Conditions"
   }
 }

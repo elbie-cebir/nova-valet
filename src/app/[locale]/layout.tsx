@@ -1,9 +1,11 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { SiteHeader } from '@/components/site-header';
 import { SiteChrome } from '@/components/site-chrome';
+import { CookieBanner } from '@/components/cookie-banner';
+import { getLegalContent } from '@/lib/content/reads';
 import type { ReactNode } from 'react';
 import '../globals.css';
 
@@ -30,6 +32,12 @@ export default async function LocaleLayout({
 
   // Enable static rendering for this locale.
   setRequestLocale(locale);
+
+  // Cookie-consent copy is owner-managed (cache-first).
+  const [legal, tLegal] = await Promise.all([
+    getLegalContent(locale),
+    getTranslations('Legal'),
+  ]);
 
   return (
     <html lang={locale}>
@@ -97,6 +105,14 @@ export default async function LocaleLayout({
                 <SiteHeader />
               </SiteChrome>
               {children}
+              {legal && (
+                <CookieBanner
+                  text={legal.cookie}
+                  acceptLabel={tLegal('cookieAccept')}
+                  declineLabel={tLegal('cookieDecline')}
+                  privacyLabel={tLegal('privacyLink')}
+                />
+              )}
             </div>
           </div>
         </NextIntlClientProvider>

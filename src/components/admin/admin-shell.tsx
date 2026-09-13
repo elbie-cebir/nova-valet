@@ -153,6 +153,9 @@ export async function AdminShell({
           <Link href="/admin/reviews" style={navItem(active === 'reviews')}>
             <span>{t('revTitle')}</span>
           </Link>
+          <Link href="/admin/legal" style={navItem(active === 'legal')}>
+            <span>{t('legTitle')}</span>
+          </Link>
           <div style={soon}>
             {t('payments')}
             {soonTag}

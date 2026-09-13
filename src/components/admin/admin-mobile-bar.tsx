@@ -210,6 +210,13 @@ export function AdminMobileBar({
             >
               <span>{t('revTitle')}</span>
             </Link>
+            <Link
+              href="/admin/legal"
+              onClick={close}
+              style={navItem(active === 'legal')}
+            >
+              <span>{t('legTitle')}</span>
+            </Link>
             <div style={soon}>
               {t('payments')}
               {soonTag}
