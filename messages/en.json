@@ -347,7 +347,20 @@
     "areaAdd": "Add area",
     "areaNew": "New area",
     "areaDelete": "Delete",
-    "areaEmpty": "No areas yet."
+    "areaEmpty": "No areas yet.",
+    "homeTitle": "Homepage",
+    "homeSub": "Hero text, the service-area line and the before/after photos. Changes go live immediately.",
+    "homeHero": "Hero headline",
+    "homeHeroSub": "Hero message",
+    "homeArea": "Service-area line",
+    "homeImages": "Before / after photos",
+    "homeBefore": "Before photo",
+    "homeAfter": "After photo",
+    "homeUpload": "Upload",
+    "homeUploading": "Uploading…",
+    "homeNoImage": "No image yet",
+    "homeImageHelp": "JPEG, PNG or WebP · max 5 MB",
+    "homeChoose": "Choose file"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

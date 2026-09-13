@@ -347,7 +347,20 @@
     "areaAdd": "Ajouter une zone",
     "areaNew": "Nouvelle zone",
     "areaDelete": "Supprimer",
-    "areaEmpty": "Aucune zone pour l’instant."
+    "areaEmpty": "Aucune zone pour l’instant.",
+    "homeTitle": "Page d’accueil",
+    "homeSub": "Texte hero, la ligne zone desservie et les photos avant/après. Changements immédiats.",
+    "homeHero": "Titre hero",
+    "homeHeroSub": "Message hero",
+    "homeArea": "Ligne zone desservie",
+    "homeImages": "Photos avant / après",
+    "homeBefore": "Photo avant",
+    "homeAfter": "Photo après",
+    "homeUpload": "Téléverser",
+    "homeUploading": "Téléversement…",
+    "homeNoImage": "Pas encore de photo",
+    "homeImageHelp": "JPEG, PNG ou WebP · max 5 Mo",
+    "homeChoose": "Choisir un fichier"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

@@ -347,7 +347,20 @@
     "areaAdd": "Gebied toevoegen",
     "areaNew": "Nieuw gebied",
     "areaDelete": "Verwijderen",
-    "areaEmpty": "Nog geen gebieden."
+    "areaEmpty": "Nog geen gebieden.",
+    "homeTitle": "Startpagina",
+    "homeSub": "Herotekst, de werkgebied-regel en de voor/na-foto’s. Wijzigingen zijn meteen live.",
+    "homeHero": "Herokop",
+    "homeHeroSub": "Heroboodschap",
+    "homeArea": "Werkgebied-regel",
+    "homeImages": "Voor/na-foto’s",
+    "homeBefore": "Voor-foto",
+    "homeAfter": "Na-foto",
+    "homeUpload": "Uploaden",
+    "homeUploading": "Uploaden…",
+    "homeNoImage": "Nog geen foto",
+    "homeImageHelp": "JPEG, PNG of WebP · max 5 MB",
+    "homeChoose": "Bestand kiezen"
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",

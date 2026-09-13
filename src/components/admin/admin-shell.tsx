@@ -147,6 +147,9 @@ export async function AdminShell({
           <Link href="/admin/area" style={navItem(active === 'area')}>
             <span>{t('areaFees')}</span>
           </Link>
+          <Link href="/admin/homepage" style={navItem(active === 'homepage')}>
+            <span>{t('homeTitle')}</span>
+          </Link>
           <div style={soon}>
             {t('payments')}
             {soonTag}

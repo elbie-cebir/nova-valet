@@ -196,6 +196,13 @@ export function AdminMobileBar({
             >
               <span>{t('areaFees')}</span>
             </Link>
+            <Link
+              href="/admin/homepage"
+              onClick={close}
+              style={navItem(active === 'homepage')}
+            >
+              <span>{t('homeTitle')}</span>
+            </Link>
             <div style={soon}>
               {t('payments')}
               {soonTag}

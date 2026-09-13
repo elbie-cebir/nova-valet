@@ -1,6 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getServicesWithFromPrice, getDepositCents } from '@/lib/content/reads';
+import {
+  getServicesWithFromPrice,
+  getDepositCents,
+  getHomepageContent,
+} from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
 
 const section = {
@@ -43,9 +47,10 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
-  const [services, depositCents] = await Promise.all([
+  const [services, depositCents, home] = await Promise.all([
     getServicesWithFromPrice(locale),
     getDepositCents(),
+    getHomepageContent(locale),
   ]);
   const money = (c: number, cur = 'EUR') => formatMoney(c, cur, locale);
   const ownerNumber = process.env.NEXT_PUBLIC_WHATSAPP_OWNER_NUMBER;
@@ -83,7 +88,7 @@ export default async function HomePage({
               margin: 0,
             }}
           >
-            {t('heroTitle')}
+            {home?.heroTitle ?? t('heroTitle')}
           </h1>
           <p
             style={{
@@ -94,7 +99,7 @@ export default async function HomePage({
               maxWidth: 480,
             }}
           >
-            {t('heroSub')}
+            {home?.heroSub ?? t('heroSub')}
           </p>
           <div
             style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6 }}
@@ -175,6 +180,13 @@ export default async function HomePage({
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 borderRight: '2px solid var(--nv-lime)',
+                ...(home?.beforeImageUrl
+                  ? {
+                      backgroundImage: `url(${home.beforeImageUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }
+                  : {}),
               }}
             >
               <span
@@ -192,7 +204,7 @@ export default async function HomePage({
                 className="nv-mono"
                 style={{ fontSize: 11, color: 'var(--nv-faint)' }}
               >
-                {t('beforeSlot')}
+                {home?.beforeImageUrl ? '' : t('beforeSlot')}
               </span>
             </div>
             <div
@@ -204,6 +216,13 @@ export default async function HomePage({
                 alignItems: 'flex-end',
                 background:
                   'repeating-linear-gradient(135deg,rgba(214,240,77,.10) 0 12px,rgba(214,240,77,.16) 12px 24px)',
+                ...(home?.afterImageUrl
+                  ? {
+                      backgroundImage: `url(${home.afterImageUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }
+                  : {}),
               }}
             >
               <span
@@ -221,7 +240,7 @@ export default async function HomePage({
                 className="nv-mono"
                 style={{ fontSize: 11, color: 'var(--nv-muted)' }}
               >
-                {t('afterSlot')}
+                {home?.afterImageUrl ? '' : t('afterSlot')}
               </span>
             </div>
           </div>
@@ -414,7 +433,7 @@ export default async function HomePage({
                 lineHeight: 1.25,
               }}
             >
-              {t('areaText')}
+              {home?.areaSnippet ?? t('areaText')}
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               <input
