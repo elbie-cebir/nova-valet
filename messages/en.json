@@ -1,10 +1,8 @@
 {
   "Home": {
-    "tagline": "Professional mobile car valeting, booked to your door.",
     "heroKicker": "Mobile car valeting · We come to you",
     "heroTitle": "Your car, immaculate. At your door.",
     "heroSub": "Book a 2-hour slot, secure it with a small deposit and pay the balance online. At your home or workplace.",
-    "viewServices": "View services",
     "viewPrices": "Prices by vehicle size",
     "bookNow": "Book now",
     "fact1b": "2h",
@@ -15,8 +13,6 @@
     "fact3": "deposit + balance",
     "before": "Before",
     "after": "After",
-    "beforeSlot": "[before photo]",
-    "afterSlot": "[after photo]",
     "servicesTitle": "Services",
     "allPrices": "All prices",
     "from": "from",
@@ -28,15 +24,11 @@
     "how3t": "Pay the balance online",
     "how3d": "Any time up to and on the day. No cash needed.",
     "areaTitle": "Service area",
-    "areaText": "We drive to [region] and around. Travel fee shown by postcode.",
-    "postcodePh": "Your postcode",
-    "check": "Check",
     "readyTitle": "Ready when you are.",
     "bookSlot": "Book a slot",
     "askWA": "Ask us on WhatsApp",
     "alreadyBooked": "Already booked? Open your booking with the link in your email or your reference.",
     "findBooking": "Find my booking",
-    "poweredBy": "Novabiz · [VAT no.]",
     "owner": "Owner",
     "reviewsTitle": "What customers say"
   },
@@ -69,48 +61,6 @@
     "balanceOnline": "online, up to the day",
     "note": "Deposit is non-refundable. Rescheduling is free until 24h before your slot.",
     "bookFor": "Book for"
-  },
-  "Tiers": {
-    "small": {
-      "label": "Small",
-      "desc": "city car"
-    },
-    "medium": {
-      "label": "Medium",
-      "desc": "hatchback / sedan"
-    },
-    "large": {
-      "label": "Large",
-      "desc": "SUV / estate"
-    },
-    "van": {
-      "label": "Van",
-      "desc": "MPV / van"
-    }
-  },
-  "Catalog": {
-    "interior": {
-      "name": "Interior only",
-      "desc": "Vacuum · seats & upholstery · dashboard · interior glass"
-    },
-    "exterior": {
-      "name": "Exterior only",
-      "desc": "Hand wash · wheels · exterior glass · tyre dressing"
-    },
-    "both": {
-      "name": "Interior + exterior",
-      "desc": "Everything in both packages, one visit."
-    },
-    "full": {
-      "name": "Full detailing",
-      "desc": "Deep clean · paint decontamination · polish · protection · [scope to confirm]"
-    }
-  },
-  "AddOns": {
-    "pet_hair": "Pet hair removal",
-    "odour": "Odour treatment",
-    "leather": "Leather conditioning",
-    "engine": "Engine bay clean"
   },
   "Booking": {
     "step": "Step {current} of {total}",

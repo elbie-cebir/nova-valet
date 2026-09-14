@@ -12,8 +12,9 @@ describe('B0 foundation smoke', () => {
   it('ships a message catalogue for every locale with the sample key', async () => {
     for (const locale of locales) {
       const messages = (await import(`../messages/${locale}.json`)).default;
-      expect(typeof messages.Home.tagline).toBe('string');
-      expect(messages.Home.tagline.length).toBeGreaterThan(0);
+      // Canary key that is actually rendered (the primary nav CTA).
+      expect(typeof messages.Nav.bookNow).toBe('string');
+      expect(messages.Nav.bookNow.length).toBeGreaterThan(0);
     }
   });
 
