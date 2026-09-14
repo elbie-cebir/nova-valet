@@ -55,7 +55,7 @@
     "book": "Réserver",
     "mostBooked": "Le plus réservé",
     "addons": "Options",
-    "addonNote": "[liste d’options indicative · client à confirmer]"
+    "addonNote": "Les options sont facultatives et tarifées par service."
   },
   "Prices": {
     "title": "Tarifs",
@@ -201,7 +201,8 @@
     "confirmed": "Confirmée",
     "completed": "Terminée",
     "cancelled": "Annulée",
-    "expired": "Expirée"
+    "expired": "Expirée",
+    "fully_paid": "Entièrement payé"
   },
   "BookingView": {
     "yourBooking": "Votre réservation",
@@ -214,7 +215,9 @@
     "rateSending": "Envoi…",
     "rateThanks": "Merci pour votre évaluation !",
     "rateError": "Échec de l’envoi — réessayez.",
-    "rateStar": "étoile"
+    "rateStar": "étoile",
+    "completedTitle": "Ce rendez-vous est terminé",
+    "completedSub": "Merci de nous avoir choisis."
   },
   "Find": {
     "title": "Retrouver ma réservation",
@@ -450,7 +453,8 @@
     "rescheduleInstead": "Reporter plutôt",
     "keep": "Garder ma réservation",
     "back": "Retour",
-    "error": "Cela n’a pas fonctionné — réessayez."
+    "error": "Cela n’a pas fonctionné — réessayez.",
+    "moveViaWhatsApp": "Écrivez-nous sur WhatsApp pour déplacer →"
   },
   "Legal": {
     "privacyTitle": "Politique de confidentialité",
@@ -459,6 +463,8 @@
     "cookieAccept": "Accepter",
     "cookieDecline": "Refuser",
     "privacyLink": "Confidentialité",
-    "termsLink": "Conditions"
+    "termsLink": "Conditions",
+    "beingFinalized": "Cette page est en cours de finalisation. Contactez-nous entre-temps pour plus d’informations.",
+    "cookieDefault": "Nous utilisons uniquement des cookies essentiels au fonctionnement du site."
   }
 }

@@ -9,6 +9,7 @@ import {
   countBookings,
 } from '@/lib/data/admin';
 import { getAvailableSlots } from '@/lib/data/availability';
+import { bookingDisplay } from '@/lib/booking/display';
 import { AdminShell } from '@/components/admin/admin-shell';
 import { BookingActions } from '@/components/admin/booking-actions';
 import { WaComposer, type WaTemplate } from '@/components/admin/wa-composer';
@@ -95,14 +96,13 @@ export default async function AdminBookingDetailPage({
     booking.status === 'confirmed' || booking.status === 'pending_deposit';
   const balanceOutstanding =
     booking.balancePaidAt === null && booking.balanceCents > 0;
+  const view = bookingDisplay(booking, Date.now());
 
-  const statusPill = (() => {
-    if (booking.status === 'confirmed')
-      return { bg: 'rgba(214,240,77,.15)', fg: 'var(--nv-lime)' };
-    if (booking.status === 'pending_deposit')
-      return { bg: 'rgba(245,192,138,.14)', fg: 'var(--nv-warn)' };
-    return { bg: 'rgba(255,138,126,.14)', fg: 'var(--nv-err)' };
-  })();
+  const statusPill = view.dead
+    ? { bg: 'rgba(255,138,126,.14)', fg: 'var(--nv-err)' }
+    : view.statusKey === 'pending_deposit'
+      ? { bg: 'rgba(245,192,138,.14)', fg: 'var(--nv-warn)' }
+      : { bg: 'rgba(214,240,77,.15)', fg: 'var(--nv-lime)' };
 
   // ── WhatsApp templates, localized to the CUSTOMER's booking locale ──
   const bookingBcp =
@@ -226,7 +226,7 @@ export default async function AdminBookingDetailPage({
                   color: statusPill.fg,
                 }}
               >
-                {tc(`Statuses.${booking.status}`)}
+                {tc(`Statuses.${view.statusKey}`)}
               </span>
             </div>
             <h1
@@ -331,6 +331,7 @@ export default async function AdminBookingDetailPage({
               <BookingActions
                 reference={booking.reference}
                 status={booking.status}
+                isPast={view.isPast}
                 balanceOutstanding={balanceOutstanding}
                 openSlots={openSlotOptions}
               />

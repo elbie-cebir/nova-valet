@@ -18,12 +18,16 @@ const card = {
 export function GuestActions({
   token,
   canReschedule,
+  showCancel,
+  waLink,
   cutoffLabel,
   currentSlotLabel,
   openSlots,
 }: {
   token: string;
   canReschedule: boolean;
+  showCancel: boolean;
+  waLink?: string;
   cutoffLabel: string;
   currentSlotLabel: string;
   openSlots: { id: string; label: string }[];
@@ -261,21 +265,42 @@ export function GuestActions({
           <span style={{ fontSize: 20, color: 'var(--nv-muted)' }}>›</span>
         </button>
       ) : (
-        <div style={{ ...card, fontSize: 13, color: 'var(--nv-warn)' }}>
-          {t('windowClosed')}
+        <div
+          style={{
+            ...card,
+            fontSize: 13,
+            color: 'var(--nv-warn)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
+          <span>{t('windowClosed')}</span>
+          {waLink && (
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--nv-wa)', fontWeight: 600 }}
+            >
+              {t('moveViaWhatsApp')}
+            </a>
+          )}
         </div>
       )}
-      <button onClick={() => setMode('cancel')} style={rowBtn}>
-        <span style={{ flex: 1 }}>
-          <span style={{ display: 'block', fontWeight: 600, fontSize: 16 }}>
-            {t('cancelBooking')}
+      {showCancel && (
+        <button onClick={() => setMode('cancel')} style={rowBtn}>
+          <span style={{ flex: 1 }}>
+            <span style={{ display: 'block', fontWeight: 600, fontSize: 16 }}>
+              {t('cancelBooking')}
+            </span>
+            <span style={{ fontSize: 13, color: 'var(--nv-warn)' }}>
+              {t('notRefunded')}
+            </span>
           </span>
-          <span style={{ fontSize: 13, color: 'var(--nv-warn)' }}>
-            {t('notRefunded')}
-          </span>
-        </span>
-        <span style={{ fontSize: 20, color: 'var(--nv-muted)' }}>›</span>
-      </button>
+          <span style={{ fontSize: 20, color: 'var(--nv-muted)' }}>›</span>
+        </button>
+      )}
     </div>
   );
 }

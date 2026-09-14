@@ -55,7 +55,7 @@
     "book": "Book",
     "mostBooked": "Most booked",
     "addons": "Add-ons",
-    "addonNote": "[add-on list is illustrative · client to confirm]"
+    "addonNote": "Add-ons are optional extras, priced per service."
   },
   "Prices": {
     "title": "Prices",
@@ -201,7 +201,8 @@
     "confirmed": "Confirmed",
     "completed": "Completed",
     "cancelled": "Cancelled",
-    "expired": "Hold expired"
+    "expired": "Hold expired",
+    "fully_paid": "Fully paid"
   },
   "BookingView": {
     "yourBooking": "Your booking",
@@ -214,7 +215,9 @@
     "rateSending": "Sending…",
     "rateThanks": "Thanks for rating us!",
     "rateError": "Could not send — please try again.",
-    "rateStar": "star"
+    "rateStar": "star",
+    "completedTitle": "This appointment is complete",
+    "completedSub": "Thanks for choosing us."
   },
   "Find": {
     "title": "Find my booking",
@@ -450,7 +453,8 @@
     "rescheduleInstead": "Reschedule instead",
     "keep": "Keep my booking",
     "back": "Back",
-    "error": "That didn’t work — please try again."
+    "error": "That didn’t work — please try again.",
+    "moveViaWhatsApp": "Message us on WhatsApp to move it →"
   },
   "Legal": {
     "privacyTitle": "Privacy policy",
@@ -459,6 +463,8 @@
     "cookieAccept": "Accept",
     "cookieDecline": "Decline",
     "privacyLink": "Privacy",
-    "termsLink": "Terms"
+    "termsLink": "Terms",
+    "beingFinalized": "This page is being finalized. Please contact us for details in the meantime.",
+    "cookieDefault": "We use only essential cookies to make this site work."
   }
 }

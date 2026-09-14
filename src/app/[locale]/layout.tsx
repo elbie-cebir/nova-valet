@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteChrome } from '@/components/site-chrome';
 import { CookieBanner } from '@/components/cookie-banner';
 import { getLegalContent } from '@/lib/content/reads';
+import { isPlaceholder } from '@/lib/content/placeholder';
 import type { ReactNode } from 'react';
 import '../globals.css';
 
@@ -107,7 +108,11 @@ export default async function LocaleLayout({
               {children}
               {legal && (
                 <CookieBanner
-                  text={legal.cookie}
+                  text={
+                    isPlaceholder(legal.cookie)
+                      ? tLegal('cookieDefault')
+                      : legal.cookie
+                  }
                   acceptLabel={tLegal('cookieAccept')}
                   declineLabel={tLegal('cookieDecline')}
                   privacyLabel={tLegal('privacyLink')}

@@ -22,11 +22,13 @@ const displayBtn = {
 export function BookingActions({
   reference,
   status,
+  isPast,
   balanceOutstanding,
   openSlots,
 }: {
   reference: string;
   status: string;
+  isPast: boolean;
   balanceOutstanding: boolean;
   openSlots: { id: string; label: string }[];
 }) {
@@ -55,54 +57,56 @@ export function BookingActions({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {isConfirmed && (
         <>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <label style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
-              {t('rescheduleTo')}
-            </label>
-            {openSlots.length === 0 ? (
-              <span style={{ fontSize: 13, color: 'var(--nv-faint)' }}>
-                {t('noOpenSlots')}
-              </span>
-            ) : (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <select
-                  value={slotId}
-                  onChange={(e) => setSlotId(e.target.value)}
-                  style={{
-                    ...displayBtn,
-                    flex: 1,
-                    minWidth: 180,
-                    background: 'var(--nv-surface)',
-                    border: '1px solid var(--nv-border-strong)',
-                    color: 'var(--nv-ink)',
-                  }}
-                >
-                  <option value="">—</option>
-                  {openSlots.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  disabled={pending || !slotId}
-                  onClick={() =>
-                    run(() =>
-                      rescheduleAction({ reference, newSlotId: slotId }),
-                    )
-                  }
-                  style={{
-                    ...displayBtn,
-                    background: 'var(--nv-surface)',
-                    border: '1px solid var(--nv-lime)',
-                    color: slotId ? 'var(--nv-lime)' : 'var(--nv-faint)',
-                  }}
-                >
-                  {t('reschedule')}
-                </button>
-              </div>
-            )}
-          </div>
+          {!isPast && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <label style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+                {t('rescheduleTo')}
+              </label>
+              {openSlots.length === 0 ? (
+                <span style={{ fontSize: 13, color: 'var(--nv-faint)' }}>
+                  {t('noOpenSlots')}
+                </span>
+              ) : (
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <select
+                    value={slotId}
+                    onChange={(e) => setSlotId(e.target.value)}
+                    style={{
+                      ...displayBtn,
+                      flex: 1,
+                      minWidth: 180,
+                      background: 'var(--nv-surface)',
+                      border: '1px solid var(--nv-border-strong)',
+                      color: 'var(--nv-ink)',
+                    }}
+                  >
+                    <option value="">—</option>
+                    {openSlots.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.label}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    disabled={pending || !slotId}
+                    onClick={() =>
+                      run(() =>
+                        rescheduleAction({ reference, newSlotId: slotId }),
+                      )
+                    }
+                    style={{
+                      ...displayBtn,
+                      background: 'var(--nv-surface)',
+                      border: '1px solid var(--nv-lime)',
+                      color: slotId ? 'var(--nv-lime)' : 'var(--nv-faint)',
+                    }}
+                  >
+                    {t('reschedule')}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <button
             disabled={pending}
@@ -133,93 +137,98 @@ export function BookingActions({
         </>
       )}
 
-      {/* cancel + forfeit confirmation */}
-      {!confirmingCancel ? (
-        <button
-          disabled={pending}
-          onClick={() => setConfirmingCancel(true)}
-          style={{
-            ...displayBtn,
-            background: 'none',
-            border: '1px solid rgba(255,138,126,.6)',
-            color: 'var(--nv-err)',
-          }}
-        >
-          {t('cancelBooking')}
-        </button>
-      ) : (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-            padding: 16,
-            borderRadius: 16,
-            background: 'rgba(255,120,110,.1)',
-            border: '1px solid rgba(255,120,110,.4)',
-          }}
-        >
-          <strong
+      {/* cancel + forfeit confirmation — hidden once the slot is past */}
+      {!isPast &&
+        (!confirmingCancel ? (
+          <button
+            disabled={pending}
+            onClick={() => setConfirmingCancel(true)}
             style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 18,
-              color: 'var(--nv-ink)',
-            }}
-          >
-            {t('cancelQ')}
-          </strong>
-          <div
-            style={{ fontSize: 13, color: 'var(--nv-muted)', lineHeight: 1.5 }}
-          >
-            {t('cancelSub')}
-          </div>
-          <div
-            style={{
-              fontSize: 12,
-              fontWeight: 700,
-              letterSpacing: '.1em',
-              textTransform: 'uppercase',
+              ...displayBtn,
+              background: 'none',
+              border: '1px solid rgba(255,138,126,.6)',
               color: 'var(--nv-err)',
             }}
           >
-            {t('forfeited')}
-          </div>
+            {t('cancelBooking')}
+          </button>
+        ) : (
           <div
-            style={{ fontSize: 13, color: 'var(--nv-err)', lineHeight: 1.5 }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+              padding: 16,
+              borderRadius: 16,
+              background: 'rgba(255,120,110,.1)',
+              border: '1px solid rgba(255,120,110,.4)',
+            }}
           >
-            {t('forfeitNote')}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button
-              disabled={pending}
-              onClick={() => run(() => cancelAction({ reference }))}
+            <strong
               style={{
-                ...displayBtn,
-                height: 50,
-                background: 'none',
-                border: '1px solid rgba(255,138,126,.7)',
-                color: 'var(--nv-err)',
-                fontWeight: 700,
-                fontSize: 15,
+                fontFamily: 'var(--font-display)',
+                fontSize: 18,
+                color: 'var(--nv-ink)',
               }}
             >
-              {t('cancelForfeit')}
-            </button>
-            <button
-              onClick={() => setConfirmingCancel(false)}
+              {t('cancelQ')}
+            </strong>
+            <div
               style={{
-                ...displayBtn,
-                height: 44,
-                background: 'none',
-                border: 0,
+                fontSize: 13,
                 color: 'var(--nv-muted)',
+                lineHeight: 1.5,
               }}
             >
-              {t('keep')}
-            </button>
+              {t('cancelSub')}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '.1em',
+                textTransform: 'uppercase',
+                color: 'var(--nv-err)',
+              }}
+            >
+              {t('forfeited')}
+            </div>
+            <div
+              style={{ fontSize: 13, color: 'var(--nv-err)', lineHeight: 1.5 }}
+            >
+              {t('forfeitNote')}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <button
+                disabled={pending}
+                onClick={() => run(() => cancelAction({ reference }))}
+                style={{
+                  ...displayBtn,
+                  height: 50,
+                  background: 'none',
+                  border: '1px solid rgba(255,138,126,.7)',
+                  color: 'var(--nv-err)',
+                  fontWeight: 700,
+                  fontSize: 15,
+                }}
+              >
+                {t('cancelForfeit')}
+              </button>
+              <button
+                onClick={() => setConfirmingCancel(false)}
+                style={{
+                  ...displayBtn,
+                  height: 44,
+                  background: 'none',
+                  border: 0,
+                  color: 'var(--nv-muted)',
+                }}
+              >
+                {t('keep')}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        ))}
 
       {error && (
         <div style={{ fontSize: 13, color: 'var(--nv-err)' }}>

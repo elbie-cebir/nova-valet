@@ -55,7 +55,7 @@
     "book": "Boek",
     "mostBooked": "Meest geboekt",
     "addons": "Extra’s",
-    "addonNote": "[lijst extra’s is illustratief · klant bevestigt]"
+    "addonNote": "Extra’s zijn optioneel en worden per dienst geprijsd."
   },
   "Prices": {
     "title": "Prijzen",
@@ -201,7 +201,8 @@
     "confirmed": "Bevestigd",
     "completed": "Afgewerkt",
     "cancelled": "Geannuleerd",
-    "expired": "Vervallen"
+    "expired": "Vervallen",
+    "fully_paid": "Volledig betaald"
   },
   "BookingView": {
     "yourBooking": "Uw boeking",
@@ -214,7 +215,9 @@
     "rateSending": "Versturen…",
     "rateThanks": "Bedankt voor uw beoordeling!",
     "rateError": "Versturen mislukt — probeer opnieuw.",
-    "rateStar": "ster"
+    "rateStar": "ster",
+    "completedTitle": "Deze afspraak is afgerond",
+    "completedSub": "Bedankt om voor ons te kiezen."
   },
   "Find": {
     "title": "Mijn boeking zoeken",
@@ -450,7 +453,8 @@
     "rescheduleInstead": "Liever verzetten",
     "keep": "Mijn boeking behouden",
     "back": "Terug",
-    "error": "Dat lukte niet — probeer opnieuw."
+    "error": "Dat lukte niet — probeer opnieuw.",
+    "moveViaWhatsApp": "Stuur ons een WhatsApp om te verzetten →"
   },
   "Legal": {
     "privacyTitle": "Privacybeleid",
@@ -459,6 +463,8 @@
     "cookieAccept": "Aanvaarden",
     "cookieDecline": "Weigeren",
     "privacyLink": "Privacy",
-    "termsLink": "Voorwaarden"
+    "termsLink": "Voorwaarden",
+    "beingFinalized": "Deze pagina wordt afgewerkt. Neem intussen gerust contact met ons op.",
+    "cookieDefault": "We gebruiken enkel essentiële cookies om deze site te laten werken."
   }
 }

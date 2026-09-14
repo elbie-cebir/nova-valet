@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { getServicesWithFromPrice, getAddOns } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
+import { stripPlaceholders } from '@/lib/content/placeholder';
 
 const wrap = {
   maxWidth: 1180,
@@ -114,7 +115,7 @@ export default async function ServicesPage({
                 flex: 1,
               }}
             >
-              {s.description}
+              {stripPlaceholders(s.description)}
             </div>
             <Link
               href="/book"

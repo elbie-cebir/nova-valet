@@ -8,6 +8,7 @@ import {
   getBusinessDetails,
 } from '@/lib/content/reads';
 import { formatMoney } from '@/lib/format';
+import { isPlaceholder } from '@/lib/content/placeholder';
 
 const section = {
   maxWidth: 1180,
@@ -209,7 +210,7 @@ export default async function HomePage({
                 className="nv-mono"
                 style={{ fontSize: 11, color: 'var(--nv-faint)' }}
               >
-                {home?.beforeImageUrl ? '' : t('beforeSlot')}
+                {null}
               </span>
             </div>
             <div
@@ -245,7 +246,7 @@ export default async function HomePage({
                 className="nv-mono"
                 style={{ fontSize: 11, color: 'var(--nv-muted)' }}
               >
-                {home?.afterImageUrl ? '' : t('afterSlot')}
+                {null}
               </span>
             </div>
           </div>
@@ -419,60 +420,30 @@ export default async function HomePage({
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={glassCard}>
-            <div
-              style={{
-                fontSize: 12,
-                letterSpacing: '.12em',
-                textTransform: 'uppercase',
-                color: 'var(--nv-muted)',
-                fontWeight: 600,
-              }}
-            >
-              {t('areaTitle')}
-            </div>
-            <div
-              style={{
-                fontSize: 20,
-                letterSpacing: '-.02em',
-                lineHeight: 1.25,
-              }}
-            >
-              {home?.areaSnippet ?? t('areaText')}
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input
-                placeholder={t('postcodePh')}
+          {!isPlaceholder(home?.areaSnippet) && (
+            <div style={glassCard}>
+              <div
                 style={{
-                  flex: 1,
-                  minWidth: 0,
-                  height: 48,
-                  borderRadius: 12,
-                  background: 'var(--nv-surface-2)',
-                  border: '1px solid var(--nv-border-strong)',
-                  color: 'var(--nv-ink)',
-                  padding: '0 14px',
-                  fontSize: 15,
-                }}
-              />
-              <Link
-                href="/book"
-                style={{
-                  height: 48,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '0 18px',
-                  borderRadius: 12,
-                  background: 'var(--nv-ink)',
-                  color: 'var(--nv-bg)',
+                  fontSize: 12,
+                  letterSpacing: '.12em',
+                  textTransform: 'uppercase',
+                  color: 'var(--nv-muted)',
                   fontWeight: 600,
-                  fontSize: 14,
                 }}
               >
-                {t('check')}
-              </Link>
+                {t('areaTitle')}
+              </div>
+              <div
+                style={{
+                  fontSize: 20,
+                  letterSpacing: '-.02em',
+                  lineHeight: 1.25,
+                }}
+              >
+                {home?.areaSnippet}
+              </div>
             </div>
-          </div>
+          )}
 
           <div
             style={{
@@ -644,9 +615,13 @@ export default async function HomePage({
           }}
         >
           <span>
-            {business
-              ? `${business.legalName} · ${business.vatNumber}`
-              : t('poweredBy')}
+            {business && !isPlaceholder(business.legalName)
+              ? `${business.legalName}${
+                  !isPlaceholder(business.vatNumber)
+                    ? ` · ${business.vatNumber}`
+                    : ''
+                }`
+              : ''}
           </span>
           <span style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
             <Link href="/privacy" style={{ color: 'var(--nv-faint)' }}>

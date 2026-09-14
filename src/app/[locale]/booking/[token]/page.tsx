@@ -12,6 +12,7 @@ import { PaymentPicker } from '@/components/booking/payment-picker';
 import { GuestActions } from '@/components/booking/guest-actions';
 import { RateService } from '@/components/booking/rate-service';
 import { hasGuestReview } from '@/lib/data/reviews';
+import { bookingDisplay } from '@/lib/booking/display';
 
 const card = {
   borderRadius: 20,
@@ -73,6 +74,13 @@ export default async function GuestBookingPage({
     (booking.balancePaidAt !== null || booking.balanceCents === 0);
   const isDead = booking.status === 'cancelled' || booking.status === 'expired';
 
+  // Single source of truth for the pill + which actions to offer.
+  const view = bookingDisplay(booking, Date.now());
+  const ownerNumber = process.env.NEXT_PUBLIC_WHATSAPP_OWNER_NUMBER;
+  const ownerWaLink = ownerNumber
+    ? `https://wa.me/${ownerNumber.replace(/\D/g, '')}`
+    : undefined;
+
   // Once fully paid, invite a rating (once). Held unpublished for owner approval.
   const alreadyReviewed = fullyPaid
     ? await hasGuestReview(db, booking.id)
@@ -107,11 +115,11 @@ export default async function GuestBookingPage({
           }))
       : [];
 
-  const pill = isConfirmed
-    ? { bg: 'rgba(214,240,77,.15)', fg: 'var(--nv-lime)' }
-    : isPending
+  const pill = view.dead
+    ? { bg: 'rgba(255,138,126,.14)', fg: 'var(--nv-err)' }
+    : view.statusKey === 'pending_deposit'
       ? { bg: 'rgba(245,192,138,.14)', fg: 'var(--nv-warn)' }
-      : { bg: 'rgba(255,138,126,.14)', fg: 'var(--nv-err)' };
+      : { bg: 'rgba(214,240,77,.15)', fg: 'var(--nv-lime)' };
 
   // QR encodes this page's own token URL (QR-to-booking).
   const selfUrl = bookingUrl(locale, token);
@@ -166,7 +174,7 @@ export default async function GuestBookingPage({
                 whiteSpace: 'nowrap',
               }}
             >
-              {tc(`Statuses.${booking.status}`)}
+              {tc(`Statuses.${view.statusKey}`)}
             </span>
           </div>
           <h1 style={{ fontSize: 'clamp(26px,3.4vw,38px)', lineHeight: 1.05 }}>
@@ -203,15 +211,28 @@ export default async function GuestBookingPage({
             </div>
           </div>
 
-          {/* guest self-service: reschedule (before cutoff) + cancel (B8) */}
-          {isConfirmed && (
+          {/* guest self-service: only for an upcoming booking. Cancel hidden once
+              fully paid; reschedule falls back to a WhatsApp link past the cutoff. */}
+          {isConfirmed && !view.isPast && (
             <GuestActions
               token={token}
               canReschedule={beforeCutoff}
+              showCancel={!view.fullyPaid}
+              waLink={ownerWaLink}
               cutoffLabel={cutoffLabel}
               currentSlotLabel={whenText}
               openSlots={openSlots}
             />
+          )}
+
+          {/* past / completed booking → no cancel/reschedule, just a close-out */}
+          {view.completed && !view.dead && (
+            <div style={card}>
+              <strong>{t('completedTitle')}</strong>
+              <span style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+                {t('completedSub')}
+              </span>
+            </div>
           )}
         </div>
 
