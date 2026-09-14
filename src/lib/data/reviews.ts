@@ -110,3 +110,36 @@ export async function updateReview(
 export async function deleteReview(db: Queryable, id: string): Promise<void> {
   await db.query(`delete from review where id=$1`, [id]);
 }
+
+/** Has this booking already been reviewed by the customer? */
+export async function hasGuestReview(
+  db: Queryable,
+  bookingId: string,
+): Promise<boolean> {
+  const { rows } = await db.query(
+    `select 1 from review where booking_id = $1 limit 1`,
+    [bookingId],
+  );
+  return rows.length > 0;
+}
+
+/**
+ * A customer-submitted review from the guest booking view. Always UNPUBLISHED —
+ * the owner approves it in admin before it shows publicly. One per booking (the
+ * partial unique index is the backstop; a conflict resolves to 'exists').
+ */
+export async function createGuestReview(
+  db: Queryable,
+  v: { bookingId: string; authorName: string; body: string; rating: number },
+): Promise<'created' | 'exists'> {
+  try {
+    await db.query(
+      `insert into review (author_name, body, rating, published, sort_order, booking_id)
+       values ($1, $2, $3, false, 0, $4)`,
+      [v.authorName, v.body, v.rating, v.bookingId],
+    );
+    return 'created';
+  } catch {
+    return 'exists'; // unique violation → already reviewed
+  }
+}

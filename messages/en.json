@@ -206,7 +206,15 @@
   "BookingView": {
     "yourBooking": "Your booking",
     "scanHint": "Scan to reopen your booking",
-    "depositPaid": "Deposit paid"
+    "depositPaid": "Deposit paid",
+    "rateTitle": "Rate your service",
+    "ratePrompt": "How did we do? Your rating helps others.",
+    "ratePlaceholder": "Anything you’d like to add? (optional)",
+    "rateSubmit": "Submit rating",
+    "rateSending": "Sending…",
+    "rateThanks": "Thanks for rating us!",
+    "rateError": "Could not send — please try again.",
+    "rateStar": "star"
   },
   "Find": {
     "title": "Find my booking",

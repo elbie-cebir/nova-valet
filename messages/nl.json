@@ -206,7 +206,15 @@
   "BookingView": {
     "yourBooking": "Uw boeking",
     "scanHint": "Scan om uw boeking te heropenen",
-    "depositPaid": "Voorschot betaald"
+    "depositPaid": "Voorschot betaald",
+    "rateTitle": "Beoordeel onze service",
+    "ratePrompt": "Hoe deden we het? Uw beoordeling helpt anderen.",
+    "ratePlaceholder": "Wilt u iets toevoegen? (optioneel)",
+    "rateSubmit": "Beoordeling versturen",
+    "rateSending": "Versturen…",
+    "rateThanks": "Bedankt voor uw beoordeling!",
+    "rateError": "Versturen mislukt — probeer opnieuw.",
+    "rateStar": "ster"
   },
   "Find": {
     "title": "Mijn boeking zoeken",

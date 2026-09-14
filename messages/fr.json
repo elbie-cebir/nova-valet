@@ -206,7 +206,15 @@
   "BookingView": {
     "yourBooking": "Votre réservation",
     "scanHint": "Scannez pour rouvrir votre réservation",
-    "depositPaid": "Acompte payé"
+    "depositPaid": "Acompte payé",
+    "rateTitle": "Évaluez notre service",
+    "ratePrompt": "Comment avons-nous fait ? Votre note aide les autres.",
+    "ratePlaceholder": "Un mot à ajouter ? (facultatif)",
+    "rateSubmit": "Envoyer la note",
+    "rateSending": "Envoi…",
+    "rateThanks": "Merci pour votre évaluation !",
+    "rateError": "Échec de l’envoi — réessayez.",
+    "rateStar": "étoile"
   },
   "Find": {
     "title": "Retrouver ma réservation",

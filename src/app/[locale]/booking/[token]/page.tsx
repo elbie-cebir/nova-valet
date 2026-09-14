@@ -10,6 +10,8 @@ import { BUSINESS_TIMEZONE, RESCHEDULE_CUTOFF_HOURS } from '@/config/constants';
 import { bookingUrl } from '@/lib/url';
 import { PaymentPicker } from '@/components/booking/payment-picker';
 import { GuestActions } from '@/components/booking/guest-actions';
+import { RateService } from '@/components/booking/rate-service';
+import { hasGuestReview } from '@/lib/data/reviews';
 
 const card = {
   borderRadius: 20,
@@ -70,6 +72,11 @@ export default async function GuestBookingPage({
     isConfirmed &&
     (booking.balancePaidAt !== null || booking.balanceCents === 0);
   const isDead = booking.status === 'cancelled' || booking.status === 'expired';
+
+  // Once fully paid, invite a rating (once). Held unpublished for owner approval.
+  const alreadyReviewed = fullyPaid
+    ? await hasGuestReview(db, booking.id)
+    : false;
 
   // Guest self-service (B8): reschedule is free only before the cutoff; the
   // server re-checks regardless. Offer open slots to move to, excluding the
@@ -282,9 +289,18 @@ export default async function GuestBookingPage({
             />
           )}
           {fullyPaid && (
-            <div style={card}>
-              <strong>{tp('fullyPaidTitle')}</strong>
-            </div>
+            <>
+              <div style={card}>
+                <strong>{tp('fullyPaidTitle')}</strong>
+              </div>
+              {alreadyReviewed ? (
+                <div style={card}>
+                  <strong>{t('rateThanks')}</strong>
+                </div>
+              ) : (
+                <RateService token={token} />
+              )}
+            </>
           )}
 
           {isDead && (

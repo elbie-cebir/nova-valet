@@ -2,7 +2,12 @@
 
 import { z } from 'zod';
 import { getDb } from '@/lib/data/db.server';
-import { rescheduleByToken, cancelByToken } from '@/lib/booking/guest';
+import {
+  rescheduleByToken,
+  cancelByToken,
+  reviewByToken,
+} from '@/lib/booking/guest';
+import { revalidateContent, CACHE_TAGS } from '@/lib/content/cache';
 
 export type GuestActionResult = { ok: true } | { ok: false; reason: string };
 
@@ -41,5 +46,31 @@ export async function guestCancelAction(
   if (!parsed.success) return { ok: false, reason: 'invalid' };
   const db = await getDb();
   const res = await cancelByToken(db, { token: parsed.data.token });
+  return res.ok ? { ok: true } : { ok: false, reason: res.reason };
+}
+
+const reviewSchema = z.object({
+  token: z.string().min(1),
+  rating: z.coerce.number().int().min(1).max(5),
+  body: z.string().trim().max(1000).optional().default(''),
+});
+
+/**
+ * Guest "rate your service" — token-scoped + fail-closed. Only a fully-paid
+ * booking can be rated, once; the review is created unpublished for owner
+ * approval. Revalidates the reviews tag (so an approved one can surface).
+ */
+export async function guestReviewAction(
+  input: unknown,
+): Promise<GuestActionResult> {
+  const parsed = reviewSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, reason: 'invalid' };
+  const db = await getDb();
+  const res = await reviewByToken(db, {
+    token: parsed.data.token,
+    rating: parsed.data.rating,
+    body: parsed.data.body,
+  });
+  if (res.ok) revalidateContent(CACHE_TAGS.reviews);
   return res.ok ? { ok: true } : { ok: false, reason: res.reason };
 }

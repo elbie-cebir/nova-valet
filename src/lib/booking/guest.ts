@@ -6,6 +6,7 @@ import {
   type RescheduleResult,
   type CancelResult,
 } from '@/lib/data/booking';
+import { createGuestReview } from '@/lib/data/reviews';
 
 export type GuestRescheduleResult =
   RescheduleResult | { ok: false; reason: 'not_found' };
@@ -47,4 +48,39 @@ export async function cancelByToken(
     bookingId: booking.id,
     actor: p.actor ?? 'guest',
   });
+}
+
+export type GuestReviewResult =
+  | { ok: true }
+  | { ok: false; reason: 'not_found' | 'not_allowed' | 'already_reviewed' };
+
+/**
+ * Guest "rate your service", TOKEN-SCOPED. Only a FULLY-PAID booking can be
+ * rated (deposit + balance settled), and only once. The author is the booking's
+ * own customer name; the review is created UNPUBLISHED for owner approval. Fails
+ * closed on an unknown token.
+ */
+export async function reviewByToken(
+  db: Queryable,
+  p: { token: string; rating: number; body: string },
+): Promise<GuestReviewResult> {
+  const booking = await resolveBookingByToken(db, p.token);
+  if (!booking) return { ok: false, reason: 'not_found' };
+
+  const settled = booking.balancePaidAt !== null || booking.balanceCents === 0;
+  const fullyPaid =
+    (booking.status === 'confirmed' || booking.status === 'completed') &&
+    booking.depositPaidAt !== null &&
+    settled;
+  if (!fullyPaid) return { ok: false, reason: 'not_allowed' };
+
+  const result = await createGuestReview(db, {
+    bookingId: booking.id,
+    authorName: booking.customerName,
+    body: p.body,
+    rating: p.rating,
+  });
+  return result === 'created'
+    ? { ok: true }
+    : { ok: false, reason: 'already_reviewed' };
 }
