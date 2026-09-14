@@ -1,6 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState, useTransition } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+  type CSSProperties,
+} from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { LOCALES } from '@/i18n/routing';
@@ -174,6 +180,8 @@ export function BookingFlow(props: {
   const [email, setEmail] = useState('');
   const [agree, setAgree] = useState(false);
   const [error, setError] = useState('');
+  // Mobile-only: the compact bottom bar expands the full breakdown on tap.
+  const [summaryOpen, setSummaryOpen] = useState(false);
 
   const money = (c: number) => formatMoney(c, currency, locale);
   const bcp47 = LOCALES[locale as keyof typeof LOCALES] ?? locale;
@@ -337,13 +345,133 @@ export function BookingFlow(props: {
 
   const stepTitle = ['s1t', 's2t', 's3t', 's4t', 's5t', 's6t'][step - 1];
 
+  // ---- shared pieces rendered in the desktop aside AND the mobile bar/sheet ----
+  const ready = canContinue() && !pending;
+  const ctaLabel = pending
+    ? t('reserving')
+    : step === TOTAL_STEPS
+      ? t('reserveAndPay')
+      : t('continue');
+  const cta = (extra?: CSSProperties) => (
+    <button
+      onClick={next}
+      disabled={!ready}
+      style={{
+        height: 54,
+        borderRadius: 999,
+        border: 0,
+        padding: '0 24px',
+        background: ready ? 'var(--nv-lime)' : 'var(--nv-surface-2)',
+        color: ready ? 'var(--nv-bg)' : 'var(--nv-faint)',
+        fontFamily: 'var(--font-display)',
+        fontWeight: 700,
+        fontSize: 16,
+        cursor: ready ? 'pointer' : 'not-allowed',
+        ...extra,
+      }}
+    >
+      {ctaLabel}
+    </button>
+  );
+
+  const rowStyle: CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 12,
+  };
+  const selectedBlock = (
+    <>
+      <div
+        style={{
+          fontSize: 12,
+          letterSpacing: '.12em',
+          textTransform: 'uppercase',
+          color: 'var(--nv-muted)',
+          fontWeight: 600,
+        }}
+      >
+        {t('selected')}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+          fontSize: 14,
+        }}
+      >
+        <div style={rowStyle}>
+          <span style={{ color: 'var(--nv-muted)' }}>{t('service')}</span>
+          <strong style={{ textAlign: 'right' }}>{serviceName ?? '—'}</strong>
+        </div>
+        <div style={rowStyle}>
+          <span style={{ color: 'var(--nv-muted)' }}>{t('size')}</span>
+          <strong style={{ textAlign: 'right' }}>{sizeLabel ?? '—'}</strong>
+        </div>
+        <div style={rowStyle}>
+          <span style={{ color: 'var(--nv-muted)' }}>{t('addons')}</span>
+          <strong style={{ textAlign: 'right' }}>
+            {chosenAddOns.length === 0
+              ? t('none')
+              : chosenAddOns.map((a) => a.name).join(', ')}
+          </strong>
+        </div>
+        <div style={rowStyle}>
+          <span style={{ color: 'var(--nv-muted)' }}>{t('when')}</span>
+          <strong style={{ textAlign: 'right' }}>
+            {selectedSlot ? dayFmt.format(new Date(selectedSlot.startAt)) : '—'}
+          </strong>
+        </div>
+        {travelFee > 0 && (
+          <div style={rowStyle}>
+            <span style={{ color: 'var(--nv-muted)' }}>{t('travelFee')}</span>
+            <span className="nv-mono">{money(travelFee)}</span>
+          </div>
+        )}
+      </div>
+    </>
+  );
+  const totalsBlock = (
+    <>
+      <div
+        style={{
+          borderTop: '1px solid var(--nv-border)',
+          paddingTop: 12,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+        }}
+      >
+        <span style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
+          {t('total')}
+        </span>
+        <span className="nv-mono" style={{ fontSize: 22 }}>
+          {money(total)}
+        </span>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: 13,
+          color: 'var(--nv-muted)',
+        }}
+      >
+        <span>{t('depositNow')}</span>
+        <span className="nv-mono">{money(deposit)}</span>
+      </div>
+    </>
+  );
+
   return (
     <main
+      className="nv-book-main"
       style={{
         maxWidth: 1080,
         width: '100%',
         margin: '0 auto',
-        padding: '24px 20px 64px',
+        paddingTop: 24,
+        paddingInline: 20,
       }}
     >
       {/* progress + step label (spans both columns) */}
@@ -424,6 +552,22 @@ export function BookingFlow(props: {
           <h1 style={{ fontSize: 'clamp(28px,3.6vw,40px)', lineHeight: 1.05 }}>
             {t(stepTitle)}
           </h1>
+
+          {error && (
+            <div
+              role="alert"
+              style={{
+                fontSize: 13,
+                color: 'var(--nv-err)',
+                background: 'rgba(255,138,126,.12)',
+                border: '1px solid rgba(255,138,126,.3)',
+                borderRadius: 12,
+                padding: '10px 14px',
+              }}
+            >
+              {error}
+            </div>
+          )}
 
           {/* STEP 1: service */}
           {step === 1 && (
@@ -885,7 +1029,7 @@ export function BookingFlow(props: {
           )}
         </div>
 
-        {/* ================= RIGHT: sticky "Selected" summary ================= */}
+        {/* ================= RIGHT: sticky "Selected" summary (web) ============= */}
         <aside className="nv-book-aside">
           <div
             style={{
@@ -897,153 +1041,51 @@ export function BookingFlow(props: {
               gap: 12,
             }}
           >
-            <div
-              style={{
-                fontSize: 12,
-                letterSpacing: '.12em',
-                textTransform: 'uppercase',
-                color: 'var(--nv-muted)',
-                fontWeight: 600,
-              }}
-            >
-              {t('selected')}
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 8,
-                fontSize: 14,
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                }}
-              >
-                <span style={{ color: 'var(--nv-muted)' }}>{t('service')}</span>
-                <strong style={{ textAlign: 'right' }}>
-                  {serviceName ?? '—'}
-                </strong>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                }}
-              >
-                <span style={{ color: 'var(--nv-muted)' }}>{t('size')}</span>
-                <strong style={{ textAlign: 'right' }}>
-                  {sizeLabel ?? '—'}
-                </strong>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                }}
-              >
-                <span style={{ color: 'var(--nv-muted)' }}>{t('addons')}</span>
-                <strong style={{ textAlign: 'right' }}>
-                  {chosenAddOns.length === 0
-                    ? t('none')
-                    : chosenAddOns.map((a) => a.name).join(', ')}
-                </strong>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                }}
-              >
-                <span style={{ color: 'var(--nv-muted)' }}>{t('when')}</span>
-                <strong style={{ textAlign: 'right' }}>
-                  {selectedSlot
-                    ? dayFmt.format(new Date(selectedSlot.startAt))
-                    : '—'}
-                </strong>
-              </div>
-              {travelFee > 0 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: 12,
-                  }}
-                >
-                  <span style={{ color: 'var(--nv-muted)' }}>
-                    {t('travelFee')}
-                  </span>
-                  <span className="nv-mono">{money(travelFee)}</span>
-                </div>
-              )}
-            </div>
-            <div
-              style={{
-                borderTop: '1px solid var(--nv-border)',
-                paddingTop: 12,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-              }}
-            >
-              <span style={{ fontSize: 13, color: 'var(--nv-muted)' }}>
-                {t('total')}
-              </span>
-              <span className="nv-mono" style={{ fontSize: 22 }}>
-                {money(total)}
-              </span>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: 13,
-                color: 'var(--nv-muted)',
-              }}
-            >
-              <span>{t('depositNow')}</span>
-              <span className="nv-mono">{money(deposit)}</span>
-            </div>
-            {error && (
-              <div style={{ fontSize: 13, color: 'var(--nv-err)' }}>
-                {error}
-              </div>
-            )}
-            <button
-              onClick={next}
-              disabled={!canContinue() || pending}
-              style={{
-                height: 54,
-                borderRadius: 999,
-                border: 0,
-                background:
-                  canContinue() && !pending
-                    ? 'var(--nv-lime)'
-                    : 'var(--nv-surface-2)',
-                color:
-                  canContinue() && !pending
-                    ? 'var(--nv-bg)'
-                    : 'var(--nv-faint)',
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                fontSize: 16,
-                cursor: canContinue() && !pending ? 'pointer' : 'not-allowed',
-              }}
-            >
-              {pending
-                ? t('reserving')
-                : step === TOTAL_STEPS
-                  ? t('reserveAndPay')
-                  : t('continue')}
-            </button>
+            {selectedBlock}
+            {totalsBlock}
+            {cta({ width: '100%' })}
           </div>
         </aside>
+      </div>
+
+      {/* ================= MOBILE: sticky action bar + expandable sheet ======== */}
+      {summaryOpen && (
+        <div className="nv-book-sheet">
+          {selectedBlock}
+          {totalsBlock}
+        </div>
+      )}
+      <div className="nv-book-bar">
+        <button
+          type="button"
+          onClick={() => setSummaryOpen((o) => !o)}
+          aria-expanded={summaryOpen}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            background: 'none',
+            border: 0,
+            padding: 0,
+            textAlign: 'left',
+            color: 'inherit',
+          }}
+        >
+          <span style={{ fontSize: 11, color: 'var(--nv-muted)' }}>
+            {t('total')}
+          </span>
+          <span className="nv-mono" style={{ fontSize: 18 }}>
+            {money(total)}{' '}
+            <span aria-hidden style={{ color: 'var(--nv-muted)' }}>
+              {summaryOpen ? '▾' : '▸'}
+            </span>
+          </span>
+          <span style={{ fontSize: 11, color: 'var(--nv-muted)' }}>
+            {t('depositNow')}{' '}
+            <span className="nv-mono">{money(deposit)}</span>
+          </span>
+        </button>
+        {cta({ flex: 1 })}
       </div>
     </main>
   );
