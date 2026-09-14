@@ -102,7 +102,7 @@ export interface CustomerRow {
  */
 export async function listCustomers(
   db: Queryable,
-  limit = 1000,
+  page: { limit: number; offset: number } = { limit: 1000, offset: 0 },
 ): Promise<CustomerRow[]> {
   const { rows } = await db.query<{
     email: string;
@@ -119,8 +119,8 @@ export async function listCustomers(
      from booking
      group by customer_email
      order by max(created_at) desc
-     limit $1`,
-    [limit],
+     limit $1 offset $2`,
+    [page.limit, page.offset],
   );
   return rows.map((r) => ({
     name: r.name,
@@ -129,6 +129,14 @@ export async function listCustomers(
     bookings: Number(r.bookings),
     lastBookingAt: new Date(r.last_at).toISOString(),
   }));
+}
+
+/** Distinct customer count (by email) — for pagination. */
+export async function countCustomers(db: Queryable): Promise<number> {
+  const { rows } = await db.query<{ n: number }>(
+    `select count(distinct customer_email)::int as n from booking`,
+  );
+  return Number(rows[0]?.n ?? 0);
 }
 
 /** RFC-4180-ish CSV escaping. */

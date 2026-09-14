@@ -19,6 +19,7 @@ import {
   countPayments,
   getPaymentSummary,
   listCustomers,
+  countCustomers,
   customersToCsv,
 } from '@/lib/data/reporting';
 import { GET as exportCustomers } from '@/app/api/admin/customers/export/route';
@@ -123,12 +124,20 @@ describe('customers list', () => {
 
     const customers = await listCustomers(db);
     expect(customers).toHaveLength(2); // two distinct emails
+    expect(await countCustomers(db)).toBe(2);
     const repeat = customers.find((c) => c.email === 'repeat@x.com')!;
     expect(repeat.bookings).toBe(2);
     expect(repeat.name).toBe('New Name'); // latest
     expect(repeat.phone).toBe('222');
     // newest activity first
     expect(customers[0].email).toBe('repeat@x.com');
+
+    // pagination slices by distinct customer
+    const p1 = await listCustomers(db, { limit: 1, offset: 0 });
+    const p2 = await listCustomers(db, { limit: 1, offset: 1 });
+    expect(p1).toHaveLength(1);
+    expect(p2).toHaveLength(1);
+    expect(p1[0].email).not.toBe(p2[0].email);
   });
 
   it('renders CSV with a header and escapes commas/quotes', () => {

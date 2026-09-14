@@ -1,12 +1,16 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { CSSProperties } from 'react';
+import { z } from 'zod';
 import { requireOwner } from '@/lib/auth/owner';
 import { getDb } from '@/lib/data/db.server';
 import { countBookings } from '@/lib/data/admin';
-import { listCustomers } from '@/lib/data/reporting';
+import { listCustomers, countCustomers } from '@/lib/data/reporting';
 import { AdminShell } from '@/components/admin/admin-shell';
-import { BUSINESS_TIMEZONE } from '@/config/constants';
+import { Pager } from '@/components/admin/pager';
+import { ADMIN_PAGE_SIZE, BUSINESS_TIMEZONE } from '@/config/constants';
 import { LOCALES } from '@/i18n/routing';
+
+const pageSchema = z.coerce.number().int().min(1).max(9999).catch(1);
 
 const th: CSSProperties = {
   textAlign: 'left',
@@ -26,19 +30,27 @@ const td: CSSProperties = {
 
 export default async function AdminCustomersPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ p?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const owner = await requireOwner();
 
+  const { p } = await searchParams;
+  const pageNum = pageSchema.parse(p);
+  const offset = (pageNum - 1) * ADMIN_PAGE_SIZE;
+
   const db = await getDb();
-  const [customers, bookingCount, t] = await Promise.all([
-    listCustomers(db),
+  const [customers, total, bookingCount, t] = await Promise.all([
+    listCustomers(db, { limit: ADMIN_PAGE_SIZE, offset }),
+    countCustomers(db),
     countBookings(db, 'all'),
     getTranslations('Admin'),
   ]);
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_PAGE_SIZE));
 
   const bcp47 = LOCALES[locale as keyof typeof LOCALES] ?? locale;
   const dateFmt = new Intl.DateTimeFormat(bcp47, {
@@ -85,10 +97,10 @@ export default async function AdminCustomersPage({
               {t('custTitle')}
             </h1>
             <p style={{ fontSize: 14, color: 'var(--nv-muted)', marginTop: 6 }}>
-              {t('custSub')} · {customers.length} {t('custCount')}
+              {t('custSub')} · {total} {t('custCount')}
             </p>
           </div>
-          {customers.length > 0 && (
+          {total > 0 && (
             <a
               href="/api/admin/customers/export"
               style={{
@@ -165,6 +177,12 @@ export default async function AdminCustomersPage({
             </table>
           </div>
         )}
+
+        <Pager
+          basePath="/admin/customers"
+          page={pageNum}
+          totalPages={totalPages}
+        />
       </div>
     </AdminShell>
   );

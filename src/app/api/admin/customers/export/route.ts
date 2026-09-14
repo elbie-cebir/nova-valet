@@ -11,7 +11,7 @@ export async function GET(): Promise<Response> {
   if (!owner) return new Response(null, { status: 404 });
 
   const db = await getDb();
-  const rows = await listCustomers(db, 5000);
+  const rows = await listCustomers(db, { limit: 5000, offset: 0 });
   const csv = customersToCsv(rows);
 
   return new Response(csv, {

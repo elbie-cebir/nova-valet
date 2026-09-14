@@ -35,23 +35,41 @@ function toReview(r: {
 
 const COLS = `id, author_name, body, rating, published, sort_order`;
 
-/** Published reviews for the customer trust section. */
-export async function getPublishedReviews(db: Queryable): Promise<Review[]> {
+/** Published reviews for the customer trust section (bounded showcase). */
+export async function getPublishedReviews(
+  db: Queryable,
+  limit = 24,
+): Promise<Review[]> {
   const { rows } = await db.query<Parameters<typeof toReview>[0]>(
     `select ${COLS} from review
      where published
-     order by sort_order asc, created_at desc`,
+     order by sort_order asc, created_at desc
+     limit $1`,
+    [limit],
   );
   return rows.map(toReview);
 }
 
-/** Every review for the admin list. */
-export async function listReviewsAdmin(db: Queryable): Promise<Review[]> {
+/** Every review for the admin list (paginated). */
+export async function listReviewsAdmin(
+  db: Queryable,
+  page: { limit: number; offset: number } = { limit: 1000, offset: 0 },
+): Promise<Review[]> {
   const { rows } = await db.query<Parameters<typeof toReview>[0]>(
     `select ${COLS} from review
-     order by sort_order asc, created_at desc`,
+     order by sort_order asc, created_at desc
+     limit $1 offset $2`,
+    [page.limit, page.offset],
   );
   return rows.map(toReview);
+}
+
+/** Total review count — for pagination. */
+export async function countReviews(db: Queryable): Promise<number> {
+  const { rows } = await db.query<{ n: number }>(
+    `select count(*)::int as n from review`,
+  );
+  return Number(rows[0]?.n ?? 0);
 }
 
 export async function createReview(
