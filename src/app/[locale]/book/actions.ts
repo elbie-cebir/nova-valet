@@ -14,6 +14,10 @@ import { computeTotals } from '@/lib/booking/pricing';
 import { generateReference } from '@/lib/booking/reference';
 import { reserveInputSchema } from '@/lib/validation/booking';
 import { getDepositCents } from '@/lib/data/settings';
+import {
+  autocompleteAddress,
+  type AddressSuggestion,
+} from '@/lib/geo/geoapify';
 import { HOLD_TTL_MINUTES } from '@/config/constants';
 
 const postcodeSchema = z
@@ -35,6 +39,28 @@ export async function lookupTravelFeeAction(
   if (!parsed.success) return { found: false, inArea: false, feeCents: 0 };
   const r = await getTravelFee(parsed.data);
   return { found: r.found, inArea: r.inArea, feeCents: r.feeCents };
+}
+
+const suggestSchema = z.object({
+  query: z.string().trim().min(3).max(120),
+  postcode: z
+    .string()
+    .trim()
+    .regex(/^\d{4,}$/),
+});
+
+/**
+ * Address autocomplete (step 4). Proxies Geoapify SERVER-SIDE so the key never
+ * reaches the browser; requires ≥3 chars + a valid postcode, returns ≤5 Belgian
+ * suggestions filtered to that postcode. The client debounces before calling.
+ */
+export async function addressSuggestAction(
+  input: unknown,
+): Promise<{ suggestions: AddressSuggestion[] }> {
+  const parsed = suggestSchema.safeParse(input);
+  if (!parsed.success) return { suggestions: [] };
+  const suggestions = await autocompleteAddress(parsed.data);
+  return { suggestions };
 }
 
 export interface SlotView {
@@ -109,6 +135,9 @@ export async function reserveBookingAction(
       totalCents: totals.totalCents,
       depositCents: totals.depositCents,
       balanceCents: totals.balanceCents,
+      latitude: data.latitude ?? null,
+      longitude: data.longitude ?? null,
+      formattedAddress: data.formattedAddress ?? null,
       addOns,
       holdTtlMinutes: HOLD_TTL_MINUTES,
     });

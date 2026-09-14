@@ -13,6 +13,8 @@ import {
   type SlotView,
   type TravelFeeView,
 } from '@/app/[locale]/book/actions';
+import { AddressAutocomplete } from '@/components/booking/address-autocomplete';
+import type { AddressSuggestion } from '@/lib/geo/geoapify';
 
 interface ServiceOpt {
   id: string;
@@ -160,6 +162,8 @@ export function BookingFlow(props: {
   const [addOnIds, setAddOnIds] = useState<string[]>([]);
   const [address, setAddress] = useState('');
   const [postcode, setPostcode] = useState('');
+  // Coordinates captured only when an autocomplete suggestion is chosen.
+  const [coords, setCoords] = useState<AddressSuggestion | null>(null);
   const [notes, setNotes] = useState('');
   const [travel, setTravel] = useState<TravelFeeView | null>(null);
   const [slots, setSlots] = useState<SlotView[] | null>(null);
@@ -304,6 +308,9 @@ export function BookingFlow(props: {
         addOnIds,
         address: address.trim(),
         postcode: postcode.trim(),
+        latitude: coords?.lat,
+        longitude: coords?.lng,
+        formattedAddress: coords?.formatted,
         notes: notes.trim(),
         slotId,
         name: name.trim(),
@@ -650,9 +657,17 @@ export function BookingFlow(props: {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <label style={labelStyle}>{t('street')}</label>
-                <input
+                <AddressAutocomplete
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={(text) => {
+                    setAddress(text);
+                    setCoords(null); // manual edit invalidates any picked geocode
+                  }}
+                  onSelect={(s) => {
+                    setAddress(s.label);
+                    setCoords(s);
+                  }}
+                  postcode={validPostcode ? postcode.trim() : ''}
                   placeholder={t('streetPh')}
                   style={inputStyle}
                 />

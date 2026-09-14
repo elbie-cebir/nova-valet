@@ -36,6 +36,11 @@ export const locationStepSchema = z.object({
     .trim()
     .regex(/^\d{4,}$/),
   notes: z.string().trim().max(500).optional().default(''),
+  // Optional geocode captured when the customer picks an autocomplete
+  // suggestion; absent for manual free-text entry.
+  latitude: z.number().min(-90).max(90).optional(),
+  longitude: z.number().min(-180).max(180).optional(),
+  formattedAddress: z.string().trim().max(300).optional(),
 });
 
 /** Step 5 — chosen slot. */

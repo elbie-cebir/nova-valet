@@ -162,4 +162,45 @@ describe('slot reserve-then-confirm [invariant: hold with TTL, confirm on deposi
     );
     expect(rows[0].status).toBe('expired');
   });
+
+  it('stores lat/lng/formatted_address when a suggestion was picked', async () => {
+    const slotId = await insertOpenSlot(db);
+    const p = await baseParams(db, slotId, 'NV-GEO001');
+    const res = await reserveSlot(db, {
+      ...p,
+      latitude: 50.8467,
+      longitude: 4.3517,
+      formattedAddress: 'Grote Markt 1, 1000 Brussels',
+    });
+    expect(res.ok).toBe(true);
+    const { rows } = await db.query<{
+      latitude: number;
+      longitude: number;
+      formatted_address: string;
+    }>(
+      `select latitude, longitude, formatted_address from booking where reference = 'NV-GEO001'`,
+    );
+    expect(Number(rows[0].latitude)).toBeCloseTo(50.8467, 4);
+    expect(Number(rows[0].longitude)).toBeCloseTo(4.3517, 4);
+    expect(rows[0].formatted_address).toBe('Grote Markt 1, 1000 Brussels');
+  });
+
+  it('a manual address (no suggestion) books with null coordinates', async () => {
+    const slotId = await insertOpenSlot(db);
+    const res = await reserveSlot(
+      db,
+      await baseParams(db, slotId, 'NV-GEO002'),
+    );
+    expect(res.ok).toBe(true);
+    const { rows } = await db.query<{
+      latitude: number | null;
+      longitude: number | null;
+      formatted_address: string | null;
+    }>(
+      `select latitude, longitude, formatted_address from booking where reference = 'NV-GEO002'`,
+    );
+    expect(rows[0].latitude).toBeNull();
+    expect(rows[0].longitude).toBeNull();
+    expect(rows[0].formatted_address).toBeNull();
+  });
 });

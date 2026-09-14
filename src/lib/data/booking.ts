@@ -88,6 +88,9 @@ export interface ReserveParams {
   totalCents: number;
   depositCents: number;
   balanceCents: number;
+  latitude?: number | null;
+  longitude?: number | null;
+  formattedAddress?: string | null;
   addOns: { id: string; amountCents: number }[];
   holdTtlMinutes: number;
 }
@@ -163,11 +166,11 @@ export async function reserveSlot(
          reference, status, service_id, vehicle_size_tier_id, slot_id,
          customer_name, customer_phone, customer_email, address, postcode,
          travel_fee_cents, subtotal_cents, total_cents, deposit_cents,
-         balance_cents, locale
+         balance_cents, locale, latitude, longitude, formatted_address
        ) values (
          $1, 'pending_deposit', $2, $3, $4,
          $5, $6, $7, $8, $9,
-         $10, $11, $12, $13, $14, $15
+         $10, $11, $12, $13, $14, $15, $16, $17, $18
        ) returning id`,
       [
         p.reference,
@@ -185,6 +188,9 @@ export async function reserveSlot(
         p.depositCents,
         p.balanceCents,
         p.locale,
+        p.latitude ?? null,
+        p.longitude ?? null,
+        p.formattedAddress ?? null,
       ],
     );
     const bookingId = ins.rows[0].id;
