@@ -369,7 +369,9 @@
     "custExport": "Exporter CSV",
     "custEmpty": "Aucun client pour l’instant.",
     "custCount": "clients",
-    "submit": "Se connecter"
+    "submit": "Se connecter",
+    "openMaps": "Ouvrir dans Google Maps",
+    "location": "Emplacement"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

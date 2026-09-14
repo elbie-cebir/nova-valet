@@ -369,7 +369,9 @@
     "custExport": "Export CSV",
     "custEmpty": "No customers yet.",
     "custCount": "customers",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "openMaps": "Open in Google Maps",
+    "location": "Location"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

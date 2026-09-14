@@ -10,7 +10,9 @@ import {
 } from '@/lib/data/admin';
 import { getAvailableSlots } from '@/lib/data/availability';
 import { bookingDisplay } from '@/lib/booking/display';
+import { googleMapsUrl } from '@/lib/geo/maps';
 import { AdminShell } from '@/components/admin/admin-shell';
+import { BookingMap } from '@/components/admin/booking-map';
 import { BookingActions } from '@/components/admin/booking-actions';
 import { WaComposer, type WaTemplate } from '@/components/admin/wa-composer';
 import { Link } from '@/i18n/navigation';
@@ -257,6 +259,35 @@ export default async function AdminBookingDetailPage({
               langLabel={booking.locale.toUpperCase()}
               templates={templates}
             />
+
+            {/* location: map pin (when geocoded) + Google Maps navigation */}
+            <div style={{ ...card, gap: 10 }}>
+              <strong style={{ fontFamily: 'var(--font-display)' }}>
+                {t('location')}
+              </strong>
+              {booking.latitude != null && booking.longitude != null && (
+                <BookingMap lat={booking.latitude} lng={booking.longitude} />
+              )}
+              <a
+                href={googleMapsUrl(booking)}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  height: 46,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 999,
+                  background: 'var(--nv-lime)',
+                  color: 'var(--nv-bg)',
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 14,
+                }}
+              >
+                {t('openMaps')} ↗
+              </a>
+            </div>
           </div>
 
           {/* ── right: summary + actions ── */}

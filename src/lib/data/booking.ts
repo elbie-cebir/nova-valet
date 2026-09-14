@@ -258,6 +258,9 @@ export interface BookingSummary {
   depositPaidAt: string | null;
   balancePaidAt: string | null;
   heldUntil: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  formattedAddress: string | null;
   addOns: { name: string; amountCents: number }[];
 }
 
@@ -298,7 +301,8 @@ export async function getBookingByReference(
             sl.held_until,
             b.address, b.postcode, b.travel_fee_cents, b.subtotal_cents,
             b.total_cents, b.deposit_cents, b.balance_cents,
-            b.deposit_paid_at, b.balance_paid_at
+            b.deposit_paid_at, b.balance_paid_at,
+            b.latitude, b.longitude, b.formatted_address
      from booking b
      join service s on s.id = b.service_id
      join vehicle_size_tier t on t.id = b.vehicle_size_tier_id
@@ -351,6 +355,9 @@ export async function getBookingByReference(
     heldUntil: r.held_until
       ? new Date(r.held_until as string).toISOString()
       : null,
+    latitude: r.latitude === null ? null : Number(r.latitude),
+    longitude: r.longitude === null ? null : Number(r.longitude),
+    formattedAddress: (r.formatted_address as string | null) ?? null,
     addOns: addOns.rows.map((a) => ({
       name: a.name,
       amountCents: Number(a.amount_cents),

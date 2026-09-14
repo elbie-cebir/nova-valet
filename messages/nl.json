@@ -369,7 +369,9 @@
     "custExport": "CSV exporteren",
     "custEmpty": "Nog geen klanten.",
     "custCount": "klanten",
-    "submit": "Aanmelden"
+    "submit": "Aanmelden",
+    "openMaps": "Open in Google Maps",
+    "location": "Locatie"
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",
