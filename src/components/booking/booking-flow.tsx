@@ -180,6 +180,10 @@ export function BookingFlow(props: {
   const [email, setEmail] = useState('');
   const [agree, setAgree] = useState(false);
   const [error, setError] = useState('');
+  // True only while the final reserve call is in flight, so the CTA reads
+  // "Reserving…" for that and not for the postcode/slot lookups that also
+  // flip `pending` (from useTransition).
+  const [submitting, setSubmitting] = useState(false);
   // Mobile-only: the compact bottom bar expands the full breakdown on tap.
   const [summaryOpen, setSummaryOpen] = useState(false);
 
@@ -243,6 +247,12 @@ export function BookingFlow(props: {
   }, [slots]);
   const daySlots =
     slots?.filter((s) => s.startAt.slice(0, 10) === selectedDay) ?? [];
+
+  // Collapse the mobile summary sheet whenever the step changes so it never
+  // lingers open over the next step's content.
+  useEffect(() => {
+    setSummaryOpen(false);
+  }, [step]);
 
   // ----- load slots when reaching step 5 -----
   useEffect(() => {
@@ -309,6 +319,7 @@ export function BookingFlow(props: {
       setStep(step + 1);
       return;
     }
+    setSubmitting(true);
     startTransition(async () => {
       const res = await reserveBookingAction({
         serviceId,
@@ -328,8 +339,12 @@ export function BookingFlow(props: {
         locale,
       });
       if (res.ok) {
+        // Keep "Reserving…" through the navigation to the payment handoff.
         router.push(`/book/pending/${res.reference}`);
-      } else if (res.reason === 'slot_taken') {
+        return;
+      }
+      setSubmitting(false);
+      if (res.reason === 'slot_taken') {
         setError(t('errorSlotTaken'));
         setSlots(null);
         setSlotId('');
@@ -347,7 +362,7 @@ export function BookingFlow(props: {
 
   // ---- shared pieces rendered in the desktop aside AND the mobile bar/sheet ----
   const ready = canContinue() && !pending;
-  const ctaLabel = pending
+  const ctaLabel = submitting
     ? t('reserving')
     : step === TOTAL_STEPS
       ? t('reserveAndPay')
