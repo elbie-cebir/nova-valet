@@ -415,7 +415,8 @@
     "custLast": "Last booking",
     "custExport": "Export CSV",
     "custEmpty": "No customers yet.",
-    "custCount": "customers"
+    "custCount": "customers",
+    "submit": "Sign in"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

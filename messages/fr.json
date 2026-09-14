@@ -415,7 +415,8 @@
     "custLast": "Dernière réservation",
     "custExport": "Exporter CSV",
     "custEmpty": "Aucun client pour l’instant.",
-    "custCount": "clients"
+    "custCount": "clients",
+    "submit": "Se connecter"
   },
   "Wa": {
     "tConfirmLabel": "Confirmation",

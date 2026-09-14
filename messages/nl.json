@@ -415,7 +415,8 @@
     "custLast": "Laatste boeking",
     "custExport": "CSV exporteren",
     "custEmpty": "Nog geen klanten.",
-    "custCount": "klanten"
+    "custCount": "klanten",
+    "submit": "Aanmelden"
   },
   "Wa": {
     "tConfirmLabel": "Bevestiging",
