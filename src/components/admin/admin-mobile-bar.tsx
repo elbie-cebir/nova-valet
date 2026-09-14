@@ -25,6 +25,8 @@ export function AdminMobileBar({
   ownerEmail: string;
   active:
     | 'bookings'
+    | 'customers'
+    | 'payments'
     | 'slots'
     | 'catalog'
     | 'area'
@@ -85,30 +87,6 @@ export function AdminMobileBar({
     color: isActive ? 'var(--nv-ink)' : 'var(--nv-muted)',
     width: '100%',
   });
-  const soon = {
-    padding: '14px 14px',
-    color: 'var(--nv-faint)',
-    fontSize: 16,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  };
-  const soonTag = (
-    <span
-      style={{
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: '.08em',
-        textTransform: 'uppercase' as const,
-        color: 'var(--nv-faint)',
-        border: '1px solid var(--nv-border)',
-        borderRadius: 999,
-        padding: '2px 7px',
-      }}
-    >
-      {t('soon')}
-    </span>
-  );
 
   return (
     <div
@@ -176,6 +154,20 @@ export function AdminMobileBar({
               </span>
             </Link>
             <Link
+              href="/admin/customers"
+              onClick={close}
+              style={navItem(active === 'customers')}
+            >
+              <span>{t('custTitle')}</span>
+            </Link>
+            <Link
+              href="/admin/payments"
+              onClick={close}
+              style={navItem(active === 'payments')}
+            >
+              <span>{t('payTitle')}</span>
+            </Link>
+            <Link
               href="/admin/slots"
               onClick={close}
               style={navItem(active === 'slots')}
@@ -217,10 +209,6 @@ export function AdminMobileBar({
             >
               <span>{t('legTitle')}</span>
             </Link>
-            <div style={soon}>
-              {t('payments')}
-              {soonTag}
-            </div>
           </nav>
 
           <div

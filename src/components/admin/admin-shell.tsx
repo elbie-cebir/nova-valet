@@ -22,6 +22,8 @@ export async function AdminShell({
   ownerEmail: string;
   active:
     | 'bookings'
+    | 'customers'
+    | 'payments'
     | 'slots'
     | 'catalog'
     | 'area'
@@ -83,30 +85,6 @@ export async function AdminShell({
     color: isActive ? 'var(--nv-ink)' : 'var(--nv-muted)',
     width: '100%',
   });
-  const soon = {
-    padding: '12px 14px',
-    color: 'var(--nv-faint)',
-    fontSize: 15,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  };
-  const soonTag = (
-    <span
-      style={{
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: '.08em',
-        textTransform: 'uppercase' as const,
-        color: 'var(--nv-faint)',
-        border: '1px solid var(--nv-border)',
-        borderRadius: 999,
-        padding: '2px 7px',
-      }}
-    >
-      {t('soon')}
-    </span>
-  );
 
   return (
     <div className="nv-admin">
@@ -138,6 +116,12 @@ export async function AdminShell({
               {bookingCount}
             </span>
           </Link>
+          <Link href="/admin/customers" style={navItem(active === 'customers')}>
+            <span>{t('custTitle')}</span>
+          </Link>
+          <Link href="/admin/payments" style={navItem(active === 'payments')}>
+            <span>{t('payTitle')}</span>
+          </Link>
           <Link href="/admin/slots" style={navItem(active === 'slots')}>
             <span>{t('slots')}</span>
           </Link>
@@ -156,10 +140,6 @@ export async function AdminShell({
           <Link href="/admin/legal" style={navItem(active === 'legal')}>
             <span>{t('legTitle')}</span>
           </Link>
-          <div style={soon}>
-            {t('payments')}
-            {soonTag}
-          </div>
         </nav>
 
         <div

@@ -42,6 +42,8 @@ const FILES = [
   'src/components/cookie-banner.tsx',
   'src/app/[locale]/privacy/page.tsx',
   'src/app/[locale]/terms/page.tsx',
+  'src/app/[locale]/admin/payments/page.tsx',
+  'src/app/[locale]/admin/customers/page.tsx',
   'src/components/admin/booking-actions.tsx',
   'src/components/admin/slot-week-manager.tsx',
   'src/components/admin/wa-composer.tsx',
